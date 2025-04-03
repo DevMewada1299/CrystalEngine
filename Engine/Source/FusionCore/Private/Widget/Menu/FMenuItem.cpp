@@ -44,8 +44,8 @@ namespace CE
             FAssignNew(FHorizontalStack, content)
             (
                 FAssignNew(FImage, icon)
-                .Width(16)
-                .Height(16)
+                .Width(18)
+                .Height(18)
                 .Enabled(false)
                 .Margin(Vec4(0, 0, 10, 0)),
 
