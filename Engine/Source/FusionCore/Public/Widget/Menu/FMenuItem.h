@@ -32,7 +32,10 @@ namespace CE
 
         FWidget* menuOwner = nullptr;
 
-        FLabel* label = nullptr;
+        Ref<FLabel> label = nullptr;
+        Ref<FImage> icon = nullptr;
+
+        Ref<FHorizontalStack> content;
 
         FMenuPopup* subMenu = nullptr;
 
@@ -43,6 +46,12 @@ namespace CE
         FUSION_PROPERTY_WRAPPER(Foreground, label);
         FUSION_PROPERTY_WRAPPER(FontSize, label);
         FUSION_PROPERTY_WRAPPER(FontFamily, label);
+
+        FUSION_PROPERTY_WRAPPER2(Background, icon, Icon);
+        FUSION_PROPERTY_WRAPPER2(Visible, icon, IconVisible);
+        FUSION_PROPERTY_WRAPPER2(Enabled, icon, IconEnabled);
+
+        FUSION_PROPERTY_WRAPPER2(Padding, content, ContentPadding);
 
         FUSION_DATA_PROPERTY_WRAPPER(Text, label);
 

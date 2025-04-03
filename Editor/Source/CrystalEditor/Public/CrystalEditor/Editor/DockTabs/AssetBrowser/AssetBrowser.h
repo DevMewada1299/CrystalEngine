@@ -26,6 +26,8 @@ namespace CE::Editor
 
         void SetCurrentPath(const CE::Name& path);
 
+        bool IsCurrentDirectoryReadOnly() const;
+
     protected: // - Internal -
 
         FUNCTION()
@@ -48,6 +50,7 @@ namespace CE::Editor
 
         Ref<AssetBrowserGridViewModel> gridViewModel = nullptr;
         Ref<AssetBrowserGridView> gridView;
+        Ref<FScrollBox> gridViewScrollBox;
 
         PathTreeNode* currentDirectory = nullptr;
         CE::Name currentPath = {};

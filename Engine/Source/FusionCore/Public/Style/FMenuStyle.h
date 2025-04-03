@@ -97,6 +97,12 @@ namespace CE
         Color itemHoverBorderColor;
 
         FIELD()
+        Color separatorColor;
+
+        FIELD()
+        Color separatorTitleColor;
+
+        FIELD()
         f32 itemBorderWidth = 0;
 
     };

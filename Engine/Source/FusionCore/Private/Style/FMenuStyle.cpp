@@ -25,26 +25,31 @@ namespace CE
             .Padding(padding)
             ;
 
-        for (int i = 0; i < menuBar.GetMenuItemCount(); ++i)
+        for (int i = 0; i < menuBar.GetContainerChildCount(); ++i)
         {
-            FMenuItem& item = *menuBar.GetMenuItem(i);
+            Ref<FWidget> child = menuBar.GetContainerChild(i);
 
-            FBrush itemBg = item.IsHovered() ? itemHoverBackground : itemBackground;
-        	if (item.GetSubMenu() != nullptr &&
-        		item.GetSubMenu()->IsShown())
-        	{
-        		itemBg = itemActiveBackground;
-        	}
+            if (child->IsOfType<FMenuItem>())
+            {
+                FMenuItem& item = static_cast<FMenuItem&>(*child);
 
-            Color borderColor = item.IsHovered() ? this->itemBorderColor : this->itemHoverBorderColor;
+                FBrush itemBg = item.IsHovered() ? itemHoverBackground : itemBackground;
+                if (item.GetSubMenu() != nullptr &&
+                    item.GetSubMenu()->IsShown())
+                {
+                    itemBg = itemActiveBackground;
+                }
 
-            item
-				.FontSize(itemFontSize)
-                .Background(itemBg)
-                .Border(borderColor, itemBorderWidth)
-                .BackgroundShape(FRectangle())
-                .Padding(itemPadding)
-                ;
+                Color borderColor = item.IsHovered() ? this->itemBorderColor : this->itemHoverBorderColor;
+
+                item
+                    .FontSize(itemFontSize)
+                    .Background(itemBg)
+                    .Border(borderColor, itemBorderWidth)
+                    .BackgroundShape(FRectangle())
+                    .Padding(itemPadding)
+                    ;
+            }
         }
 	}
 
@@ -70,20 +75,34 @@ namespace CE
 			.Padding(padding)
             ;
 
-        for (int i = 0; i < menu.GetMenuItemCount(); ++i)
+        for (int i = 0; i < menu.GetContainerChildCount(); ++i)
         {
-            FMenuItem& item = *menu.GetMenuItem(i);
+            Ref<FWidget> child = menu.GetContainerChild(i);
 
-            FBrush itemBg = item.IsHovered() ? itemHoverBackground : itemBackground;
+            if (child->IsOfType<FMenuItem>())
+            {
+                FMenuItem& item = static_cast<FMenuItem&>(*child);
 
-            Color borderColor = item.IsHovered() ? this->itemBorderColor : this->itemHoverBorderColor;
+                FBrush itemBg = item.IsHovered() ? itemHoverBackground : itemBackground;
 
-            item
-                .Background(itemBg)
-				.Border(borderColor, itemBorderWidth)
-				.BackgroundShape(FRectangle())
-				.Padding(itemPadding)
-                ;
+                Color borderColor = item.IsHovered() ? this->itemBorderColor : this->itemHoverBorderColor;
+
+                item
+                    .Background(itemBg)
+                    .Border(borderColor, itemBorderWidth)
+                    .BackgroundShape(FRectangle())
+                    .Padding(itemPadding)
+                    ;
+            }
+            else if (child->IsOfType<FMenuItemSeparator>())
+            {
+                FMenuItemSeparator& separator = static_cast<FMenuItemSeparator&>(*child);
+
+                separator
+                    .TitleColor(separatorTitleColor)
+					.SeparatorColor(separatorColor)
+                    ;
+            }
         }
     }
     

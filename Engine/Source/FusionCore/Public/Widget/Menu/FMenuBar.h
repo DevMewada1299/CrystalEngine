@@ -16,6 +16,10 @@ namespace CE
 
         void OnMenuItemHovered(FMenuItem* menuItem);
 
+        u32 GetContainerChildCount() const { return container->GetChildCount(); }
+
+        Ref<FWidget> GetContainerChild(u32 index) const { return container->GetChild(index); }
+
     protected:
 
         void Construct() override final;

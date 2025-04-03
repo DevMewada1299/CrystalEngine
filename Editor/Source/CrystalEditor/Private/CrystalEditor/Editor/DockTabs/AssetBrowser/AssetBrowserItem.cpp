@@ -13,52 +13,52 @@ namespace CE::Editor
         Super::Construct();
 
         (*this)
-            .RightClickSelects(true)
-            .Width(80)
-            .Height(110)
-            .Style("AssetBrowserItem")
+        .RightClickSelects(true)
+        .Width(80)
+        .Height(110)
+        .Style("AssetBrowserItem")
+        (
+            FNew(FVerticalStack)
+            .Gap(2)
+            .ContentHAlign(HAlign::Fill)
+            .HAlign(HAlign::Fill)
+            .VAlign(VAlign::Fill)
             (
-                FNew(FVerticalStack)
-                .Gap(2)
-                .ContentHAlign(HAlign::Fill)
-                .HAlign(HAlign::Fill)
-                .VAlign(VAlign::Fill)
+                FAssignNew(FStyledWidget, iconBg)
+                .Background(Color::Black())
+                .BackgroundShape(FRoundedRectangle(5, 5, 0, 0))
+                .Height(70)
                 (
-                    FAssignNew(FStyledWidget, iconBg)
-                    .Background(Color::Black())
-                    .BackgroundShape(FRoundedRectangle(5, 5, 0, 0))
-                    .Height(70)
-                    (
-                        FAssignNew(FStyledWidget, icon)
-                        .Background(FBrush("/Editor/Assets/Icons/Folder_Large"))
-                        .Width(48)
-                        .Height(48)
-                        .HAlign(HAlign::Center)
-                        .VAlign(VAlign::Center)
-                    ),
+                    FAssignNew(FStyledWidget, icon)
+                    .Background(FBrush("/Editor/Assets/Icons/Folder_Large"))
+                    .Width(48)
+                    .Height(48)
+                    .HAlign(HAlign::Center)
+                    .VAlign(VAlign::Center)
+                ),
 
-                    FAssignNew(FLabel, titleLabel)
-                    .Text("Asset")
-                    .FontSize(9)
-                    .WordWrap(FWordWrap::Normal)
-                    .Foreground(Color::White())
-                    .HAlign(HAlign::Left)
-                    .VAlign(VAlign::Bottom)
-                    .Margin(Vec4(2.5f, 0, 0, 0))
-                    .Height(20),
+                FAssignNew(FLabel, titleLabel)
+                .Text("Asset")
+                .FontSize(9)
+                .WordWrap(FWordWrap::Normal)
+                .Foreground(Color::White())
+                .HAlign(HAlign::Left)
+                .VAlign(VAlign::Bottom)
+                .Margin(Vec4(2.5f, 0, 0, 0))
+                .Height(20),
 
-                    FNew(FWidget)
-                    .FillRatio(1.0f),
+                FNew(FWidget)
+                .FillRatio(1.0f),
 
-                    FAssignNew(FLabel, subtitleLabel)
-                    .Text("Asset Type")
-                    .FontSize(7)
-                    .Foreground(Color::White().WithAlpha(0.5f))
-                    .HAlign(HAlign::Left)
-                    .VAlign(VAlign::Bottom)
-                    .Margin(Vec4(2.5f, 0, 0, 0))
-                )
-            );
+                FAssignNew(FLabel, subtitleLabel)
+                .Text("Asset Type")
+                .FontSize(7)
+                .Foreground(Color::White().WithAlpha(0.5f))
+                .HAlign(HAlign::Left)
+                .VAlign(VAlign::Bottom)
+                .Margin(Vec4(2.5f, 0, 0, 0))
+            )
+        );
     }
 
     void AssetBrowserItem::HandleEvent(FEvent* event)

@@ -17,6 +17,20 @@ namespace CE
         return val;
     }
 
+    void FMenuPopup::QueueDestroyAllItems()
+    {
+        container->QueueDestroyAllChildren();
+
+        menuItems.Clear();
+    }
+
+    void FMenuPopup::DestroyAllItems()
+    {
+        container->DestroyAllChildren();
+
+        menuItems.Clear();
+    }
+
     void FMenuPopup::HandleEvent(FEvent* event)
     {
         if (event->type == FEventType::FocusChanged)

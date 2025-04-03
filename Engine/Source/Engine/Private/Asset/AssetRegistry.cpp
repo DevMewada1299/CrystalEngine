@@ -258,7 +258,7 @@ namespace CE
 		cachedPathTree.RemoveAll();
 		cachedDirectoryTree.RemoveAll();
 
-		cachedPathTree.AddPath("/Game"); cachedDirectoryTree.AddPath("/Game");
+		cachedPathTree.AddPath("/Game/Assets"); cachedDirectoryTree.AddPath("/Game/Assets");
 		cachedPathTree.AddPath("/Engine"); cachedDirectoryTree.AddPath("/Engine");
 #if PAL_TRAIT_BUILD_EDITOR
 		//pathTree.AddPath("/Editor"); directoryTree.AddPath("/Editor");

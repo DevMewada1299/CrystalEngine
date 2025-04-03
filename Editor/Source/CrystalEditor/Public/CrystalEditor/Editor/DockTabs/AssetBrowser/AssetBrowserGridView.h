@@ -18,6 +18,11 @@ namespace CE::Editor
 
         void OnSelectionUpdated();
 
+        void OnBackgroundRightClicked(Vec2 globalMousePos);
+
+        // When user right clicks in empty space
+        Ref<EditorMenuPopup> BuildNoSelectionContextMenu();
+
     public: // - Public API -
 
         bool SupportsMouseEvents() const override { return true; }
@@ -29,6 +34,8 @@ namespace CE::Editor
         bool SupportsKeyboardEvents() const override { return true; }
 
         int GetSelectedItemCount();
+
+        Array<AssetBrowserItem*> GetSelectedItems();
 
         // Will redraw the items
         void OnModelUpdate();
@@ -45,6 +52,7 @@ namespace CE::Editor
         FUSION_PROPERTY(Ref<AssetBrowserGridViewModel>, Model);
 
         FUSION_WIDGET;
+        friend class AssetBrowser;
     };
     
 }

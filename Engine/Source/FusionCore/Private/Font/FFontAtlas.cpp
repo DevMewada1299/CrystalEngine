@@ -69,10 +69,10 @@ namespace CE
         }
 
         RHI::SamplerDescriptor fontSampler{};
-        fontSampler.addressModeU = fontSampler.addressModeV = fontSampler.addressModeW = SamplerAddressMode::ClampToBorder;
-        fontSampler.borderColor = SamplerBorderColor::FloatTransparentBlack;
+        fontSampler.addressModeU = fontSampler.addressModeV = fontSampler.addressModeW = RHI::SamplerAddressMode::ClampToBorder;
+        fontSampler.borderColor = RHI::SamplerBorderColor::FloatTransparentBlack;
         fontSampler.enableAnisotropy = false;
-        fontSampler.samplerFilterMode = FilterMode::Linear;
+        fontSampler.samplerFilterMode = RHI::FilterMode::Linear;
         //fontSampler.samplerFilterMode = FilterMode::Nearest;
 
         atlasTexture = new RPI::Texture(images, fontSampler);
@@ -80,7 +80,7 @@ namespace CE
         RPI::Shader* fusionShader = FusionApplication::Get()->GetFusionShader();
         RPI::Shader* fusionShader2 = FusionApplication::Get()->GetFusionShader2();
 
-        fontSrg2 = gDynamicRHI->CreateShaderResourceGroup(fusionShader2->GetDefaultVariant()->GetSrgLayout(SRGType::PerMaterial));
+        fontSrg2 = RHI::gDynamicRHI->CreateShaderResourceGroup(fusionShader2->GetDefaultVariant()->GetSrgLayout(RHI::SRGType::PerMaterial));
 
         fontSrg2->Bind("_FontAtlas", atlasTexture->GetRhiTexture());
         fontSrg2->Bind("_FontAtlasSampler", atlasTexture->GetSamplerState());
@@ -116,10 +116,11 @@ namespace CE
 		    		break;
 		    	}
 
+                // This was modified for Windows OS
 		    	if (gFontSizes[i] < fontSize && fontSize < gFontSizes[i + 1])
 		    	{
-		    		int splitSize = Math::RoundToInt((gFontSizes[i] + gFontSizes[i + 1]) * 0.2f);
-		    		if (fontSize <= splitSize)
+		    		int splitSize = Math::RoundToInt(gFontSizes[i] + (gFontSizes[i + 1] - gFontSizes[i]) * 0.1f);
+		    		if (fontSize <= gFontSizes[i])
 		    			fontSizeInAtlas = gFontSizes[i];
 		    		else
 		    			fontSizeInAtlas = gFontSizes[i + 1];
@@ -198,10 +199,10 @@ namespace CE
             }
 
             RHI::SamplerDescriptor fontSampler{};
-            fontSampler.addressModeU = fontSampler.addressModeV = fontSampler.addressModeW = SamplerAddressMode::ClampToBorder;
-            fontSampler.borderColor = SamplerBorderColor::FloatTransparentBlack;
+            fontSampler.addressModeU = fontSampler.addressModeV = fontSampler.addressModeW = RHI::SamplerAddressMode::ClampToBorder;
+            fontSampler.borderColor = RHI::SamplerBorderColor::FloatTransparentBlack;
             fontSampler.enableAnisotropy = false;
-            fontSampler.samplerFilterMode = FilterMode::Cubic;
+            fontSampler.samplerFilterMode = RHI::FilterMode::Cubic;
 
             atlasTexture = new RPI::Texture(images, fontSampler);
 
@@ -269,7 +270,7 @@ namespace CE
         u32 dpi = PlatformApplication::Get()->GetSystemDpi();
         f32 scaling = PlatformApplication::Get()->GetSystemDpiScaling();
 
-        FT_Set_Char_Size(face, 0, fontSize * 64, dpi, dpi);
+        FT_Set_Char_Size(face, 0, fontSize << 6, dpi, dpi);
 
         FAtlasImage* atlasMip = atlasImageMips[currentMip];
 
@@ -290,7 +291,6 @@ namespace CE
             }
 
             FT_Bitmap* bmp = &face->glyph->bitmap;
-            // Hello World!
 
             FFontGlyphInfo glyph{};
             

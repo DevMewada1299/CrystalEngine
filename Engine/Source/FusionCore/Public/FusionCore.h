@@ -115,6 +115,7 @@ namespace CE
 
 #include "Widget/Menu/FMenuPopup.h"
 #include "Widget/Menu/FMenuItem.h"
+#include "Widget/Menu/FMenuItemSeparator.h"
 #include "Widget/Menu/FMenuBar.h"
 
 #include "Widget/Tab/FTabItem.h"

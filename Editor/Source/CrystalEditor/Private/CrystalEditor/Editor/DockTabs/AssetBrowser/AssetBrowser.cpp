@@ -100,12 +100,24 @@ namespace CE::Editor
                     .HAlign(HAlign::Fill)
                     .Height(0.5f),
 
-                    FNew(FScrollBox)
+                    FAssignNew(FScrollBox, gridViewScrollBox)
                     .VerticalScroll(true)
                     .HorizontalScroll(false)
                     .OnBackgroundClicked([this]
                     {
                         gridView->DeselectAll();
+                    })
+                    .OnEvent([this] (FEvent* event)
+                    {
+                        if (event->IsMouseEvent() && event->sender == gridViewScrollBox.Get())
+                        {
+                            FMouseEvent* mouseEvent = static_cast<FMouseEvent*>(event);
+
+                            if (mouseEvent->type == FEventType::MousePress && mouseEvent->IsRightButton())
+                            {
+                                gridView->OnBackgroundRightClicked(mouseEvent->mousePosition);
+                            }
+                        }
                     })
                     .HAlign(HAlign::Fill)
                     .FillRatio(1.0f)
@@ -268,6 +280,16 @@ namespace CE::Editor
         gridView->OnModelUpdate();
 
         UpdateBreadCrumbs();
+    }
+
+    bool AssetBrowser::IsCurrentDirectoryReadOnly() const
+    {
+        if (!currentPath.IsValid() || currentPath == "/")
+        {
+	        return true;
+        }
+
+        return !currentPath.GetString().StartsWith("/Game/Assets");
     }
 
     void AssetBrowser::SetCurrentPath(const CE::Name& path)

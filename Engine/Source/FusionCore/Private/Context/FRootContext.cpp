@@ -205,7 +205,7 @@ namespace CE
 			}
 		}
 
-		// - Mouse Click Events -
+		// - Mouse Move -
 
         if (abs(mouseDelta.x) >= epsilon || abs(mouseDelta.y) >= epsilon)
 		{
@@ -385,6 +385,7 @@ namespace CE
 			curFocusWidget = widgetToFocus;
 		}
 
+		// - Mouse Press & Release -
 
 		Enum* mouseButtonEnum = GetStaticEnum<MouseButton>();
 		for (int i = 0; i < mouseButtonEnum->GetConstantsCount(); ++i)
@@ -551,18 +552,12 @@ namespace CE
 			}
 		}
 
-		static String lastFocusName = "";
-
+		// - Keyboard Events -
 
 		Ref<FWidget> keyEventWidget = curFocusWidget.Lock();
 		while (keyEventWidget != nullptr && !keyEventWidget->SupportsKeyboardEvents())
 		{
 			keyEventWidget = keyEventWidget->parent.Get();
-		}
-
-		if (curFocusWidget != nullptr)
-		{
-			lastFocusName = curFocusWidget->GetName().GetString() + " | " + curFocusWidget->GetClass()->GetName().GetLastComponent();
 		}
 
 		if (keyEventWidget != nullptr)

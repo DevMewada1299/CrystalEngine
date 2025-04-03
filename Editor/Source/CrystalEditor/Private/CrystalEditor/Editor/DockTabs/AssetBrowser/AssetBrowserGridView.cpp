@@ -5,7 +5,7 @@ namespace CE::Editor
 
     AssetBrowserGridView::AssetBrowserGridView()
     {
-        
+
     }
 
     void AssetBrowserGridView::Construct()
@@ -32,6 +32,19 @@ namespace CE::Editor
                 count++;
         }
         return count;
+    }
+
+    Array<AssetBrowserItem*> AssetBrowserGridView::GetSelectedItems()
+    {
+        Array<AssetBrowserItem*> selection;
+        for (AssetBrowserItem* item : items)
+        {
+	        if (item->IsActive())
+	        {
+                selection.Add(item);
+	        }
+        }
+        return selection;
     }
 
     void AssetBrowserGridView::OnModelUpdate()
@@ -90,15 +103,47 @@ namespace CE::Editor
     {
         for (AssetBrowserItem* item : items)
         {
-            //if (selectedItems.Exists(item))
-            {
-                //item->Select();
-            }
-            //else
-            {
-                item->Deselect();
-            }
+            item->Deselect();
         }
+    }
+
+    void AssetBrowserGridView::OnBackgroundRightClicked(Vec2 globalMousePos)
+    {
+        Ref<EditorMenuPopup> contextMenu = BuildNoSelectionContextMenu();
+
+        GetContext()->PushLocalPopup(contextMenu.Get(), globalMousePos, Vec2());
+    }
+
+    Ref<EditorMenuPopup> AssetBrowserGridView::BuildNoSelectionContextMenu()
+    {
+        Ref<AssetBrowser> owner = m_Owner.Lock();
+        if (!owner || owner->IsCurrentDirectoryReadOnly())
+            return nullptr;
+
+        Ref<EditorMenuPopup> contextMenu = CreateObject<EditorMenuPopup>(this, "ContextMenu");
+
+        contextMenu->AutoClose(true);
+
+        contextMenu->Content(
+            FNew(FMenuItemSeparator)
+            .Title("FOLDER"),
+
+            FNew(FMenuItem)
+            .Text("New Folder")
+            .IconEnabled(true)
+            .Icon(FBrush("/Editor/Assets/Icons/NewFolder"))
+            .FontSize(10)
+            .ContentPadding(Vec4(5, 0, 5, 0))
+            .OnClick([this]
+            {
+	            if (auto owner = m_Owner.Lock())
+	            {
+		            
+	            }
+            })
+        );
+
+        return contextMenu;
     }
 
     void AssetBrowserGridView::HandleEvent(FEvent* event)
@@ -120,18 +165,20 @@ namespace CE::Editor
 
                 DeselectAll();
             }
-            else if (mouseEvent->sender == this && mouseEvent->buttons == MouseButtonMask::Right &&
+            else if (mouseEvent->sender == this && mouseEvent->buttons == MouseButtonMask::Right && 
                 mouseEvent->type == FEventType::MousePress)
             {
                 mouseEvent->Consume(this);
 
                 if (EnumHasAnyFlags(mouseEvent->keyModifiers, KeyModifier::Shift | ctrlMod))
                 {
-                    // Right-click for items
+                    // Right-click on items
                 }
                 else
                 {
                     DeselectAll();
+
+                    OnBackgroundRightClicked(mouseEvent->mousePosition);
                 }
             }
         }
@@ -142,13 +189,19 @@ namespace CE::Editor
         {
             auto mouseEvent = static_cast<FMouseEvent*>(event);
 
-            if (mouseEvent->sender != nullptr && mouseEvent->sender->IsOfType<AssetBrowserItem>() &&
+            if (mouseEvent->sender != nullptr && mouseEvent->sender->IsOfType<AssetBrowserItem>() && 
                 mouseEvent->buttons == MouseButtonMask::Right && mouseEvent->type == FEventType::MousePress)
             {
-                int numSelected = GetSelectedItemCount();
-                // Right-click on items
-                AssetBrowserItem* item = static_cast<AssetBrowserItem*>(mouseEvent->sender);
+                Array<AssetBrowserItem*> selection = GetSelectedItemCount();
 
+                if (selection.GetSize() == 1) // Single selection
+                {
+	                
+                }
+                else if (selection.GetSize() > 1) // Multiple selection
+                {
+	                
+                }
             }
         }
     }

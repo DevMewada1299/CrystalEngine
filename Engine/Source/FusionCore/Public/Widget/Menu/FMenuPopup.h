@@ -18,6 +18,13 @@ namespace CE
 
         bool FocusParentExistsRecursive(FWidget* parent) override;
 
+        void QueueDestroyAllItems();
+        void DestroyAllItems();
+
+        u32 GetContainerChildCount() const { return container->GetChildCount(); }
+
+        Ref<FWidget> GetContainerChild(u32 index) const { return container->GetChild(index); }
+
     protected:
 
         void HandleEvent(FEvent* event) override;
@@ -37,6 +44,7 @@ namespace CE
     public: // - Fusion Properties -
 
         FUSION_PROPERTY_WRAPPER(Gap, container);
+        FUSION_PROPERTY_WRAPPER2(Padding, container, ContentPadding);
 
         template <typename... TArgs> requires TMatchAllBaseClass<FWidget, TArgs...>::Value and (sizeof...(TArgs) > 0)
         Self& Content(const TArgs&... widgets)

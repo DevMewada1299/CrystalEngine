@@ -111,7 +111,7 @@ namespace CE
         using FGlyphDataList = StableDynamicArray<FGlyphData, 256, false>;
 
         FGlyphDataList glyphDataList;
-        DynamicStructuredBuffer<FGlyphData> glyphBuffer;
+        RPI::DynamicStructuredBuffer<FGlyphData> glyphBuffer;
 
         HashMap<Pair<CharCode, FontSize>, int> mipIndicesByCharacter;
 

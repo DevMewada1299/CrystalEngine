@@ -319,6 +319,7 @@ namespace CE::Editor
 		menuPopup->borderWidth = 0.5f;
 		menuPopup->itemPadding = Vec4(10, 5, 10, 5);
 		menuPopup->itemHoverBackground = highlightColor;
+		menuPopup->separatorColor = menuPopup->separatorTitleColor = Color::RGBA(106, 106, 106);
 
 		GetDefaultWidget<FMenuPopup>()
 			.Style(menuPopup->GetName());

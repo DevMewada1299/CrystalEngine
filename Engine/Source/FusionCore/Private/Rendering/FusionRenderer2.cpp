@@ -71,7 +71,7 @@ namespace CE
             quadMeshBufferDesc.name = "Quad Meshes";
             quadMeshBufferDesc.bindFlags = RHI::BufferBindFlags::IndexBuffer | RHI::BufferBindFlags::VertexBuffer;
             quadMeshBufferDesc.bufferSize = initialMeshBufferSize;
-            quadMeshBufferDesc.defaultHeapType = MemoryHeapType::Upload;
+            quadMeshBufferDesc.defaultHeapType = RHI::MemoryHeapType::Upload;
             quadMeshBufferDesc.structureByteStride = quadMeshBufferDesc.bufferSize;
 
             quadsBuffer[i] = RHI::gDynamicRHI->CreateBuffer(quadMeshBufferDesc);
@@ -177,17 +177,17 @@ namespace CE
 
                 for (int i = 0; i < numFrames; ++i)
                 {
-                    for (DrawPacket* drawPacket : drawPacketsPerImage[i])
+                    for (RHI::DrawPacket* drawPacket : drawPacketsPerImage[i])
                     {
-                        drawPacket->drawItems[0].vertexBufferViews[0] = VertexBufferView(quadsBuffer[i],
-                            0,
-                            vertexArray.GetCount() * sizeof(FVertex),
-                            sizeof(FVertex));
+                        drawPacket->drawItems[0].vertexBufferViews[0] = RHI::VertexBufferView(quadsBuffer[i],
+                                                                                              0,
+                                                                                              vertexArray.GetCount() * sizeof(FVertex),
+                                                                                              sizeof(FVertex));
 
-                        drawPacket->drawItems[0].indexBufferView[0] = IndexBufferView(quadsBuffer[i],
-                            vertexArray.GetCount() * sizeof(FVertex),
-                            indexArray.GetCount() * sizeof(FDrawIndex),
-                            sizeof(FDrawIndex) == 2 ? IndexFormat::Uint16 : IndexFormat::Uint32);
+                        drawPacket->drawItems[0].indexBufferView[0] = RHI::IndexBufferView(quadsBuffer[i],
+                                                                                           vertexArray.GetCount() * sizeof(FVertex),
+                                                                                           indexArray.GetCount() * sizeof(FDrawIndex),
+                                                                                           sizeof(FDrawIndex) == 2 ? RHI::IndexFormat::Uint16 : RHI::IndexFormat::Uint32);
                     }
                 }
             }
@@ -478,15 +478,15 @@ namespace CE
 
                     memcpy((u8*)drawPacket->rootConstants, &drawCmdList[i].rootConstants, sizeof(FRootConstants));
 
-                    drawPacket->drawItems[0].vertexBufferViews[0] = VertexBufferView(quadsBuffer[imageIdx],
-                            0,
-                            vertexArray.GetCount() * sizeof(FVertex),
-                            sizeof(FVertex));
+                    drawPacket->drawItems[0].vertexBufferViews[0] = RHI::VertexBufferView(quadsBuffer[imageIdx],
+                                                                                          0,
+                                                                                          vertexArray.GetCount() * sizeof(FVertex),
+                                                                                          sizeof(FVertex));
 
-                    drawPacket->drawItems[0].indexBufferView[0] = IndexBufferView(quadsBuffer[imageIdx],
-                            vertexArray.GetCount() * sizeof(FVertex),
-                            indexArray.GetCount() * sizeof(FDrawIndex),
-                            sizeof(FDrawIndex) == 2 ? IndexFormat::Uint16 : IndexFormat::Uint32);
+                    drawPacket->drawItems[0].indexBufferView[0] = RHI::IndexBufferView(quadsBuffer[imageIdx],
+                                                                                       vertexArray.GetCount() * sizeof(FVertex),
+                                                                                       indexArray.GetCount() * sizeof(FDrawIndex),
+                                                                                       sizeof(FDrawIndex) == 2 ? RHI::IndexFormat::Uint16 : RHI::IndexFormat::Uint32);
 
                     drawPacket->drawItems[0].pipelineState = fusionShader->GetVariant(0)->GetPipeline(multisampling);
 
@@ -522,15 +522,15 @@ namespace CE
                     // UI Item
                     {
                         RHI::DrawPacketBuilder::DrawItemRequest request{};
-                        request.vertexBufferViews.Add(VertexBufferView(quadsBuffer[imageIdx],
-                            0,
-                            vertexArray.GetCount() * sizeof(FVertex),
-                            sizeof(FVertex)));
+                        request.vertexBufferViews.Add(RHI::VertexBufferView(quadsBuffer[imageIdx],
+                                                                            0,
+                                                                            vertexArray.GetCount() * sizeof(FVertex),
+                                                                            sizeof(FVertex)));
 
-                        request.indexBufferView = IndexBufferView(quadsBuffer[imageIdx],
-                            vertexArray.GetCount() * sizeof(FVertex),
-                            indexArray.GetCount() * sizeof(FDrawIndex),
-                            sizeof(FDrawIndex) == 2 ? IndexFormat::Uint16 : IndexFormat::Uint32);
+                        request.indexBufferView = RHI::IndexBufferView(quadsBuffer[imageIdx],
+                                                                       vertexArray.GetCount() * sizeof(FVertex),
+                                                                       indexArray.GetCount() * sizeof(FDrawIndex),
+                                                                       sizeof(FDrawIndex) == 2 ? RHI::IndexFormat::Uint16 : RHI::IndexFormat::Uint32);
 
                         request.drawItemTag = drawListTag;
                         request.drawFilterMask = RHI::DrawFilterMask::ALL;
@@ -2612,7 +2612,7 @@ namespace CE
             quadMeshBufferDesc.name = "Quad Meshes";
             quadMeshBufferDesc.bindFlags = RHI::BufferBindFlags::IndexBuffer | RHI::BufferBindFlags::VertexBuffer;
             quadMeshBufferDesc.bufferSize = newTotalSize;
-            quadMeshBufferDesc.defaultHeapType = MemoryHeapType::Upload;
+            quadMeshBufferDesc.defaultHeapType = RHI::MemoryHeapType::Upload;
             quadMeshBufferDesc.structureByteStride = quadMeshBufferDesc.bufferSize;
 
             quadsBuffer[i] = RHI::gDynamicRHI->CreateBuffer(quadMeshBufferDesc);
