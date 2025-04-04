@@ -42,6 +42,11 @@ namespace CE::Editor
 
         void CreateNewEmptyDirectory();
 
+        bool CanRenameDirectory(const CE::Name& originalPath, const CE::Name& newName);
+        bool RenameDirectory(const CE::Name& originalPath, const CE::Name& newName);
+
+        void DeleteDirectoriesAndAssets(const Array<CE::Name>& itemPaths);
+
         Ref<AssetBrowserTreeViewModel> treeViewModel = nullptr;
         Ref<AssetBrowserTreeView> treeView = nullptr;
 
@@ -63,6 +68,7 @@ namespace CE::Editor
 
         FUSION_WIDGET;
         friend class AssetBrowserGridView;
+        friend class AssetBrowserItem;
     };
     
 }

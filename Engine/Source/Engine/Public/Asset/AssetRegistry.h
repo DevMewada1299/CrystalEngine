@@ -21,6 +21,7 @@ namespace CE
 		virtual void OnAssetDeleted(const Name& bundleName) {}
 
 		virtual void OnAssetPathTreeUpdated(PathTree& pathTree) {}
+
 	};
 
 	CLASS()
@@ -92,6 +93,10 @@ namespace CE
 		void OnAssetDeleted(const Name& bundleName);
 
 		void OnDirectoryCreated(const IO::Path& absolutePath);
+
+		void OnDirectoryRenamed(const Name& originalPath, const Name& newName);
+
+		void OnDirectoryAndAssetsDeleted(const Array<Name>& paths);
 
 	public:
 

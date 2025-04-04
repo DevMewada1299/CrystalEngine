@@ -273,6 +273,60 @@ namespace CE
 		}
 	}
 
+	void AssetRegistry::OnDirectoryRenamed(const Name& originalPath, const Name& newName)
+	{
+		PathTreeNode* pathNode = cachedPathTree.GetNode(originalPath);
+		if (pathNode != nullptr)
+		{
+			pathNode->name = newName;
+		}
+
+		PathTreeNode* directoryNode = cachedDirectoryTree.GetNode(originalPath);
+		if (directoryNode != nullptr)
+		{
+			directoryNode->name = newName;
+		}
+
+		for (IAssetRegistryListener* listener : listeners)
+		{
+			if (listener != nullptr)
+			{
+				listener->OnAssetPathTreeUpdated(cachedPathTree);
+			}
+		}
+	}
+
+	void AssetRegistry::OnDirectoryAndAssetsDeleted(const Array<Name>& paths)
+	{
+		// TODO: Special consideration when deleting assets:
+		// What if they are loaded in memory and referenced by something?
+
+		// TODO: Implement asset hot-reloading & deleting
+
+		for (const auto& path : paths)
+		{
+			PathTreeNode* directoryNode = cachedDirectoryTree.GetNode(path);
+			if (directoryNode != nullptr)
+			{
+				cachedDirectoryTree.RemovePath(path);
+			}
+
+			PathTreeNode* pathNode = cachedPathTree.GetNode(path);
+			if (pathNode != nullptr)
+			{
+				cachedPathTree.RemovePath(path);
+			}
+		}
+
+		for (IAssetRegistryListener* listener : listeners)
+		{
+			if (listener != nullptr)
+			{
+				listener->OnAssetPathTreeUpdated(cachedPathTree);
+			}
+		}
+	}
+
 	void AssetRegistry::InitializeCache()
 	{
 		if (cacheInitialized)

@@ -197,8 +197,40 @@ namespace CE
             friend class CE::String;
         };
 
+		struct ConstIterator
+		{
+			using iterator_category = std::contiguous_iterator_tag;
+			using difference_type = std::ptrdiff_t;
+			using value_type = char;
+			using pointer = char*;  // or also value_type*
+			using reference = char&;  // or also value_type&
+
+			ConstIterator(pointer Ptr) : Ptr(Ptr) {}
+
+			// De-reference ops
+			reference operator*() const { return *Ptr; }
+			pointer operator->() { return Ptr; }
+
+			// Increment ops
+			ConstIterator& operator++() { Ptr++; return *this; }
+			ConstIterator operator++(int) { ConstIterator temp = *this; ++(*this); return temp; }
+			// Decrement ops
+			ConstIterator& operator--() { Ptr--; return *this; }
+			ConstIterator operator--(int) { ConstIterator temp = *this; --(*this); return temp; }
+
+			friend bool operator== (const ConstIterator& a, const ConstIterator& b) { return a.Ptr == b.Ptr; };
+			friend bool operator!= (const ConstIterator& a, const ConstIterator& b) { return a.Ptr != b.Ptr; };
+
+		private:
+			pointer Ptr;
+			friend class CE::String;
+		};
+
         Iterator begin() { return Iterator{ &Buffer[0] }; }
         Iterator end() { return Iterator{ &Buffer[0] + StringLength }; }
+
+		ConstIterator cbegin() const { return ConstIterator{ &Buffer[0] }; }
+		ConstIterator cend() const { return ConstIterator{ &Buffer[0] + StringLength }; }
 
         Iterator Begin() { return begin(); }
         Iterator End() { return end(); }
@@ -265,7 +297,7 @@ namespace CE
 		/// To: PascalCase
 		String ToPascalCase() const;
 
-        String GetSubstring(int startIndex, int length = -1);
+        String GetSubstring(int startIndex, int length = -1) const;
         StringView GetSubstringView(int startIndex, int length = -1) const;
 
         StringView ToStringView() const;

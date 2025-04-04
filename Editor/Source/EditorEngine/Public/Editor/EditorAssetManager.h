@@ -24,6 +24,10 @@ namespace CE::Editor
 
 		void OnDirectoryCreated(const IO::Path& absolutePath);
 
+    	void OnDirectoryRenamed(const Name& originalPath, const Name& newName);
+
+		void OnDirectoryAndAssetsDeleted(const Array<Name>& paths);
+
 	protected:
 
 		Array<IO::Path> sourceAssetsToImport{};

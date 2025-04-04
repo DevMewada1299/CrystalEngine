@@ -64,6 +64,24 @@ namespace CE::Editor
                         .Padding(Vec4(1, 1, 1, 1) * 3)
                         .Style("Button"),
 
+                        FNew(FButton)
+                        .Child(
+                            FNew(FHorizontalStack)
+                            .ContentVAlign(VAlign::Center)
+                            .Gap(5)
+                            .HAlign(HAlign::Center)
+                            (
+                                FNew(FImage)
+                                .Background(FBrush("/Editor/Assets/Icons/Plus").WithTint(Color::RGBHex(0x4CAF50)))
+                                .Width(14)
+                                .Height(14),
+
+                                FNew(FLabel)
+                                .Text("Add")
+                                .FontSize(9)
+                            )
+                        ),
+
                         FNew(FScrollBox)
                         .HideHorizontalScroll(true)
                         .HorizontalScroll(true)
@@ -148,6 +166,8 @@ namespace CE::Editor
         currentPath = "/";
         currentDirectory = AssetRegistry::Get()->GetCachedPathTree().GetRootNode();
         UpdateAssetGridView();
+
+        SetCurrentPath("/Game/Assets");
     }
 
     void AssetBrowser::OnBeginDestroy()
@@ -310,8 +330,6 @@ namespace CE::Editor
         if (!path.StartsWith("/Game/Assets"))
 			return;
 
-        String projectPath = gProjectPath.GetString();
-
         IO::Path absolutePath = gProjectPath / path.GetSubstring(1);
         if (!absolutePath.Exists())
             return;
@@ -335,6 +353,83 @@ namespace CE::Editor
 	            return;
             }
         }
+    }
+
+    bool AssetBrowser::CanRenameDirectory(const CE::Name& originalPath, const CE::Name& newName)
+    {
+        AssetRegistry* registry = AssetRegistry::Get();
+        if (!registry)
+            return false;
+
+        EditorAssetManager* assetManager = EditorAssetManager::Get();
+        if (!assetManager)
+            return false;
+
+        String projectPath = gProjectPath.GetString();
+
+        IO::Path absolutePath = gProjectPath / originalPath.GetString().GetSubstring(1);
+        IO::Path newPath = absolutePath.GetParentPath() / newName.GetString();
+        if (newPath.Exists())
+            return false;
+
+        return true;
+    }
+
+    bool AssetBrowser::RenameDirectory(const CE::Name& originalPath, const CE::Name& newName)
+    {
+        AssetRegistry* registry = AssetRegistry::Get();
+        if (!registry)
+            return false;
+
+        EditorAssetManager* assetManager = EditorAssetManager::Get();
+        if (!assetManager)
+            return false;
+
+        IO::Path absolutePath = gProjectPath / originalPath.GetString().GetSubstring(1);
+        IO::Path newPath = absolutePath.GetParentPath() / newName.GetString();
+        if (newPath.Exists())
+            return false;
+
+        IO::Path::Rename(absolutePath, newPath);
+
+        assetManager->OnDirectoryRenamed(originalPath, newName);
+
+        return true;
+    }
+
+    void AssetBrowser::DeleteDirectoriesAndAssets(const Array<CE::Name>& itemPaths)
+    {
+        AssetRegistry* registry = AssetRegistry::Get();
+        if (!registry)
+            return;
+
+        EditorAssetManager* assetManager = EditorAssetManager::Get();
+        if (!assetManager)
+            return;
+
+        if (itemPaths.IsEmpty())
+            return;
+
+        Array<IO::Path> absolutePaths;
+
+        for (const auto& itemPath : itemPaths)
+        {
+            IO::Path absolutePath = gProjectPath / itemPath.GetString().GetSubstring(1);
+            if (!absolutePath.Exists())
+                return;
+
+            absolutePaths.Add(absolutePath);
+        }
+
+        for (const auto& path : absolutePaths)
+        {
+            if (path.Exists())
+            {
+                IO::Path::RemoveRecursively(path);
+            }
+        }
+
+        assetManager->OnDirectoryAndAssetsDeleted(itemPaths);
     }
 
     void AssetBrowser::SetCurrentPath(const CE::Name& path)

@@ -51,7 +51,7 @@ namespace CE::Editor
                 .Text("Asset")
                 .FontSize(9)
                 .OnTextEditingFinished(FUNCTION_BINDING(this, OnTextEditingFinished))
-                .Validator([](const String& in) -> bool
+                .Validator([this](const String& in) -> bool
                 {
                     for (int i = 0; i < in.GetLength(); ++i)
                     {
@@ -118,7 +118,7 @@ namespace CE::Editor
     {
         Super::OnSelected();
 
-        
+
     }
 
     void AssetBrowserItem::OnDeselected()
@@ -172,6 +172,7 @@ namespace CE::Editor
         Title(node->name.GetString());
 
         fullPath = node->GetFullPath();
+        itemName = node->name;
 
         isReadOnly = !fullPath.GetString().StartsWith("/Game/Assets");
 
@@ -198,14 +199,22 @@ namespace CE::Editor
 
     void AssetBrowserItem::OnTextEditingFinished(FTextInput*)
     {
-        (*titleLabel)
-        .Text(titleInput->Text())
-        .Enabled(true);
+        titleLabel->Enabled(true);
+        titleInput->Enabled(false);
 
-        (*titleInput)
-        .Enabled(false);
+        Ref<AssetBrowserGridView> gridView = m_Owner.Lock();
+        if (!gridView)
+            return;
 
+        Ref<AssetBrowser> assetBrowser = gridView->Owner().Lock();
+        if (!assetBrowser)
+            return;
 
+        bool success = assetBrowser->RenameDirectory(fullPath, titleInput->Text());
+        if (!success)
+            return;
+
+        titleLabel->Text(titleInput->Text());
     }
 
 }

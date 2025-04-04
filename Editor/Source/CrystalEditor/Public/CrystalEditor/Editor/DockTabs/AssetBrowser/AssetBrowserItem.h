@@ -45,6 +45,7 @@ namespace CE::Editor
         Ref<FVerticalStack> stackBox;
 
         CE::Name fullPath;
+        CE::Name itemName;
         bool isDirectory = false;
         bool isReadOnly = true;
 

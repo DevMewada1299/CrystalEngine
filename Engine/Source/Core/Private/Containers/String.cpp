@@ -612,7 +612,7 @@ namespace CE
 		return result;
 	}
 
-    String String::GetSubstring(int startIndex, int length)
+    String String::GetSubstring(int startIndex, int length) const
     {
         if (length == -1)
         {
@@ -624,7 +624,7 @@ namespace CE
             return "";
         }
 
-        return String(Iterator(Begin().Ptr + startIndex), Iterator(Begin().Ptr + startIndex + length));
+        return String(Iterator(cbegin().Ptr + startIndex), Iterator(cbegin().Ptr + startIndex + length));
     }
 
     StringView CE::String::GetSubstringView(int startIndex, int length) const

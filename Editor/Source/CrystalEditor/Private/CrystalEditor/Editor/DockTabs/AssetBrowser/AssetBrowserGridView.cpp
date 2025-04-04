@@ -116,6 +116,11 @@ namespace CE::Editor
 
     void AssetBrowserGridView::OnBackgroundRightClicked(Vec2 globalMousePos)
     {
+        if (!currentPath.IsValid())
+            return;
+        if (!currentPath.GetString().StartsWith("/Game/Assets"))
+            return;
+
         Ref<EditorMenuPopup> contextMenu = BuildNoSelectionContextMenu();
 
         GetContext()->PushLocalPopup(contextMenu.Get(), globalMousePos, Vec2());
@@ -145,6 +150,28 @@ namespace CE::Editor
             return;
 
         selectedItems[0]->StartEditing();
+    }
+
+    void AssetBrowserGridView::DeleteSelectedItems()
+    {
+        Array<AssetBrowserItem*> selectedItems = GetSelectedItems();
+        if (selectedItems.IsEmpty())
+            return;
+
+        Array<CE::Name> pathsToDelete;
+
+        for (AssetBrowserItem* selectedItem : selectedItems)
+        {
+            if (selectedItem->IsReadOnly())
+                return;
+
+            pathsToDelete.Add(selectedItem->GetFullPath());
+        }
+
+        if (auto owner = m_Owner.Lock())
+        {
+            owner->DeleteDirectoriesAndAssets(pathsToDelete);
+        }
     }
 
     Ref<EditorMenuPopup> AssetBrowserGridView::BuildNoSelectionContextMenu()
@@ -231,6 +258,7 @@ namespace CE::Editor
                 NewMenuItem()
                 .Text("Delete")
                 .Icon(FBrush("/Engine/Resources/Icons/Delete"))
+                .OnClick(FUNCTION_BINDING(this, DeleteSelectedItems))
             );
         }
 

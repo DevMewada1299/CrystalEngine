@@ -25,6 +25,9 @@ namespace CE::Editor
         FUNCTION()
         void StartRenaming();
 
+        FUNCTION()
+        void DeleteSelectedItems();
+
         // When user right clicks in empty space
         Ref<EditorMenuPopup> BuildNoSelectionContextMenu();
 
