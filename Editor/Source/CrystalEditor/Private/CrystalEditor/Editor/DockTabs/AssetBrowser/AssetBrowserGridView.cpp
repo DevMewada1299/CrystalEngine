@@ -133,6 +133,17 @@ namespace CE::Editor
         GetContext()->PushLocalPopup(contextMenu.Get(), globalMousePos, Vec2());
     }
 
+    void AssetBrowserGridView::StartRenaming()
+    {
+        Array<AssetBrowserItem*> selectedItems = GetSelectedItems();
+        if (selectedItems.GetSize() != 1)
+            return;
+        if (selectedItems[0]->IsReadOnly())
+            return;
+
+        selectedItems[0]->StartEditing();
+    }
+
     Ref<EditorMenuPopup> AssetBrowserGridView::BuildNoSelectionContextMenu()
     {
         Ref<EditorMenuPopup> contextMenu = CreateObject<EditorMenuPopup>(this, "ContextMenu");
@@ -201,12 +212,19 @@ namespace CE::Editor
 
     	if (canBeModified)
         {
+            if (count == 1)
+            {
+                contextMenu
+            	.Content(
+                    NewMenuItem()
+                    .Text("Rename")
+                    .Icon(FBrush("/Editor/Assets/Icons/Rename"))
+                    .OnClick(FUNCTION_BINDING(this, StartRenaming))
+                );
+            }
+
 	        contextMenu
             .Content(
-                NewMenuItem()
-                .Text("Rename")
-                .Icon(FBrush("/Editor/Assets/Icons/Rename")),
-
                 NewMenuItem()
                 .Text("Delete")
                 .Icon(FBrush("/Engine/Resources/Icons/Delete"))

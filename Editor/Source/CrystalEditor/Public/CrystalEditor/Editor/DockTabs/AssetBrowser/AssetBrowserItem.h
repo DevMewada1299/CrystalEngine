@@ -17,9 +17,14 @@ namespace CE::Editor
 
         void HandleEvent(FEvent* event) override;
 
+        FUNCTION()
+        void OnTextEditingFinished(FTextInput* input);
+
     public: // - Public API -
 
         void SetData(PathTreeNode* node);
+
+        void StartEditing();
 
         CE::Name GetFullPath() const { return fullPath; }
 

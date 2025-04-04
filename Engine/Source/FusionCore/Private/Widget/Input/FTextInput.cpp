@@ -820,6 +820,12 @@ namespace CE
         }
     }
 
+    void FTextInput::StopEditing(bool restoreOriginal)
+    {
+        inputLabel->StopEditing(restoreOriginal);
+        Unfocus();
+    }
+
     void FTextInput::OnPaintContent(FPainter* painter)
     {
         Super::OnPaintContent(painter);

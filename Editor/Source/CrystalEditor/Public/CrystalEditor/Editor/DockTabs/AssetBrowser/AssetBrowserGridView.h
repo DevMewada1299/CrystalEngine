@@ -22,6 +22,9 @@ namespace CE::Editor
 
         void ShowAssetContextMenu(Vec2 globalMousePos);
 
+        FUNCTION()
+        void StartRenaming();
+
         // When user right clicks in empty space
         Ref<EditorMenuPopup> BuildNoSelectionContextMenu();
 

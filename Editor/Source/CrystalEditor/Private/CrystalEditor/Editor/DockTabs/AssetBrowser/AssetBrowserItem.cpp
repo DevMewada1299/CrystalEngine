@@ -50,7 +50,8 @@ namespace CE::Editor
                 FAssignNew(FTextInput, titleInput)
                 .Text("Asset")
                 .FontSize(9)
-                .HAlign(HAlign::Left)
+                .OnTextEditingFinished(FUNCTION_BINDING(this, OnTextEditingFinished))
+                .HAlign(HAlign::Fill)
                 .VAlign(VAlign::Bottom)
                 .Margin(Vec4(2.5f, 0, 0, 0))
                 .Enabled(false),
@@ -111,6 +112,10 @@ namespace CE::Editor
     {
         Super::OnDeselected();
 
+        if (titleInput->IsEditing())
+        {
+            titleInput->StopEditing();
+        }
     }
 
     void AssetBrowserItem::SetData(PathTreeNode* node)
@@ -156,6 +161,29 @@ namespace CE::Editor
         isReadOnly = !fullPath.GetString().StartsWith("/Game/Assets");
 
         ApplyStyle();
+    }
+
+    void AssetBrowserItem::StartEditing()
+    {
+        (*titleInput)
+        .Text(titleLabel->Text())
+        .Enabled(true);
+
+        (*titleLabel)
+        .Enabled(false);
+
+        titleInput->StartEditing(true);
+        titleInput->Focus();
+    }
+
+    void AssetBrowserItem::OnTextEditingFinished(FTextInput*)
+    {
+        (*titleLabel)
+        .Text(titleInput->Text())
+        .Enabled(true);
+
+        (*titleInput)
+        .Enabled(false);
     }
 
 }
