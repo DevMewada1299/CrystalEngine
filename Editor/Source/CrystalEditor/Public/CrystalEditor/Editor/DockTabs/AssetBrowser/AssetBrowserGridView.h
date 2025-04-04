@@ -33,23 +33,26 @@ namespace CE::Editor
 
         bool SupportsKeyboardEvents() const override { return true; }
 
+        void SetCurrentDirectory(const CE::Name& directory);
+
         int GetSelectedItemCount();
 
         Array<AssetBrowserItem*> GetSelectedItems();
 
         // Will redraw the items
-        void OnModelUpdate();
+        void OnUpdate();
 
         void DeselectAll();
 
     protected: // - Internal -
 
         Array<AssetBrowserItem*> items;
+        CE::Name currentPath;
 
     public: // - Fusion Properties - 
 
         FUSION_PROPERTY(WeakRef<AssetBrowser>, Owner);
-        FUSION_PROPERTY(Ref<AssetBrowserGridViewModel>, Model);
+        //FUSION_PROPERTY(Ref<AssetBrowserGridViewModel>, Model);
 
         FUSION_WIDGET;
         friend class AssetBrowser;

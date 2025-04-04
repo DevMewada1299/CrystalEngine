@@ -340,7 +340,7 @@ namespace CE
 
 				while (base != nullptr)
 				{
-					if (base->parent != nullptr && widgetToFocus->FocusParentExistsRecursive(base->parent.Get()))
+					if (base->parent != nullptr && widgetToFocus.IsValid() && widgetToFocus->FocusParentExistsRecursive(base->parent.Get()))
 					{
 						break;
 					}

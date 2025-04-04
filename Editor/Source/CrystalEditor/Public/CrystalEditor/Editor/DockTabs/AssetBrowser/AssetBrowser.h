@@ -40,6 +40,8 @@ namespace CE::Editor
 
         void UpdateAssetGridView();
 
+        void CreateNewEmptyDirectory();
+
         Ref<AssetBrowserTreeViewModel> treeViewModel = nullptr;
         Ref<AssetBrowserTreeView> treeView = nullptr;
 
@@ -60,6 +62,7 @@ namespace CE::Editor
         Array<Ref<FSelectableButton>> selectables;
 
         FUSION_WIDGET;
+        friend class AssetBrowserGridView;
     };
     
 }

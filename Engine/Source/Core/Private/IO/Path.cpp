@@ -17,9 +17,9 @@ namespace CE::IO
 
     bool Path::IsSubDirectory(Path path, Path root)
     {
-		for (auto b = root.begin(), s = path.begin(); b != root.end(); ++b, ++s)
+		for (auto r = root.begin(), p = path.begin(); r != root.end(); ++r, ++p)
 		{
-			if (s == path.end() || *s != *b)
+			if (p == path.end() || *p != *r)
 			{
 				return false;
 			}

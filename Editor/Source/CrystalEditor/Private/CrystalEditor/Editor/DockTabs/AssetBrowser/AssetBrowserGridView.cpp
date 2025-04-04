@@ -23,6 +23,13 @@ namespace CE::Editor
         }
     }
 
+    void AssetBrowserGridView::SetCurrentDirectory(const CE::Name& directory)
+    {
+        this->currentPath = directory;
+
+
+    }
+
     int AssetBrowserGridView::GetSelectedItemCount()
     {
         int count = 0;
@@ -47,15 +54,12 @@ namespace CE::Editor
         return selection;
     }
 
-    void AssetBrowserGridView::OnModelUpdate()
+    void AssetBrowserGridView::OnUpdate()
     {
         QueueDestroyAllChildren();
         items.Clear();
 
-        if (!m_Model)
-            return;
-
-        PathTreeNode* currentDirectory = m_Model->GetCurrentDirectory();
+        PathTreeNode* currentDirectory = AssetRegistry::Get()->GetDirectoryNode(this->currentPath);
 
         if (currentDirectory != nullptr)
         {
@@ -94,7 +98,7 @@ namespace CE::Editor
 
                 items.Add(item);
 
-                m_Model->SetData(*item, currentDirectory->children[i]);
+                item->SetData(currentDirectory->children[i]);
             }
         }
     }
@@ -138,7 +142,7 @@ namespace CE::Editor
             {
 	            if (auto owner = m_Owner.Lock())
 	            {
-		            
+                    owner->CreateNewEmptyDirectory();
 	            }
             })
         );

@@ -20,6 +20,10 @@ namespace CE::Editor
 
 		void Tick(f32 deltaTime) override;
 
+		// - Internal API -
+
+		void OnDirectoryCreated(const IO::Path& absolutePath);
+
 	protected:
 
 		Array<IO::Path> sourceAssetsToImport{};

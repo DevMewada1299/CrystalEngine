@@ -47,6 +47,14 @@ namespace CE::Editor
                 .Margin(Vec4(2.5f, 0, 0, 0))
                 .Height(20),
 
+                FAssignNew(FTextInput, titleInput)
+                .Text("Asset")
+                .FontSize(9)
+                .HAlign(HAlign::Left)
+                .VAlign(VAlign::Bottom)
+                .Margin(Vec4(2.5f, 0, 0, 0))
+                .Enabled(false),
+
                 FNew(FWidget)
                 .FillRatio(1.0f),
 
@@ -144,6 +152,8 @@ namespace CE::Editor
         Title(node->name.GetString());
 
         fullPath = node->GetFullPath();
+
+        isReadOnly = !fullPath.GetString().StartsWith("/Game/Assets");
 
         ApplyStyle();
     }

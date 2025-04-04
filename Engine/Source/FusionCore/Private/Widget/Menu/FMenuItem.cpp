@@ -42,6 +42,7 @@ namespace CE
 
         Child(
             FAssignNew(FHorizontalStack, content)
+            .ContentVAlign(VAlign::Center)
             (
                 FAssignNew(FImage, icon)
                 .Width(18)

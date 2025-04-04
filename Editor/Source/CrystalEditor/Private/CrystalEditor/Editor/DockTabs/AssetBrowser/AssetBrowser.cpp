@@ -144,7 +144,6 @@ namespace CE::Editor
 
         gridViewModel = CreateObject<AssetBrowserGridViewModel>(this, "GridViewModel");
         gridViewModel->Init();
-        gridView->Model(gridViewModel);
 
         currentPath = "/";
         currentDirectory = AssetRegistry::Get()->GetCachedPathTree().GetRootNode();
@@ -165,6 +164,8 @@ namespace CE::Editor
     void AssetBrowser::OnAssetPathTreeUpdated(PathTree& pathTree)
     {
         treeView->OnModelUpdate();
+
+        UpdateAssetGridView();
     }
 
     void AssetBrowser::OnDirectorySelectionChanged(FItemSelectionModel* selectionModel)
@@ -275,9 +276,9 @@ namespace CE::Editor
 
     void AssetBrowser::UpdateAssetGridView()
     {
-        gridViewModel->SetCurrentDirectory(currentPath);
+        gridView->SetCurrentDirectory(currentPath);
 
-        gridView->OnModelUpdate();
+        gridView->OnUpdate();
 
         UpdateBreadCrumbs();
     }
@@ -290,6 +291,50 @@ namespace CE::Editor
         }
 
         return !currentPath.GetString().StartsWith("/Game/Assets");
+    }
+
+    void AssetBrowser::CreateNewEmptyDirectory()
+    {
+        AssetRegistry* registry = AssetRegistry::Get();
+        if (!registry)
+            return;
+
+        EditorAssetManager* assetManager = EditorAssetManager::Get();
+
+        PathTreeNode* curNode = registry->GetCachedPathTree().GetNode(currentPath);
+        if (curNode == nullptr)
+            return;
+
+        String path = curNode->GetFullPath();
+
+        if (!path.StartsWith("/Game/Assets"))
+			return;
+
+        String projectPath = gProjectPath.GetString();
+
+        IO::Path absolutePath = gProjectPath / path.GetSubstring(1);
+        if (!absolutePath.Exists())
+            return;
+
+        IO::Path newFolder = absolutePath / "NewFolder";
+        if (!newFolder.Exists())
+        {
+            IO::Path::CreateDirectories(newFolder);
+            assetManager->OnDirectoryCreated(newFolder);
+	        return;
+        }
+
+        for (int i = 1; i <= 100; i++)
+        {
+            newFolder = absolutePath / String::Format("NewFolder_{}", i);
+
+            if (!newFolder.Exists())
+            {
+                IO::Path::CreateDirectories(newFolder);
+                assetManager->OnDirectoryCreated(newFolder);
+	            return;
+            }
+        }
     }
 
     void AssetBrowser::SetCurrentPath(const CE::Name& path)

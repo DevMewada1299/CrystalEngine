@@ -25,15 +25,19 @@ namespace CE::Editor
 
         bool IsDirectory() const { return isDirectory; }
 
+        bool IsReadOnly() const { return isReadOnly; }
+
     protected: // - Internal -
 
         Ref<FLabel> titleLabel;
+        Ref<FTextInput> titleInput;
         Ref<FLabel> subtitleLabel;
         Ref<FStyledWidget> icon;
         Ref<FStyledWidget> iconBg;
 
         CE::Name fullPath;
         bool isDirectory = false;
+        bool isReadOnly = true;
 
     public: // - Fusion Properties -
 

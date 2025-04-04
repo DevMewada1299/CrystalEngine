@@ -201,9 +201,6 @@ namespace CE
 				listener->OnAssetPathTreeUpdated(cachedPathTree);
 			}
 		}
-		
-		onAssetImported.Broadcast(bundleName);
-		onAssetRegistryModified.Broadcast();
 	}
 
 	void AssetRegistry::OnAssetDeleted(const Name& bundleName)
@@ -246,7 +243,34 @@ namespace CE
 			}
 		}
 
-		onAssetRegistryModified.Broadcast();
+	}
+
+	void AssetRegistry::OnDirectoryCreated(const IO::Path& absolutePath)
+	{
+		auto projectAssetsPath = gProjectPath / "Game/Assets";
+		String relativePathStr = "";
+
+		if (IO::Path::IsSubDirectory(absolutePath, projectAssetsPath))
+		{
+			relativePathStr = IO::Path::GetRelative(absolutePath, gProjectPath).RemoveExtension().GetString().Replace({ '\\' }, '/');
+			if (!relativePathStr.StartsWith("/"))
+				relativePathStr = "/" + relativePathStr;
+		}
+		else
+		{
+			return;
+		}
+
+		cachedPathTree.AddPath(relativePathStr);
+		cachedDirectoryTree.AddPath(relativePathStr);
+
+		for (IAssetRegistryListener* listener : listeners)
+		{
+			if (listener != nullptr)
+			{
+				listener->OnAssetPathTreeUpdated(cachedPathTree);
+			}
+		}
 	}
 
 	void AssetRegistry::InitializeCache()

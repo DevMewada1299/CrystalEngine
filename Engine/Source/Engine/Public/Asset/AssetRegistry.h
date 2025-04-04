@@ -6,6 +6,7 @@ namespace CE
 	namespace Editor {
 		class AssetImporter;
 		class EditorAssetManager;
+		class EditorAssetManager;
 	}
 #endif
 
@@ -18,8 +19,6 @@ namespace CE
 		virtual void OnAssetImported(const Name& bundleName, const Name& sourcePath = "") {}
 
 		virtual void OnAssetDeleted(const Name& bundleName) {}
-
-		virtual void OnDirectoryTreeUpdated(PathTree& directoryTree) {}
 
 		virtual void OnAssetPathTreeUpdated(PathTree& pathTree) {}
 	};
@@ -92,12 +91,10 @@ namespace CE
 
 		void OnAssetDeleted(const Name& bundleName);
 
+		void OnDirectoryCreated(const IO::Path& absolutePath);
+
 	public:
 
-		// Events
-
-		MultiCastDelegate<void(void)> onAssetRegistryModified{};
-		MultiCastDelegate<void(const Name&)> onAssetImported{};
 
 	private:
 
@@ -118,6 +115,7 @@ namespace CE
 #if PAL_TRAIT_BUILD_EDITOR
 		friend class CE::Editor::EditorAssetManager;
 		friend class CE::Editor::AssetImporter;
+		friend class CE::Editor::EditorAssetManager;
 #endif
 		IO::FileWatcher fileWatcher{};
 		IO::WatchID fileWatchID = 0;

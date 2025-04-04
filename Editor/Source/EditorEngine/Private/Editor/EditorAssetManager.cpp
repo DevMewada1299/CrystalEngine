@@ -41,4 +41,9 @@ namespace CE::Editor
 		
     }
 
+    void EditorAssetManager::OnDirectoryCreated(const IO::Path& absolutePath)
+    {
+		assetRegistry->OnDirectoryCreated(absolutePath);
+    }
+
 } // namespace CE::Editor
