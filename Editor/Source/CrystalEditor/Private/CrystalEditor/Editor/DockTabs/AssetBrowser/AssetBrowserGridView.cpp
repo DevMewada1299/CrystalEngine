@@ -76,6 +76,9 @@ namespace CE::Editor
                         {
                             PathTree& tree = registry->GetCachedPathTree();
                             AssetBrowserItem* item = static_cast<AssetBrowserItem*>(button);
+                            if (item->IsEditing())
+                                return;
+
                             CE::Name path = item->GetFullPath();
                             PathTreeNode* curNode = tree.GetNode(path);
                             if (curNode == nullptr)

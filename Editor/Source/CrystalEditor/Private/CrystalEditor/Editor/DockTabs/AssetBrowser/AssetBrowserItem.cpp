@@ -18,7 +18,7 @@ namespace CE::Editor
         .Height(110)
         .Style("AssetBrowserItem")
         (
-            FNew(FVerticalStack)
+            FAssignNew(FVerticalStack, stackBox)
             .Gap(2)
             .ContentHAlign(HAlign::Fill)
             .HAlign(HAlign::Fill)
@@ -44,7 +44,7 @@ namespace CE::Editor
                 .Foreground(Color::White())
                 .HAlign(HAlign::Left)
                 .VAlign(VAlign::Bottom)
-                .Margin(Vec4(2.5f, 0, 0, 0))
+                .Margin(Vec4(2.5f, 0, 2.5f, 0))
                 .Height(20),
 
                 FAssignNew(FTextInput, titleInput)
@@ -68,6 +68,7 @@ namespace CE::Editor
                 .Margin(Vec4(2.5f, 0, 0, 0))
             )
         );
+
     }
 
     void AssetBrowserItem::HandleEvent(FEvent* event)
@@ -128,6 +129,7 @@ namespace CE::Editor
         isDirectory = node->nodeType == PathTreeNodeType::Directory;
 
         titleLabel->HAlign(isDirectory ? HAlign::Center : HAlign::Left);
+
         iconBg->Background(isDirectory ? Color::Clear() : Color::Black());
         subtitleLabel->Visible(!isDirectory);
         auto assetData = (AssetData*)node->userData;
@@ -156,6 +158,11 @@ namespace CE::Editor
 
         Title(node->name.GetString());
 
+        if (Title() == "This_is_a_very_large")
+        {
+            stackBox->Name("DebugStackBox");
+        }
+
         fullPath = node->GetFullPath();
 
         isReadOnly = !fullPath.GetString().StartsWith("/Game/Assets");
@@ -174,6 +181,11 @@ namespace CE::Editor
 
         titleInput->StartEditing(true);
         titleInput->Focus();
+    }
+
+    bool AssetBrowserItem::IsEditing()
+    {
+        return titleInput->Enabled() && titleInput->IsEditing();
     }
 
     void AssetBrowserItem::OnTextEditingFinished(FTextInput*)

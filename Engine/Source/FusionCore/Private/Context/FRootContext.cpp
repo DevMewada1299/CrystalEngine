@@ -1,5 +1,7 @@
 #include "FusionCore.h"
 
+#define FOCUS_LOGGING 1
+
 namespace CE
 {
 
@@ -305,7 +307,9 @@ namespace CE
 			focusEvent.focusedWidget = owningWidget.Get();
 			focusEvent.direction = FEventDirection::BottomToTop;
 
-			//CE_LOG(Info, All, "Focus GOT 1: {}", owningWidget->GetName());
+#if FOCUS_LOGGING
+			CE_LOG(Info, All, "Focus GOT 1: {}", owningWidget->GetName());
+#endif
 
 			owningWidget->HandleEvent(&focusEvent);
 		}
@@ -318,7 +322,9 @@ namespace CE
 			focusEvent.focusedWidget = nullptr;
 			focusEvent.direction = FEventDirection::TopToBottom;
 
-			//CE_LOG(Info, All, "Focus LOST 1: {}", owningWidget->GetName());
+#if FOCUS_LOGGING
+			CE_LOG(Info, All, "Focus LOST 1: {}", owningWidget->GetName());
+#endif
 
 			owningWidget->HandleEvent(&focusEvent);
 
@@ -356,6 +362,10 @@ namespace CE
 					focusEvent.gotFocus = false;
 					focusEvent.direction = FEventDirection::TopToBottom;
 
+#if FOCUS_LOGGING
+					CE_LOG(Info, All, "Focus LOST 2: {}", base->GetName());
+#endif
+
 					base->HandleEvent(&focusEvent);
 				}
 				else
@@ -366,6 +376,10 @@ namespace CE
 					focusEvent.focusedWidget = widgetToFocus.Get();
 					focusEvent.gotFocus = false;
 					focusEvent.direction = FEventDirection::BottomToTop;
+
+#if FOCUS_LOGGING
+					CE_LOG(Info, All, "Focus LOST 3: {}", curFocusWidget->GetName());
+#endif
 
 					curFocusWidget->HandleEvent(&focusEvent);
 				}
@@ -378,6 +392,10 @@ namespace CE
 				focusEvent.sender = focusEvent.focusedWidget = widgetToFocus.Get();
 				focusEvent.gotFocus = true;
 				focusEvent.direction = FEventDirection::BottomToTop;
+
+#if FOCUS_LOGGING
+				CE_LOG(Info, All, "Focus GOT 2: {}", widgetToFocus->GetName());
+#endif
 
 				widgetToFocus->HandleEvent(&focusEvent);
 			}

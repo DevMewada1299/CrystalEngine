@@ -32,6 +32,8 @@ namespace CE::Editor
 
         bool IsReadOnly() const { return isReadOnly; }
 
+        bool IsEditing();
+
     protected: // - Internal -
 
         Ref<FLabel> titleLabel;
@@ -39,6 +41,8 @@ namespace CE::Editor
         Ref<FLabel> subtitleLabel;
         Ref<FStyledWidget> icon;
         Ref<FStyledWidget> iconBg;
+
+        Ref<FVerticalStack> stackBox;
 
         CE::Name fullPath;
         bool isDirectory = false;
