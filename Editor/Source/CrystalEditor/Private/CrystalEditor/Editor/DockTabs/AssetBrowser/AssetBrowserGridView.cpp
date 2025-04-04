@@ -59,7 +59,7 @@ namespace CE::Editor
         QueueDestroyAllChildren();
         items.Clear();
 
-        PathTreeNode* currentDirectory = AssetRegistry::Get()->GetDirectoryNode(this->currentPath);
+        PathTreeNode* currentDirectory = AssetRegistry::Get()->GetCachedPathTree().GetNode(this->currentPath);
 
         if (currentDirectory != nullptr)
         {
