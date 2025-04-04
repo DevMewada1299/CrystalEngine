@@ -1,6 +1,6 @@
 #include "FusionCore.h"
 
-#define FOCUS_LOGGING 1
+#define FOCUS_LOGGING 0
 
 namespace CE
 {

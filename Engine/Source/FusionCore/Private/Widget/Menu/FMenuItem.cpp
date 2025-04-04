@@ -101,8 +101,6 @@ namespace CE
             }
             else if (event->type == FEventType::MousePress)
             {
-                m_OnClick();
-
                 if (subMenu && !subMenu->IsShown())
                 {
                     Vec2 offset = Vec2(0, computedSize.y);
@@ -139,6 +137,8 @@ namespace CE
                         }
                     }
                 }
+
+                m_OnClick();
             }
         }
 

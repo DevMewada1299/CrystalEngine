@@ -51,9 +51,21 @@ namespace CE::Editor
                 .Text("Asset")
                 .FontSize(9)
                 .OnTextEditingFinished(FUNCTION_BINDING(this, OnTextEditingFinished))
+                .Validator([](const String& in) -> bool
+                {
+                    for (int i = 0; i < in.GetLength(); ++i)
+                    {
+                        char c = in[i];
+                        if (!String::IsAlphabet(c) && !String::IsNumeric(c) && c != '_' && c != '-')
+                        {
+                            return false;
+                        }
+                    }
+
+                    return true;
+                })
                 .HAlign(HAlign::Fill)
                 .VAlign(VAlign::Bottom)
-                .Margin(Vec4(2.5f, 0, 0, 0))
                 .Enabled(false),
 
                 FNew(FWidget)
@@ -106,7 +118,7 @@ namespace CE::Editor
     {
         Super::OnSelected();
 
-
+        
     }
 
     void AssetBrowserItem::OnDeselected()
@@ -192,6 +204,8 @@ namespace CE::Editor
 
         (*titleInput)
         .Enabled(false);
+
+
     }
 
 }
