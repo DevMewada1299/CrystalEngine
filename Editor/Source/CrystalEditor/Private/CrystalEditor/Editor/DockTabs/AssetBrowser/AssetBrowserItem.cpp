@@ -129,6 +129,7 @@ namespace CE::Editor
         isDirectory = node->nodeType == PathTreeNodeType::Directory;
 
         titleLabel->HAlign(isDirectory ? HAlign::Center : HAlign::Left);
+        titleLabel->Margin(isDirectory ? Vec4() : Vec4(2.5f, 0, 2.5f, 0));
 
         iconBg->Background(isDirectory ? Color::Clear() : Color::Black());
         subtitleLabel->Visible(!isDirectory);
@@ -157,11 +158,6 @@ namespace CE::Editor
         }
 
         Title(node->name.GetString());
-
-        if (Title() == "This_is_a_very_large")
-        {
-            stackBox->Name("DebugStackBox");
-        }
 
         fullPath = node->GetFullPath();
 

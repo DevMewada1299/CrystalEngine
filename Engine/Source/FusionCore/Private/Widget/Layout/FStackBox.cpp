@@ -229,11 +229,13 @@ namespace CE
 					break;
 				case VAlign::Center:
 					child->computedSize.height = Math::Min(childIntrinsicSize.height, availableSize.height);
-					child->computedPosition.y = child->computedPosition.y + (availableSize.height - childIntrinsicSize.height) * 0.5f;
+					//child->computedPosition.y = child->computedPosition.y + (availableSize.height - childIntrinsicSize.height) * 0.5f;
+					child->computedPosition.y = child->computedPosition.y + (availableSize.height - child->computedSize.height) * 0.5f;
 					break;
 				case VAlign::Bottom:
 					child->computedSize.height = Math::Min(childIntrinsicSize.height, availableSize.height);
-					child->computedPosition.y = child->computedPosition.y + (availableSize.height - childIntrinsicSize.height);
+					//child->computedPosition.y = child->computedPosition.y + (availableSize.height - childIntrinsicSize.height);
+					child->computedPosition.y = child->computedPosition.y + (availableSize.height - child->computedSize.height);
 					break;
 				}
 
@@ -267,11 +269,13 @@ namespace CE
 					break;
 				case HAlign::Center:
 					child->computedSize.width = Math::Min(childIntrinsicSize.width, availableSize.width);
-					child->computedPosition.x = curPos.x + (availableSize.width - childIntrinsicSize.width) * 0.5f;
+					//child->computedPosition.x = curPos.x + (availableSize.width - childIntrinsicSize.width) * 0.5f;
+					child->computedPosition.x = curPos.x + child->m_Margin.left + (availableSize.width - child->computedSize.width) * 0.5f;
 					break;
 				case HAlign::Right:
 					child->computedSize.width = Math::Min(childIntrinsicSize.width, availableSize.width);
-					child->computedPosition.x = curPos.x + (availableSize.width - childIntrinsicSize.width);
+					//child->computedPosition.x = curPos.x + (availableSize.width - childIntrinsicSize.width);
+					child->computedPosition.x = curPos.x + child->m_Margin.left + (availableSize.width - child->computedSize.width);
 					break;
 				}
 

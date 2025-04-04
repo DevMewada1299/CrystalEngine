@@ -909,6 +909,12 @@ namespace CE
                 inputLabel->OnMouseClick(localPos, mouseEvent->isDoubleClick);
             }
         }
+        else if (event->IsKeyEvent() && event->sender == this && !event->isConsumed)
+        {
+            // Pass-through keyboard events directly to the child widget (FTextInputLabel)
+            inputLabel->HandleEvent(event);
+            return;
+        }
 
 	    Super::HandleEvent(event);
     }
