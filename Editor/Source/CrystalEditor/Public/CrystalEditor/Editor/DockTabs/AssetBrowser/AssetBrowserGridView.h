@@ -20,8 +20,14 @@ namespace CE::Editor
 
         void OnBackgroundRightClicked(Vec2 globalMousePos);
 
+        void ShowAssetContextMenu(Vec2 globalMousePos);
+
         // When user right clicks in empty space
         Ref<EditorMenuPopup> BuildNoSelectionContextMenu();
+
+        bool BuildBasicContextMenu(EditorMenuPopup& contextMenu);
+
+        FMenuItem& NewMenuItem();
 
     public: // - Public API -
 

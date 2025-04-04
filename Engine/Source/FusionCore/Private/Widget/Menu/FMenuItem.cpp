@@ -45,8 +45,8 @@ namespace CE
             .ContentVAlign(VAlign::Center)
             (
                 FAssignNew(FImage, icon)
-                .Width(18)
-                .Height(18)
+                .Width(16)
+                .Height(16)
                 .Enabled(false)
                 .Margin(Vec4(0, 0, 10, 0)),
 

@@ -118,12 +118,23 @@ namespace CE::Editor
         GetContext()->PushLocalPopup(contextMenu.Get(), globalMousePos, Vec2());
     }
 
+    void AssetBrowserGridView::ShowAssetContextMenu(Vec2 globalMousePos)
+    {
+        Array<AssetBrowserItem*> selectedItems = GetSelectedItems();
+        if (selectedItems.IsEmpty())
+            return;
+
+        Ref<EditorMenuPopup> contextMenu = CreateObject<EditorMenuPopup>(this, "ContextMenu");
+
+        contextMenu->AutoClose(true);
+
+        BuildBasicContextMenu(*contextMenu);
+
+        GetContext()->PushLocalPopup(contextMenu.Get(), globalMousePos, Vec2());
+    }
+
     Ref<EditorMenuPopup> AssetBrowserGridView::BuildNoSelectionContextMenu()
     {
-        Ref<AssetBrowser> owner = m_Owner.Lock();
-        if (!owner || owner->IsCurrentDirectoryReadOnly())
-            return nullptr;
-
         Ref<EditorMenuPopup> contextMenu = CreateObject<EditorMenuPopup>(this, "ContextMenu");
 
         contextMenu->AutoClose(true);
@@ -132,12 +143,9 @@ namespace CE::Editor
             FNew(FMenuItemSeparator)
             .Title("FOLDER"),
 
-            FNew(FMenuItem)
+            NewMenuItem()
             .Text("New Folder")
-            .IconEnabled(true)
             .Icon(FBrush("/Editor/Assets/Icons/NewFolder"))
-            .FontSize(10)
-            .ContentPadding(Vec4(5, 0, 5, 0))
             .OnClick([this]
             {
 	            if (auto owner = m_Owner.Lock())
@@ -148,6 +156,75 @@ namespace CE::Editor
         );
 
         return contextMenu;
+    }
+
+    bool AssetBrowserGridView::BuildBasicContextMenu(EditorMenuPopup& contextMenu)
+    {
+        Array<AssetBrowserItem*> selectedItems = GetSelectedItems();
+        const int count = selectedItems.GetSize();
+        if (count == 0)
+            return false;
+
+        bool canBeModified = true;
+        bool homogenousTypes = true;
+        PathTreeNodeType itemType = (PathTreeNodeType)-1;
+
+        for (AssetBrowserItem* item : selectedItems)
+        {
+            auto curItemType = item->IsDirectory() ? PathTreeNodeType::Directory : PathTreeNodeType::Asset;
+
+            if (itemType == (PathTreeNodeType)-1)
+            {
+                itemType = curItemType;
+            }
+            else if (itemType != curItemType && homogenousTypes)
+            {
+                homogenousTypes = false;
+                itemType = (PathTreeNodeType)-1;
+            }
+
+	        if (item->IsReadOnly())
+	        {
+                canBeModified = false;
+	        }
+        }
+
+        contextMenu
+        .Content(
+            FNew(FMenuItemSeparator)
+            .Title("BASIC"),
+
+            NewMenuItem()
+            .Text("Copy")
+            .Icon(FBrush("/Editor/Assets/Icons/Copy"))
+        );
+
+    	if (canBeModified)
+        {
+	        contextMenu
+            .Content(
+                NewMenuItem()
+                .Text("Rename")
+                .Icon(FBrush("/Editor/Assets/Icons/Rename")),
+
+                NewMenuItem()
+                .Text("Delete")
+                .Icon(FBrush("/Engine/Resources/Icons/Delete"))
+            );
+        }
+
+        return true;
+    }
+
+    FMenuItem& AssetBrowserGridView::NewMenuItem()
+    {
+        return 
+        FNew(FMenuItem)
+        //.Text("New Folder")
+        .IconEnabled(true)
+        //.Icon(FBrush("/Editor/Assets/Icons/NewFolder"))
+        .FontSize(9)
+        .ContentPadding(Vec4(5, -2, 5, -2));
     }
 
     void AssetBrowserGridView::HandleEvent(FEvent* event)
@@ -177,6 +254,7 @@ namespace CE::Editor
                 if (EnumHasAnyFlags(mouseEvent->keyModifiers, KeyModifier::Shift | ctrlMod))
                 {
                     // Right-click on items
+                    ShowAssetContextMenu(mouseEvent->mousePosition);
                 }
                 else
                 {
@@ -200,7 +278,7 @@ namespace CE::Editor
 
                 if (selection.GetSize() == 1) // Single selection
                 {
-	                
+                    ShowAssetContextMenu(mouseEvent->mousePosition);
                 }
                 else if (selection.GetSize() > 1) // Multiple selection
                 {
