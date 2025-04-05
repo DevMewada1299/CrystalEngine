@@ -220,7 +220,7 @@ namespace CE::Editor
             .maximised = false,
             .fullscreen = false,
             .resizable = false,
-            .hidden = false,
+            .hidden = true,
             .windowFlags = PlatformWindowFlags::Utility | PlatformWindowFlags::DestroyOnClose | PlatformWindowFlags::SkipTaskbar
         };
 
@@ -232,6 +232,7 @@ namespace CE::Editor
         PlatformWindow* platformWindow = static_cast<FNativeContext*>(sampleWindow->GetContext())->GetPlatformWindow();
         platformWindow->SetAlwaysOnTop(true);
 
+        platformWindow->Show();
         return sampleWindow.Get();
     }
 }

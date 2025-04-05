@@ -108,6 +108,7 @@ namespace CE
         int selectionEnd = -1;
         f32 textScrollOffset = 0;
         f32 selectionDistance = 0;
+        bool isCursorPushed = false;
 
         friend class FTextInput;
         FUSION_WIDGET;
@@ -170,8 +171,7 @@ namespace CE
         FIELD()
         FTextInputLabel* inputLabel = nullptr;
 
-    protected: // - Fusion Fields -
-
+        bool isCursorPushed = false;
 
     public: // - Fusion Properties -
 

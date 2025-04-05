@@ -517,7 +517,7 @@ namespace CE::Editor
             .maximised = false,
             .fullscreen = false,
             .resizable = false,
-            .hidden = false,
+            .hidden = true,
             .windowFlags = PlatformWindowFlags::Utility | PlatformWindowFlags::DestroyOnClose | PlatformWindowFlags::SkipTaskbar
         };
 
@@ -530,6 +530,8 @@ namespace CE::Editor
 
         PlatformWindow* platformWindow = static_cast<FNativeContext*>(colorPickerTool->GetContext())->GetPlatformWindow();
         platformWindow->SetAlwaysOnTop(true);
+
+        platformWindow->Show();
 
         colorPickerTool->SetColor(Color::White());
         return colorPickerTool;

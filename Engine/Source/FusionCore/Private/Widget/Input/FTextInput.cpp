@@ -28,6 +28,7 @@ namespace CE
 	    Super::OnFusionPropertyModified(propertyName);
 
         static const CE::Name TextName = "Text";
+        static const CE::Name EnabledName = "Enabled";
 
         if (propertyName == TextName)
         {
@@ -84,12 +85,14 @@ namespace CE
             Vec2 mousePos = mouseEvent->mousePosition;
             Vec2 localMousePos = mousePos - globalPosition;
 
-            if (event->type == FEventType::MouseEnter)
+            if (event->type == FEventType::MouseEnter && !isCursorPushed)
             {
                 app->PushCursor(SystemCursor::IBeam);
+                isCursorPushed = true;
             }
-            else if (event->type == FEventType::MouseLeave)
+            else if (event->type == FEventType::MouseLeave && isCursorPushed)
             {
+                isCursorPushed = false;
                 app->PopCursor();
             }
             else if (event->type == FEventType::MousePress && mouseEvent->buttons == MouseButtonMask::Left)
@@ -897,9 +900,11 @@ namespace CE
             {
                 SetHoveredInternal(true);
                 app->PushCursor(SystemCursor::IBeam);
+                isCursorPushed = true;
             }
             else if (mouseEvent->type == FEventType::MouseLeave)
             {
+                isCursorPushed = false;
                 SetHoveredInternal(false);
                 app->PopCursor();
             }

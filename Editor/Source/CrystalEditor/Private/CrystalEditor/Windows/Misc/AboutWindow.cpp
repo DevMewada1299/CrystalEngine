@@ -88,7 +88,7 @@ namespace CE::Editor
 			.maximised = false,
 			.fullscreen = false,
 			.resizable = false,
-			.hidden = false,
+			.hidden = true,
 			.windowFlags = PlatformWindowFlags::Utility | PlatformWindowFlags::DestroyOnClose | PlatformWindowFlags::SkipTaskbar
         };
 
@@ -117,6 +117,8 @@ namespace CE::Editor
 
         FAssignNewOwned(AboutWindow, aboutWindow, context);
         context->SetOwningWidget(aboutWindow);
+
+        window->Show();
 
         return aboutWindow;
     }
