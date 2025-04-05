@@ -44,10 +44,10 @@ namespace CE::Editor
 
     FModelIndex AssetBrowserTreeViewModel::GetParent(const FModelIndex& index)
     {
-	    if (!index.IsValid() || index.GetDataPtr() == nullptr)
+	    if (!index.IsValid() || !index.GetData().HasValue())
 	        return FModelIndex();
 
-        PathTreeNode* node = (PathTreeNode*)index.GetDataPtr();
+        PathTreeNode* node = index.GetData().GetValue<PathTreeNode*>();
 
         PathTreeNode* parent = node->parent;
         if (parent == nullptr)
@@ -79,7 +79,7 @@ namespace CE::Editor
         }
         else
         {
-            parentNode = (PathTreeNode*)parent.GetDataPtr();
+            parentNode = (PathTreeNode*)parent.GetData().GetPointerValue<PathTreeNode*>();
         }
 
         if (parentNode == nullptr || row >= parentNode->children.GetSize())
@@ -111,7 +111,7 @@ namespace CE::Editor
             for (int row = 0; row < rows; ++row)
             {
                 FModelIndex index = GetIndex(row, 0, parent);
-                PathTreeNode* indexNode = static_cast<PathTreeNode*>(index.GetDataPtr());
+                PathTreeNode* indexNode = static_cast<PathTreeNode*>(index.GetData().GetValue<PathTreeNode*>());
                 if (indexNode->GetFullPath() == paths[i]->GetFullPath())
                 {
                     found = true;
@@ -144,7 +144,7 @@ namespace CE::Editor
         }
         else
         {
-            parentNode = (PathTreeNode*)parent.GetDataPtr();
+            parentNode = parent.GetData().GetValue<PathTreeNode*>();
         }
 
         if (parentNode == nullptr)
@@ -169,10 +169,10 @@ namespace CE::Editor
         FTreeViewRow& treeRow = *rowCast;
 
         FModelIndex index = GetIndex(row, 0, parent);
-        if (!index.IsValid() || index.GetDataPtr() == nullptr)
+        if (!index.IsValid() || index.GetData().GetValue<PathTreeNode*>() == nullptr)
             return;
 
-        PathTreeNode* node = (PathTreeNode*)index.GetDataPtr();
+        PathTreeNode* node = index.GetData().GetValue<PathTreeNode*>();
 
         FTreeViewCell& cell = *treeRow.GetCell(0);
 

@@ -2,6 +2,7 @@
 
 namespace CE
 {
+    // TODO: Use Actor's UUID instead of a raw pointer to the actor in FModelIndex::data
 
     SceneTreeViewModel::SceneTreeViewModel()
     {
@@ -26,7 +27,7 @@ namespace CE
             return CreateIndex(row, column, scene->GetRootActor(row));
         }
 
-        Actor* parentActor = (Actor*)parent.GetDataPtr();
+        Actor* parentActor = parent.GetData().GetValue<Actor*>();
         if (parentActor == nullptr || row >= parentActor->GetChildCount())
             return {};
 
@@ -72,7 +73,7 @@ namespace CE
             return scene->GetRootActorCount();
         }
 
-        Actor* parentActor = (Actor*)parent.GetDataPtr();
+        Actor* parentActor = parent.GetData().GetValue<Actor*>();
         if (parentActor == nullptr)
             return {};
 
@@ -95,10 +96,10 @@ namespace CE
         FTreeViewRow& treeRow = *rowCast;
 
         FModelIndex index = GetIndex(row, 0, parent);
-        if (!index.IsValid() || index.GetDataPtr() == nullptr)
+        if (!index.IsValid() || !index.GetData().HasValue())
             return;
 
-        Actor* actor = (Actor*)index.GetDataPtr();
+        Actor* actor = index.GetData().GetValue<Actor*>();
         String actorType = actor->GetType()->GetName().GetLastComponent();
 
         treeRow.GetCell(0)->Text(actor->GetName().GetString());

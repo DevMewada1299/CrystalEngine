@@ -273,6 +273,8 @@ namespace CE
 		bool IsObject() const;
 		bool CanCastObject(TypeId castTo) const;
 
+		SIZE_T GetHash() const;
+
 		template<typename T>
 		INLINE bool IsArrayElementOfType() const
 		{

@@ -8,6 +8,62 @@ namespace CE
 		Free();
 	}
 
+#define IF_HASH(Type, Value) \
+if (valueTypeId == TYPEID(Type))\
+{\
+	return CE::GetHash(Value);\
+}
+
+	SIZE_T Variant::GetHash() const
+	{
+		if (!HasValue())
+			return 0;
+
+		IF_HASH(bool, BoolValue)
+		IF_HASH(f32, Float32Value)
+		IF_HASH(f64, Float64Value)
+		IF_HASH(s8, Int8Value)
+		IF_HASH(s16, Int16Value)
+		IF_HASH(s32, Int32Value)
+		IF_HASH(s64, Int64Value)
+		IF_HASH(u8, Uint8Value)
+		IF_HASH(u16, Uint16Value)
+		IF_HASH(u32, Uint32Value)
+		IF_HASH(u64, Uint64Value)
+		IF_HASH(Vec2, Vec2Value)
+		IF_HASH(Vec3, Vec3Value)
+		IF_HASH(Vec4, Vec4Value)
+		IF_HASH(Vec2i, Vec2iValue)
+		IF_HASH(Vec3i, Vec3iValue)
+		IF_HASH(Vec4i, Vec4iValue)
+		IF_HASH(Color, ColorValue)
+		IF_HASH(String, StringValue)
+		IF_HASH(Name, nameValue)
+		IF_HASH(IO::Path, pathValue)
+
+		if (valueTypeId == CE::GetTypeId<Matrix4x4>())
+		{
+			return CalculateHash(MatrixValue.rows, sizeof(MatrixValue.rows));
+		}
+
+		if (IsPointer())
+		{
+			return (SIZE_T)PtrValue;
+		}
+
+		if (IsArray())
+		{
+			return CalculateHash(rawArrayValue.GetData(), rawArrayValue.GetSize());
+		}
+
+		if (IsStruct())
+		{
+			return (SIZE_T)StructValue;
+		}
+
+		return 0;
+	}
+
 	void Variant::CopyFrom(const Variant& copy)
 	{
 		valueTypeId = copy.valueTypeId;
@@ -119,5 +175,6 @@ namespace CE
 
 		return valueType->IsObject() && castToType->IsObject() && valueType->IsAssignableTo(castTo);
 	}
+
 
 } // namespace CE

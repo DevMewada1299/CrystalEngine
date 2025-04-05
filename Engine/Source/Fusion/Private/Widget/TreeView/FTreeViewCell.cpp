@@ -37,8 +37,8 @@ namespace CE
                 .Style("ExpandCaretButton"),
 
                 FAssignNew(FImage, icon)
-                .Width(11)
-                .Height(11)
+                .Width(12)
+                .Height(12)
                 .VAlign(VAlign::Center)
                 .Margin(Vec4(0, 0, 2.5f, 0))
                 .Enabled(false),

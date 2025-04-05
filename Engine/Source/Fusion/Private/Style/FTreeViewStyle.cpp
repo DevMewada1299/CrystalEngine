@@ -52,6 +52,9 @@ namespace CE
         {
             for (FTreeViewRow* child : treeView.container->children)
             {
+                if (!child->Enabled())
+                    continue;
+
                 FBrush rowBg = rowBackground;
                 if (child->IsAlternate())
                     rowBg = rowAlternateBackground;

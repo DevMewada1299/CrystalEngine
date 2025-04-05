@@ -300,7 +300,8 @@ namespace CE::Editor
             {
                 mouseEvent->Consume(this);
 
-                if (EnumHasAnyFlags(mouseEvent->keyModifiers, KeyModifier::Shift | ctrlMod))
+                if (EnumHasAnyFlags(mouseEvent->keyModifiers, KeyModifier::Shift | ctrlMod) &&
+                    GetSelectedItemCount() > 0)
                 {
                     // Right-click on items
                     ShowAssetContextMenu(mouseEvent->mousePosition);
@@ -320,18 +321,24 @@ namespace CE::Editor
         {
             auto mouseEvent = static_cast<FMouseEvent*>(event);
 
-            if (mouseEvent->sender != nullptr && mouseEvent->sender->IsOfType<AssetBrowserItem>() && 
-                mouseEvent->buttons == MouseButtonMask::Right && mouseEvent->type == FEventType::MousePress)
+            if (mouseEvent->sender != nullptr && mouseEvent->sender->IsOfType<AssetBrowserItem>())
             {
-                Array<AssetBrowserItem*> selection = GetSelectedItemCount();
+                if (mouseEvent->type == FEventType::MousePress && mouseEvent->buttons == MouseButtonMask::Right)
+                {
+                    Array<AssetBrowserItem*> selection = GetSelectedItemCount();
 
-                if (selection.GetSize() == 1) // Single selection
-                {
-                    ShowAssetContextMenu(mouseEvent->mousePosition);
+                    if (selection.GetSize() == 1) // Single selection
+                    {
+                        ShowAssetContextMenu(mouseEvent->mousePosition);
+                    }
+                    else if (selection.GetSize() > 1) // Multiple selection
+                    {
+
+                    }
                 }
-                else if (selection.GetSize() > 1) // Multiple selection
+                else if (mouseEvent->type == FEventType::MousePress && mouseEvent->buttons == MouseButtonMask::Left)
                 {
-	                
+                    // TODO: Implement shift clicking to select multiple widgets in row
                 }
             }
         }

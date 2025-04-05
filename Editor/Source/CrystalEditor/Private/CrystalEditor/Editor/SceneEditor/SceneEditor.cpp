@@ -246,7 +246,7 @@ namespace CE::Editor
             if (!modelIndex.IsValid())
                 continue;
 
-            Actor* actor = (Actor*)modelIndex.GetDataPtr();
+            Actor* actor = (Actor*)modelIndex.GetData().GetValue<Actor*>();
             selectedActors.Add(actor);
         }
 

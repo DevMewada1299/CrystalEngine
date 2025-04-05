@@ -182,6 +182,28 @@ namespace CE
         bool IsRightButton() const { return EnumHasFlag(buttons, MouseButtonMask::Right); }
         bool IsMiddleButton() const { return EnumHasFlag(buttons, MouseButtonMask::Middle); }
 
+        bool IsMultiSelectionModifier() const
+        {
+#if PLATFORM_MAC
+            return EnumHasAnyFlags(keyModifiers, KeyModifier::Gui | KeyModifier::Shift);
+#else
+            return EnumHasAnyFlags(keyModifiers, KeyModifier::Ctrl | KeyModifier::Shift);
+#endif
+        }
+
+        bool IsCtrlMultiSelectionModifier() const
+        {
+#if PLATFORM_MAC
+            return EnumHasAnyFlags(keyModifiers, KeyModifier::Gui);
+#else
+            return EnumHasAnyFlags(keyModifiers, KeyModifier::Ctrl);
+#endif
+        }
+
+        bool IsShiftMultiSelectionModifier() const
+        {
+            return EnumHasAnyFlags(keyModifiers, KeyModifier::Shift);
+        }
     };
 
     STRUCT()

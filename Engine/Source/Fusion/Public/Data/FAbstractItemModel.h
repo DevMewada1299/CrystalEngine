@@ -16,7 +16,9 @@ namespace CE
 
         bool IsValid() const { return model != nullptr; }
 
-        void* GetDataPtr() const { return data; }
+        //void* GetDataPtr() const { return data; }
+
+        const Variant& GetData() const { return data; }
 
         u32 GetRow() const { return row; }
 
@@ -31,7 +33,8 @@ namespace CE
 
     private:
 
-        void* data = nullptr;
+        Variant data = Variant();
+        //void* data = nullptr;
         u32 row = 0;
         u32 col = 0;
 
@@ -58,7 +61,7 @@ namespace CE
         //! That will prevent rendering of any content in the item view.
         virtual bool IsReady() { return true; }
 
-        FModelIndex CreateIndex(u32 row, u32 column, void* data = nullptr);
+        FModelIndex CreateIndex(u32 row, u32 column, const Variant& data = Variant());
 
         virtual FModelIndex GetParent(const FModelIndex& index) { return FModelIndex(); }
 

@@ -122,19 +122,28 @@ namespace CE::Editor
                     FAssignNew(FScrollBox, gridViewScrollBox)
                     .VerticalScroll(true)
                     .HorizontalScroll(false)
-                    .OnBackgroundClicked([this]
-                    {
-                        gridView->DeselectAll();
-                    })
                     .OnEvent([this] (FEvent* event)
                     {
                         if (event->IsMouseEvent() && event->sender == gridViewScrollBox.Get())
                         {
                             FMouseEvent* mouseEvent = static_cast<FMouseEvent*>(event);
 
-                            if (mouseEvent->type == FEventType::MousePress && mouseEvent->IsRightButton())
+                            if (mouseEvent->type == FEventType::MousePress && mouseEvent->IsLeftButton())
                             {
-                                gridView->OnBackgroundRightClicked(mouseEvent->mousePosition);
+                                gridView->DeselectAll();
+                            }
+                            else if (mouseEvent->type == FEventType::MousePress && mouseEvent->IsRightButton())
+                            {
+                                if (gridView->GetSelectedItemCount() == 0 || !mouseEvent->IsMultiSelectionModifier())
+                                {
+                                    gridView->DeselectAll();
+
+                                    gridView->OnBackgroundRightClicked(mouseEvent->mousePosition);
+                                }
+                                else
+                                {
+                                    gridView->ShowAssetContextMenu(mouseEvent->mousePosition);
+                                }
                             }
                         }
                     })
@@ -214,10 +223,10 @@ namespace CE::Editor
 
         for (const FModelIndex& index : selection)
         {
-            if (!index.IsValid() || index.GetDataPtr() == nullptr)
+            if (!index.IsValid() || !index.GetData().HasValue())
                 continue;
 
-            PathTreeNode* node = (PathTreeNode*)index.GetDataPtr();
+            PathTreeNode* node = (PathTreeNode*)index.GetData().GetValue<PathTreeNode*>();
 
             if (currentDirectory != node)
             {
