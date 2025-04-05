@@ -106,6 +106,55 @@ namespace CE
 		}
 	}
 
+	void PathTreeNode::SortChildren(const Delegate<bool(PathTreeNode* lhs, PathTreeNode* rhs)>& lessThanComparison)
+	{
+		children.Sort([&](PathTreeNode* lhs, PathTreeNode* rhs) -> bool
+		{
+			return lessThanComparison(lhs, rhs);
+		});
+
+
+	}
+
+	void PathTreeNode::SortChildren()
+	{
+		SortChildren([](PathTreeNode* lhs, PathTreeNode* rhs) -> bool
+		{
+			if (lhs->nodeType == rhs->nodeType)
+			{
+				return String::NaturalCompare(lhs->name.GetString(), rhs->name.GetString());
+			}
+			else if (lhs->nodeType == PathTreeNodeType::Directory) // lhs is Directory and rhs is Asset
+			{
+				return true;
+			}
+			else // lhs is Asset & rhs is Directory
+			{
+				return false;
+			}
+		});
+	}
+
+	void PathTreeNode::SortChildrenRecursively(const Delegate<bool(PathTreeNode* lhs, PathTreeNode* rhs)>& lessThanComparison)
+	{
+		SortChildren(lessThanComparison);
+
+		for (PathTreeNode* child : children)
+		{
+			child->SortChildrenRecursively(lessThanComparison);
+		}
+	}
+
+	void PathTreeNode::SortChildrenRecursively()
+	{
+		SortChildren();
+
+		for (PathTreeNode* child : children)
+		{
+			child->SortChildrenRecursively();
+		}
+	}
+
 	PathTree::PathTree()
 	{
 		rootNode = new PathTreeNode();
@@ -119,14 +168,14 @@ namespace CE
 		rootNode = nullptr;
 	}
 
-	bool PathTree::AddPath(const Name& path, void* userData, u32 userDataSize)
+	PathTreeNode* PathTree::AddPath(const Name& path, void* userData, u32 userDataSize)
 	{
 		if (!path.IsValid())
-			return false;
+			return nullptr;
 
 		const String& pathStr = path.GetString();
 		if (!pathStr.StartsWith("/"))
-			return false;
+			return nullptr;
 
 		Array<String> components = {};
 		pathStr.Split(Array<String>{ "/" , "\\" }, components);
@@ -148,17 +197,17 @@ namespace CE
 			}
 		}
 
-		return true;
+		return curNode;
 	}
 
-	bool PathTree::AddPath(const Name& path, PathTreeNodeType nodeType, void* userData, u32 userDataSize)
+	PathTreeNode* PathTree::AddPath(const Name& path, PathTreeNodeType nodeType, void* userData, u32 userDataSize)
 	{
 		if (!path.IsValid())
-			return false;
+			return nullptr;
 
 		const String& pathStr = path.GetString();
 		if (!pathStr.StartsWith("/"))
-			return false;
+			return nullptr;
 
 		Array<String> components = {};
 		pathStr.Split(Array<String>{ "/", "\\" }, components);
@@ -172,7 +221,7 @@ namespace CE
 			curNode = curNode->GetOrAddChild(component, nodeType, userData, userDataSize);
 		}
 
-		return true;
+		return curNode;
 	}
 
 	bool PathTree::RemovePath(const Name& path)
@@ -240,5 +289,30 @@ namespace CE
 
 		return curNode;
 	}
-	
+
+	void PathTree::Sort(const Delegate<bool(PathTreeNode* lhs, PathTreeNode* rhs)>& lessThanComparison)
+	{
+		rootNode->SortChildrenRecursively(lessThanComparison);
+	}
+
+	void PathTree::Sort()
+	{
+		Sort([](PathTreeNode* lhs, PathTreeNode* rhs) -> bool
+		{
+			if (lhs->nodeType == rhs->nodeType)
+			{
+				return String::NaturalCompare(lhs->name.GetString(), rhs->name.GetString());
+			}
+			else if (lhs->nodeType == PathTreeNodeType::Directory) // lhs is Directory and rhs is Asset
+			{
+				return true;
+			}
+			else // lhs is Asset & rhs is Directory
+			{
+				return false;
+			}
+		});
+	}
+
+
 } // namespace CE

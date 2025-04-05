@@ -7,7 +7,6 @@
 //  Copyright (c) 2012 Kenneth Laskoski. All rights reserved.
 //
 
-
 int strcmp_natural(const char *a, const char *b)
 {
     if (!a || !b)   // if one doesn't exist, it comes first

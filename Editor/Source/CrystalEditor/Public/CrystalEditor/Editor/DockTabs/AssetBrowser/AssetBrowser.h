@@ -36,6 +36,9 @@ namespace CE::Editor
         FUNCTION()
         void OnLeftExpansionChanged(FExpandableSection* section);
 
+        FUNCTION()
+        void OnAddButtonClicked();
+
         void UpdateBreadCrumbs();
 
         void UpdateAssetGridView();
@@ -54,6 +57,7 @@ namespace CE::Editor
         Array<Ref<FExpandableSection>> leftSections;
 
         Ref<FHorizontalStack> searchBarStack;
+        Ref<FButton> addButton;
 
         Ref<AssetBrowserGridViewModel> gridViewModel = nullptr;
         Ref<AssetBrowserGridView> gridView;
@@ -70,7 +74,7 @@ namespace CE::Editor
         friend class AssetBrowserGridView;
         friend class AssetBrowserItem;
     };
-    
+
 }
 
 #include "AssetBrowser.rtti.h"

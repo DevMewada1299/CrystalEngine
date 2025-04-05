@@ -39,6 +39,12 @@ namespace CE
 
 		void Clone(const PathTreeNode& copy);
 
+		void SortChildren(const Delegate<bool(PathTreeNode* lhs, PathTreeNode* rhs)>& lessThanComparison);
+		void SortChildren();
+
+		void SortChildrenRecursively(const Delegate<bool(PathTreeNode* lhs, PathTreeNode* rhs)>& lessThanComparison);
+		void SortChildrenRecursively();
+
 		inline bool IsTerminal() const
 		{
 			return children.IsEmpty();
@@ -61,8 +67,8 @@ namespace CE
 		PathTree();
 		virtual ~PathTree();
 
-		bool AddPath(const Name& path, void* userData = nullptr, u32 userDataSize = 0);
-		bool AddPath(const Name& path, PathTreeNodeType nodeType, void* userData = nullptr, u32 userDataSize = 0);
+		PathTreeNode* AddPath(const Name& path, void* userData = nullptr, u32 userDataSize = 0);
+		PathTreeNode* AddPath(const Name& path, PathTreeNodeType nodeType, void* userData = nullptr, u32 userDataSize = 0);
 
 		bool RemovePath(const Name& path);
 
@@ -71,6 +77,10 @@ namespace CE
 		PathTreeNode* GetNode(const Name& path);
 
 		inline PathTreeNode* GetRootNode() const { return rootNode; }
+
+		void Sort(const Delegate<bool(PathTreeNode* lhs, PathTreeNode* rhs)>& lessThanComparison);
+
+		void Sort();
 
 	private:
 

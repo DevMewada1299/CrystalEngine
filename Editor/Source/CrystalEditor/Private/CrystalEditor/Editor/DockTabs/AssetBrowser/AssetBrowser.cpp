@@ -64,7 +64,8 @@ namespace CE::Editor
                         .Padding(Vec4(1, 1, 1, 1) * 3)
                         .Style("Button"),
 
-                        FNew(FButton)
+                        FAssignNew(FButton, addButton)
+                        .OnClicked(FUNCTION_BINDING(this, OnAddButtonClicked))
                         .Child(
                             FNew(FHorizontalStack)
                             .ContentVAlign(VAlign::Center)
@@ -238,6 +239,20 @@ namespace CE::Editor
 		        expandableSection->Expanded(false);
 	        }
         }
+    }
+
+    void AssetBrowser::OnAddButtonClicked()
+    {
+        if (!currentPath.IsValid())
+            return;
+        if (!currentPath.GetString().StartsWith("/Game/Assets"))
+            return;
+
+        Ref<EditorMenuPopup> contextMenu = gridView->BuildNoSelectionContextMenu();
+
+        Vec2 popupPos = addButton->GetGlobalPosition() + Vec2(0, addButton->GetComputedSize().y);
+
+        GetContext()->PushLocalPopup(contextMenu.Get(), popupPos, Vec2(), addButton->GetComputedSize());
     }
 
     void AssetBrowser::UpdateBreadCrumbs()

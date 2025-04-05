@@ -37,6 +37,12 @@ namespace CE
         if (event->IsMouseEvent() && !IsInteractionDisabled() && IsVisible())
         {
             FMouseEvent* mouseEvent = static_cast<FMouseEvent*>(event);
+#if PLATFORM_MAC
+            KeyModifier ctrl = KeyModifier::Gui;
+#else
+            KeyModifier ctrl = KeyModifier::Ctrl;
+#endif
+            bool isCtrl = EnumHasAnyFlags(mouseEvent->keyModifiers, ctrl);
 
             if (mouseEvent->type == FEventType::MouseEnter && event->sender == this)
             {
@@ -65,14 +71,20 @@ namespace CE
 
 	                m_OnSelect(this);
 	            }
+                else if (isCtrl)
+                {
+                    buttonState &= ~FSelectableButtonState::Active;
+                    ApplyStyle();
+                }
+
                 if (mouseEvent->isDoubleClick)
                 {
                     m_OnDoubleClick(this);
                 }
                 event->Consume(this);
             }
-            else if (mouseEvent->type == FEventType::MousePress && mouseEvent->buttons == MouseButtonMask::Right && !mouseEvent->isConsumed &&
-                !mouseEvent->isDoubleClick)
+            else if (mouseEvent->type == FEventType::MousePress && mouseEvent->buttons == MouseButtonMask::Right &&
+                !mouseEvent->isConsumed && !mouseEvent->isDoubleClick)
             {
                 if (m_RightClickSelects && !EnumHasFlag(buttonState, FSelectableButtonState::Active))
                 {

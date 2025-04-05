@@ -261,8 +261,18 @@ namespace CE
 			return;
 		}
 
-		cachedPathTree.AddPath(relativePathStr);
-		cachedDirectoryTree.AddPath(relativePathStr);
+		PathTreeNode* pathNode = cachedPathTree.AddPath(relativePathStr);
+		PathTreeNode* directoryNode = cachedDirectoryTree.AddPath(relativePathStr);
+
+		if (pathNode != nullptr && pathNode->parent != nullptr)
+		{
+			pathNode->parent->SortChildren();
+		}
+
+		if (directoryNode != nullptr && directoryNode->parent != nullptr)
+		{
+			directoryNode->parent->SortChildren();
+		}
 
 		for (IAssetRegistryListener* listener : listeners)
 		{
@@ -279,12 +289,22 @@ namespace CE
 		if (pathNode != nullptr)
 		{
 			pathNode->name = newName;
+
+			if (pathNode->parent != nullptr)
+			{
+				pathNode->parent->SortChildren();
+			}
 		}
 
 		PathTreeNode* directoryNode = cachedDirectoryTree.GetNode(originalPath);
 		if (directoryNode != nullptr)
 		{
 			directoryNode->name = newName;
+
+			if (directoryNode->parent != nullptr)
+			{
+				directoryNode->parent->SortChildren();
+			}
 		}
 
 		for (IAssetRegistryListener* listener : listeners)
@@ -542,6 +562,16 @@ namespace CE
 			);
 		}
 
+		// We don't want to sort the root directories: /Game, /Engine, /Editor
+		for (PathTreeNode* child : cachedDirectoryTree.GetRootNode()->children)
+		{
+			child->SortChildrenRecursively();
+		}
+		for (PathTreeNode* child : cachedPathTree.GetRootNode()->children)
+		{
+			child->SortChildrenRecursively();
+		}
+
 		cacheInitialized = true;
 	}
 
@@ -567,8 +597,6 @@ namespace CE
 		{
 			cachedAssetBySourcePath[assetData->sourceAssetPath] = assetData;
 		}
-
-
 	}
 
 	void AssetRegistry::DeleteAssetEntry(const Name& bundleName)
