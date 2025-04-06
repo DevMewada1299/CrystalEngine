@@ -16,7 +16,7 @@ https://discord.gg/TXGWUrFarx
 
 The engine and editor compiles and runs on **Windows (x64)**, Linux (Ubuntu) and Mac (Apple Silicon).
 
-**Update**: I am currently developing this engine on an Apple Silicon MacBook Pro, so I can't guarantee the stability of Windows and Linux builds at the moment. Feel free to go ahead and compile it on your device and share your experience!
+**Update**: I am currently developing this engine on an Apple Silicon MacBook Pro and an x64 Windows PC, so I can't guarantee the stability of Linux builds at the moment. Feel free to go ahead and compile it on your device and share your experience!
 
 ## Building
 

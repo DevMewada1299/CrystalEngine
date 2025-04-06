@@ -2,6 +2,7 @@
 
 namespace CE::Editor
 {
+    static constexpr f32 MinContextMenuWidth = 200;
 
     AssetBrowserGridView::AssetBrowserGridView()
     {
@@ -134,6 +135,7 @@ namespace CE::Editor
 
         Ref<EditorMenuPopup> contextMenu = CreateObject<EditorMenuPopup>(this, "ContextMenu");
 
+        contextMenu->MinWidth(MinContextMenuWidth);
         contextMenu->AutoClose(true);
 
         BuildBasicContextMenu(*contextMenu);
@@ -179,6 +181,7 @@ namespace CE::Editor
         Ref<EditorMenuPopup> contextMenu = CreateObject<EditorMenuPopup>(this, "ContextMenu");
 
         contextMenu->AutoClose(true);
+        contextMenu->MinWidth(MinContextMenuWidth);
 
         contextMenu->Content(
             FNew(FMenuItemSeparator)
@@ -193,7 +196,10 @@ namespace CE::Editor
 	            {
                     owner->CreateNewEmptyDirectory();
 	            }
-            })
+            }),
+
+            FNew(FMenuItemSeparator)
+            .Title("BASIC ASSETS")
         );
 
         return contextMenu;

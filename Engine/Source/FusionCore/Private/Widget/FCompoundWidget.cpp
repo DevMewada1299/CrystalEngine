@@ -207,7 +207,7 @@ namespace CE
     {
         if (m_Child)
         {
-            RemoveChild(m_Child);
+            RemoveChild(m_Child.Get());
         }
     }
 
@@ -218,7 +218,7 @@ namespace CE
 
         if (m_Child)
         {
-            RemoveChild(m_Child);
+            RemoveChild(m_Child.Get());
         }
 
         m_Child = child;
@@ -229,7 +229,7 @@ namespace CE
 
     bool FCompoundWidget::TryRemoveChild(FWidget* child)
     {
-	    if (!child || child != m_Child)
+	    if (!child || child != m_Child.Get())
             return false;
 
         m_Child = nullptr;
@@ -242,7 +242,7 @@ namespace CE
     {
 	    Super::OnChildWidgetDestroyed(child);
 
-        if (child == m_Child)
+        if (child == m_Child.Get())
         {
             TryRemoveChild(child);
         }

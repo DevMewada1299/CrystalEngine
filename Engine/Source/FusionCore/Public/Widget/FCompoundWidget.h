@@ -44,7 +44,7 @@ namespace CE
     private:  // - Private Fields -
 
         FIELD()
-        FWidget* m_Child = nullptr;
+        Ref<FWidget> m_Child = nullptr;
 
     protected:  // - Fusion Fields -
 
@@ -52,7 +52,7 @@ namespace CE
     public: // - Fusion Properties -
 
 
-        FWidget* GetChild() const { return m_Child; }
+        Ref<FWidget> GetChild() const { return m_Child; }
 
         virtual Self& Child(FWidget& childWidget)
         {

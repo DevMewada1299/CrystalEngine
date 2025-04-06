@@ -22,7 +22,7 @@ namespace CE
         intrinsicSize = Vec2(m_MinWidth + m_Padding.left + m_Padding.right,
             m_MinHeight + m_Padding.top + m_Padding.bottom);
 
-        FWidget* child = GetChild();
+        FWidget* child = GetChild().Get();
 
         if (!child || !child->Enabled())
             return;
@@ -43,7 +43,7 @@ namespace CE
         ApplySizeConstraints();
         UpdateLocalTransform();
 
-        FWidget* child = GetChild();
+        FWidget* child = GetChild().Get();
 
         if (!child || !child->Enabled())
             return;
@@ -176,7 +176,7 @@ namespace CE
 
     Rect FScrollBox::GetVerticalScrollBarRect()
     {
-        FWidget* child = GetChild();
+        FWidget* child = GetChild().Get();
         if (!child)
             return Rect();
 
@@ -192,7 +192,7 @@ namespace CE
 
     Rect FScrollBox::GetHorizontalScrollBarRect()
     {
-        FWidget* child = GetChild();
+        FWidget* child = GetChild().Get();
         if (!child)
             return Rect();
 
@@ -282,7 +282,7 @@ namespace CE
 
     void FScrollBox::HandleEvent(FEvent* event)
     {
-        FWidget* child = GetChild();
+        FWidget* child = GetChild().Get();
 
         if (event->IsMouseEvent() && child)
         {
@@ -469,7 +469,7 @@ namespace CE
         if (hitResult == nullptr)
             return nullptr;
 
-        FWidget* child = GetChild();
+        FWidget* child = GetChild().Get();
         if (isVerticalScrollDragged || isHorizontalScrollDragged)
         {
             return this;
@@ -518,7 +518,7 @@ namespace CE
     {
         value = Math::Clamp01(value);
 
-        FWidget* child = GetChild();
+        FWidget* child = GetChild().Get();
         f32 scrollBarSection = m_ScrollBarMargin * 2 + m_ScrollBarWidth;
 
         if (child)
@@ -540,7 +540,7 @@ namespace CE
 
     f32 FScrollBox::NormalizedScrollY()
     {
-        FWidget* child = GetChild();
+        FWidget* child = GetChild().Get();
         f32 scrollBarSection = m_ScrollBarMargin * 2 + m_ScrollBarWidth;
 
         if (child)
@@ -560,7 +560,7 @@ namespace CE
 
     void FScrollBox::ClampTranslation()
     {
-        FWidget* child = GetChild();
+        FWidget* child = GetChild().Get();
         if (!child)
             return;
 
@@ -602,7 +602,7 @@ namespace CE
     {
         value = Math::Clamp01(value);
         
-        FWidget* child = GetChild();
+        FWidget* child = GetChild().Get();
         f32 scrollBarSection = m_ScrollBarMargin * 2 + m_ScrollBarWidth;
 
         if (child && isHorizontalScrollVisible)
@@ -623,7 +623,7 @@ namespace CE
 
     f32 FScrollBox::NormalizedScrollX()
     {
-        FWidget* child = GetChild();
+        FWidget* child = GetChild().Get();
         f32 scrollBarSection = m_ScrollBarMargin * 2 + m_ScrollBarWidth;
 
         if (child && isHorizontalScrollVisible)
