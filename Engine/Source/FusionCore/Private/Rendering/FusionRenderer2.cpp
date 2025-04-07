@@ -1955,10 +1955,6 @@ namespace CE
             auto app = FusionApplication::Get();
 
             String imageName = currentBrush.GetImageName().GetString();
-            if (imageName.EndsWith("CrossIcon"))
-            {
-                String::IsAlphabet('a');
-            }
 
             auto image = app->GetImageAtlas()->FindImage(currentBrush.GetImageName());
             if (!image.IsValid())
@@ -2284,6 +2280,8 @@ namespace CE
         }
         else
         {
+            // Credit: Dear-ImGui
+
             const int indexCount = (numPoints - 2) * 3;
             const int vertexCount = numPoints;
             PrimReserve(vertexCount, indexCount);

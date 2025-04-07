@@ -14,7 +14,6 @@ namespace CE
 
         FBrush downwardArrow = FBrush("/Engine/Resources/Icons/CaretDown");
 
-
         Child(
             FNew(FVerticalStack)
             .Gap(0)
