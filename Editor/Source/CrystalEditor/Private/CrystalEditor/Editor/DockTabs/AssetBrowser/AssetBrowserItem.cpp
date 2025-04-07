@@ -210,7 +210,17 @@ namespace CE::Editor
         if (!assetBrowser)
             return;
 
-        bool success = assetBrowser->RenameDirectory(fullPath, titleInput->Text());
+        bool success = false;
+
+        if (isDirectory)
+        {
+            success = assetBrowser->RenameDirectory(fullPath, titleInput->Text());
+        }
+        else // Asset
+        {
+            success = assetBrowser->RenameAsset(fullPath, titleInput->Text());
+        }
+
         if (!success)
             return;
 

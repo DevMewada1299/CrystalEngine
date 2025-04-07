@@ -20,6 +20,8 @@ namespace CE
 
 		virtual void OnAssetDeleted(const Name& bundleName) {}
 
+		virtual void OnAssetRenamed(const Name& oldName, const Name& newName) {}
+
 		virtual void OnAssetPathTreeUpdated(PathTree& pathTree) {}
 
 	};
@@ -95,6 +97,8 @@ namespace CE
 		void OnDirectoryCreated(const IO::Path& absolutePath);
 
 		void OnDirectoryRenamed(const Name& originalPath, const Name& newName);
+
+		bool OnAssetRenamed(const Name& originalPath, const IO::Path& newAbsolutePath, const Name& newName);
 
 		void OnDirectoryAndAssetsDeleted(const Array<Name>& paths);
 

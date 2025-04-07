@@ -316,12 +316,54 @@ namespace CE
 		}
 	}
 
+	bool AssetRegistry::OnAssetRenamed(const Name& originalPath, const IO::Path& newAbsolutePath, const Name& newName)
+	{
+		PathTreeNode* pathNode = cachedPathTree.GetNode(originalPath);
+		if (pathNode == nullptr)
+			return false;
+
+		Name oldName = pathNode->name;
+		pathNode->name = newName;
+
+		Ref<Bundle> bundle = Bundle::LoadBundleAbsolute(this, newAbsolutePath, LoadBundleArgs{
+			.loadFully = true,
+			.forceReload = false,
+			.destroyOutdatedObjects = false
+		});
+
+		if (bundle == nullptr)
+			return false;
+
+		DetachSubobject(bundle.Get());
+
+		bundle->SetName(newName);
+
+		auto result = Bundle::SaveToDisk(bundle, nullptr, newAbsolutePath);
+
+		// Do NOT BeginDestroy() bundle, because it might be referenced somewhere else!
+		bundle = nullptr;
+
+		if (result != BundleSaveResult::Success)
+			return false;
+
+		for (IAssetRegistryListener* listener : listeners)
+		{
+			if (listener != nullptr)
+			{
+				listener->OnAssetRenamed(oldName, newName);
+				listener->OnAssetPathTreeUpdated(cachedPathTree);
+			}
+		}
+
+		return true;
+	}
+
 	void AssetRegistry::OnDirectoryAndAssetsDeleted(const Array<Name>& paths)
 	{
 		// TODO: Special consideration when deleting assets:
 		// What if they are loaded in memory and referenced by something?
 
-		// TODO: Implement asset hot-reloading & deleting
+		// TODO: Implement asset hot-reloading & safe-deleting
 
 		for (const auto& path : paths)
 		{

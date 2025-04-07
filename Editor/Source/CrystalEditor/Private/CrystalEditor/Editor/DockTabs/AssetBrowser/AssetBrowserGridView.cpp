@@ -28,7 +28,6 @@ namespace CE::Editor
     {
         this->currentPath = directory;
 
-
     }
 
     int AssetBrowserGridView::GetSelectedItemCount()
@@ -67,6 +66,11 @@ namespace CE::Editor
             for (int i = 0; i < currentDirectory->children.GetSize(); i++)
             {
                 AssetBrowserItem* item = nullptr;
+                auto node = currentDirectory->children[i];
+                if (node->parent != nullptr && node->parent->parent == nullptr && node->name == "Editor")
+                {
+                    continue;
+                }
 
                 AddChild(
                     FAssignNew(AssetBrowserItem, item)
@@ -199,7 +203,18 @@ namespace CE::Editor
             }),
 
             FNew(FMenuItemSeparator)
-            .Title("BASIC ASSETS")
+            .Title("BASIC ASSETS"),
+
+            NewMenuItem()
+            .Text("Material")
+            .Icon(FBrush("/Editor/Assets/Icons/Material"))
+            .OnClick([this]
+            {
+                if (auto owner = m_Owner.Lock())
+                {
+                    owner->CreateNewAsset<CE::Material>();
+                }
+            })
         );
 
         return contextMenu;

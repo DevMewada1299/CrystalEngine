@@ -45,8 +45,18 @@ namespace CE::Editor
 
         void CreateNewEmptyDirectory();
 
+        bool CreateNewAsset(SubClass<Asset> assetType);
+
+        template<typename TAsset> requires TIsBaseClassOf<Asset, TAsset>::Value
+        bool CreateNewAsset()
+        {
+            return CreateNewAsset(TAsset::StaticClass());
+        }
+
         bool CanRenameDirectory(const CE::Name& originalPath, const CE::Name& newName);
         bool RenameDirectory(const CE::Name& originalPath, const CE::Name& newName);
+
+        bool RenameAsset(const CE::Name& originalPath, const CE::Name& newName);
 
         void DeleteDirectoriesAndAssets(const Array<CE::Name>& itemPaths);
 

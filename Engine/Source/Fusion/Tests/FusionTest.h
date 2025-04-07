@@ -127,10 +127,10 @@ namespace WidgetTests
 
 		FModelIndex GetParent(const FModelIndex& index) override
 		{
-			if (!index.IsValid() || index.GetDataPtr() == nullptr)
+			if (!index.IsValid() || !index.GetData().HasValue())
 				return {};
 
-			PathTreeNode* node = (PathTreeNode*)index.GetDataPtr();
+			PathTreeNode* node = (PathTreeNode*)index.GetData().GetValue<PathTreeNode*>();
 			if (node->parent == nullptr)
 				return {};
 
@@ -152,7 +152,7 @@ namespace WidgetTests
 				return CreateIndex(row, column, model->GetRootNode()->children[row]);
 			}
 
-			PathTreeNode* node = (PathTreeNode*)parent.GetDataPtr();
+			PathTreeNode* node = (PathTreeNode*)parent.GetData().GetValue<PathTreeNode*>();
 			if (node == nullptr)
 				return {};
 
@@ -166,7 +166,7 @@ namespace WidgetTests
 				return model->GetRootNode()->children.GetSize();
 			}
 
-			PathTreeNode* node = (PathTreeNode*)parent.GetDataPtr();
+			PathTreeNode* node = (PathTreeNode*)parent.GetData().GetValue<PathTreeNode*>();
 			if (node == nullptr)
 				return 0;
 
@@ -187,7 +187,7 @@ namespace WidgetTests
 			}
 			else
 			{
-				PathTreeNode* parentNode = (PathTreeNode*)parent.GetDataPtr();
+				PathTreeNode* parentNode = (PathTreeNode*)parent.GetData().GetValue<PathTreeNode*>();
 
 				if (parentNode != nullptr)
 				{

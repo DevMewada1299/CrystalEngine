@@ -135,12 +135,14 @@ namespace CE::Editor
             return 0;
 
         PathTreeNode* parentNode = nullptr;
+        int subtraction = 0;
 
         if (!parent.IsValid())
         {
             AssetRegistry* registry = AssetManager::Get()->GetRegistry();
 
             parentNode = registry->GetCachedDirectoryPathTree().GetRootNode();
+            subtraction = 1; // Hide Editor assets
         }
         else
         {
@@ -152,7 +154,7 @@ namespace CE::Editor
             return 0;
         }
 
-        return parentNode->children.GetSize();
+        return parentNode->children.GetSize() - subtraction;
     }
 
     u32 AssetBrowserTreeViewModel::GetColumnCount(const FModelIndex& parent)

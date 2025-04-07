@@ -35,6 +35,8 @@ namespace CE::Editor
             .ArrowEnabled(true)
             .IconEnabled(true)
             .IconBackground(FBrush("/Editor/Assets/Icons/Folder"))
+            .IconWidth(14)
+            .IconHeight(14)
             .ContentPadding(Vec4(1.5f, 2, 1.5f, 2) * 2)
             .FontSize(11)
             .Padding(Vec4())

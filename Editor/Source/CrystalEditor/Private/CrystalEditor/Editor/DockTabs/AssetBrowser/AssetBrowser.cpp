@@ -26,6 +26,7 @@ namespace CE::Editor
             .ContentVAlign(VAlign::Fill)
             (
                 FNew(FStyledWidget)
+                .ClipChildren(true)
                 .Padding(Vec4(1, 1, 1, 1) * 5)
                 .FillRatio(0.2f)
                 .VAlign(VAlign::Fill)
@@ -273,10 +274,7 @@ namespace CE::Editor
             breadCrumbsContainer->AddChild(
                 FNew(FTextButton)
                 .Text("/")
-                .OnClicked([this]
-                {
-                    SetCurrentPath("/");
-                })
+                .Interactable(false)
                 .Style("Button.Icon")
                 .Padding(Vec4(1, 1, 1, 1) * 5.0f)
             );
@@ -295,10 +293,7 @@ namespace CE::Editor
             breadCrumbsContainer->AddChild(
                 FNew(FTextButton)
                 .Text("/")
-                .OnClicked([pathIterator, this]
-                {
-                    SetCurrentPath(pathIterator);
-                })
+                .Interactable(false)
                 .Style("Button.Icon")
                 .Padding(Vec4(1, 1, 1, 1) * 5.0f)
             );
@@ -379,6 +374,44 @@ namespace CE::Editor
         }
     }
 
+    bool AssetBrowser::CreateNewAsset(SubClass<Asset> assetType)
+    {
+        if (assetType == nullptr)
+            return false;
+
+        if (assetType == CE::Scene::StaticClass())
+        {
+
+        }
+        else // Most other asset types
+        {
+            String assetTypeName = assetType->GetName().GetLastComponent();
+            String baseName = "New" + assetTypeName;
+            IO::Path absolutePath = gProjectPath / currentPath.GetString().GetSubstring(1) / (baseName + ".casset");
+            int i = 0;
+
+            while (absolutePath.Exists())
+            {
+                baseName = "New" + assetTypeName + "_" + i;
+                absolutePath = gProjectPath / currentPath.GetString().GetSubstring(1) / (baseName + ".casset");
+                i++;
+            }
+
+            CE::Name outputPath = currentPath.GetString() + "/" + baseName;
+
+            Ref<Bundle> bundle = CreateObject<Bundle>(this, baseName);
+            Ref<Asset> assetInstance = CreateObject<Asset>(bundle.Get(), assetTypeName, OF_NoFlags, assetType);
+
+            auto result = Bundle::SaveToDisk(bundle, nullptr, outputPath);
+
+            bundle->BeginDestroy();
+            bundle = nullptr;
+            assetInstance = nullptr;
+
+            return result == BundleSaveResult::Success;
+        }
+    }
+
     bool AssetBrowser::CanRenameDirectory(const CE::Name& originalPath, const CE::Name& newName)
     {
         AssetRegistry* registry = AssetRegistry::Get();
@@ -417,6 +450,28 @@ namespace CE::Editor
         IO::Path::Rename(absolutePath, newPath);
 
         assetManager->OnDirectoryRenamed(originalPath, newName);
+
+        return true;
+    }
+
+    bool AssetBrowser::RenameAsset(const CE::Name& originalPath, const CE::Name& newName)
+    {
+        AssetRegistry* registry = AssetRegistry::Get();
+        if (!registry)
+            return false;
+
+        EditorAssetManager* assetManager = EditorAssetManager::Get();
+        if (!assetManager)
+            return false;
+
+        IO::Path absolutePath = gProjectPath / (originalPath.GetString().GetSubstring(1) + ".casset");
+        IO::Path newPath = absolutePath.GetParentPath() / (newName.GetString() + ".casset");
+        if (newPath.Exists() || !absolutePath.Exists())
+            return false;
+
+        IO::Path::Rename(absolutePath, newPath);
+
+        assetManager->OnAssetRenamed(originalPath, newPath, newName);
 
         return true;
     }

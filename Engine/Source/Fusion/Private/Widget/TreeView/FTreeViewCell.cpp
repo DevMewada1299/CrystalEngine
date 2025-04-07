@@ -51,6 +51,18 @@ namespace CE
         ArrowExpanded(false);
     }
 
+    FTreeViewCell::Self& FTreeViewCell::IconWidth(f32 value)
+    {
+        icon->Width(value);
+        return *this;
+    }
+
+    FTreeViewCell::Self& FTreeViewCell::IconHeight(f32 value)
+    {
+        icon->Height(value);
+        return *this;
+    }
+
     bool FTreeViewCell::ArrowExpanded()
     {
         return abs(arrowIcon->Angle()) < 1;

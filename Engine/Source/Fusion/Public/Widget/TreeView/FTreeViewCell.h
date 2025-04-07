@@ -38,6 +38,9 @@ namespace CE
         FUSION_PROPERTY_WRAPPER2(Enabled, icon, IconEnabled);
         FUSION_PROPERTY_WRAPPER2(Background, icon, IconBackground);
 
+        Self& IconWidth(f32 value);
+        Self& IconHeight(f32 value);
+
         FUSION_EVENT(ScriptDelegate<void()>, OnToggleExpansion);
 
         bool ArrowExpanded();

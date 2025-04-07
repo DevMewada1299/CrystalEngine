@@ -30,6 +30,7 @@ namespace CE
                     m_OnExpansionChanged.Broadcast(this);
                 })
                 .Background(Color::Green())
+                .ClipChildren(true)
                 .Child(
                     FNew(FHorizontalStack)
                     .Gap(10)

@@ -51,6 +51,11 @@ namespace CE::Editor
 		assetRegistry->OnDirectoryRenamed(originalPath, newName);
     }
 
+    void EditorAssetManager::OnAssetRenamed(const Name& originalPath, const IO::Path& newAbsolutePath, const Name& newName)
+    {
+		assetRegistry->OnAssetRenamed(originalPath, newAbsolutePath, newName);
+    }
+
     void EditorAssetManager::OnDirectoryAndAssetsDeleted(const Array<Name>& paths)
     {
 		assetRegistry->OnDirectoryAndAssetsDeleted(paths);
