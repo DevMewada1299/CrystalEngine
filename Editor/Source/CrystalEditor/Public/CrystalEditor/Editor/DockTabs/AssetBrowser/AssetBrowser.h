@@ -26,6 +26,8 @@ namespace CE::Editor
 
         void SetCurrentPath(const CE::Name& path);
 
+        void OpenAsset(const CE::Name& path);
+
         bool IsCurrentDirectoryReadOnly() const;
 
     protected: // - Internal -

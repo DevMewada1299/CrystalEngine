@@ -79,6 +79,14 @@ namespace CE
 		}
 	}
 
+	void SceneSubsystem::AddScene(CE::Scene* scene)
+	{
+    	if (scene == nullptr || otherScenes.Exists(scene))
+    		return;
+
+    	otherScenes.Add(scene);
+	}
+
 	void SceneSubsystem::AddCallbacks(ISceneSubsystemCallbacks* callbacks)
 	{
 		callbackHandlers.Add(callbacks);

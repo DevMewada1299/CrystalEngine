@@ -199,6 +199,29 @@ namespace CE
 			return;
 		}
 
+    	for (FGameWindow* renderViewport : renderViewports)
+    	{
+    		RPI::Scene* rpiScene = renderViewport->GetScene();
+    		CE::Scene* scene = sceneSubsystem->FindRpiSceneOwner(rpiScene);
+    		if (scene == nullptr || !scene->IsEnabled() || !renderViewport->IsVisibleInHierarchy())
+    		{
+    			// A viewport that was previously visible is no longer visible!
+    			if (previouslyVisibleViewports.Exists(renderViewport->GetUuid()))
+    			{
+    				RebuildFrameGraph();
+    				return;
+    			}
+    			continue;
+    		}
+
+    		// A viewport that was previously disabled is now enabled!
+    		if (!previouslyVisibleViewports.Exists(renderViewport->GetUuid()))
+    		{
+    			RebuildFrameGraph();
+    			return;
+    		}
+    	}
+
 		curImageIndex = imageIndex;
 
 		// ---------------------------------------------------------
@@ -344,7 +367,12 @@ namespace CE
 		rebuildFrameGraph = false;
 		recompileFrameGraph = true;
 
-		// TODO: Implement multi scene support
+    	if (renderViewports.GetSize() == 2)
+    	{
+    		String::IsAlphabet('a');
+    	}
+
+		// TODO: Implement multi scene support, and also multi-viewport support
 
 		RPI::RPISystem::Get().SimulationTick(curImageIndex);
 		RPI::RPISystem::Get().RenderTick(curImageIndex);
@@ -361,6 +389,8 @@ namespace CE
 				app->EmplaceFrameAttachments();
 
 				// Cleanup first
+				previouslyVisibleViewports.Clear();
+
 				for (FGameWindow* renderViewport : renderViewports)
 				{
 					FNativeContext* nativeContext = static_cast<FNativeContext*>(renderViewport->GetContext());
@@ -381,6 +411,9 @@ namespace CE
 						continue;
 					if (!renderViewport->IsVisibleInHierarchy())
 						continue;
+
+					previouslyVisibleViewports.Add(renderViewport->GetUuid());
+
 					FNativeContext* nativeContext = static_cast<FNativeContext*>(renderViewport->GetContext());
 					PlatformWindow* platformWindow = nativeContext->GetPlatformWindow();
 					if (platformWindow && (platformWindow->IsHidden() || platformWindow->IsMinimized()))

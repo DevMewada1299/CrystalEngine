@@ -65,6 +65,10 @@
 #include "CrystalEditor/Editor/SceneEditor/SceneOutliner/SceneOutlinerTab.h"
 #include "CrystalEditor/Editor/SceneEditor/SceneEditor.h"
 
+// - Material Editor -
+
+#include "CrystalEditor/Editor/MaterialEditor/MaterialEditor.h"
+
 // - Crystal Editor Window -
 
 #include "CrystalEditor/CrystalEditorWindow.h"

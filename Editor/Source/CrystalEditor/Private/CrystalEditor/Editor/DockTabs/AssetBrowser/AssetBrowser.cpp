@@ -381,7 +381,7 @@ namespace CE::Editor
 
         if (assetType == CE::Scene::StaticClass())
         {
-
+            return false;
         }
         else // Most other asset types
         {
@@ -532,6 +532,29 @@ namespace CE::Editor
 
         treeView->SelectionModel()->Select(index);
         treeView->ExpandRow(treeViewModel->GetParent(index), true);
+    }
+
+    void AssetBrowser::OpenAsset(const CE::Name& path)
+    {
+        AssetRegistry* registry = AssetRegistry::Get();
+        if (!registry)
+            return;
+
+        PathTreeNode* node = registry->GetCachedPathTree().GetNode(path);
+        if (!node || node->nodeType != PathTreeNodeType::Asset)
+            return;
+
+        // TODO: Design a more flexible way to register Editor's for asset types:
+        // MaterialEditor -> CE::MaterialInterface
+        // Use EditorBase class as base class for registration
+
+        CE::Name fullPath = node->GetFullPath();
+        AssetData* assetData = registry->GetPrimaryAssetByPath(fullPath);
+
+        if (assetData->assetClassPath == TYPENAME(CE::Material))
+        {
+            MaterialEditor::Open(path);
+        }
     }
 
 

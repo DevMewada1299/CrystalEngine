@@ -48,6 +48,8 @@ namespace CE
 
 		void LoadScene(CE::Scene* scene);
 
+		void AddScene(CE::Scene* scene);
+
 		CE::Scene* GetActiveScene();
 
 		void AddRenderViewport(FGameWindow* viewport);

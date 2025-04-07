@@ -98,6 +98,7 @@ namespace CE::Editor
                                 else if (curNode->nodeType == PathTreeNodeType::Asset)
                                 {
                                     // Do nothing when double-clicking an asset
+                                    owner->OpenAsset(path);
                                 }
                             }
                         }

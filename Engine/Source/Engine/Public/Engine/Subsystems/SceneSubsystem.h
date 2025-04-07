@@ -22,6 +22,8 @@ namespace CE
 
 		void LoadScene(CE::Scene* scene);
 
+    	void AddScene(CE::Scene* scene);
+
 		void AddCallbacks(ISceneSubsystemCallbacks* callbacks);
 		void RemoveCallbacks(ISceneSubsystemCallbacks* callbacks);
 

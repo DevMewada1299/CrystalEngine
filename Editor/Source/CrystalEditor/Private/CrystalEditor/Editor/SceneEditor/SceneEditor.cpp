@@ -263,82 +263,83 @@ namespace CE::Editor
 
     void SceneEditor::ConstructDockspaces()
     {
-
         (*content)
-            .Child(
-                FAssignNew(FSplitBox, rootSplitBox)
-                .Direction(FSplitDirection::Horizontal)
-                .HAlign(HAlign::Fill)
+        .Child(
+            FAssignNew(FSplitBox, rootSplitBox)
+            .Direction(FSplitDirection::Horizontal)
+            .HAlign(HAlign::Fill)
+            .VAlign(VAlign::Fill)
+            (
+                FNew(FSplitBox)
+                .Direction(FSplitDirection::Vertical)
                 .VAlign(VAlign::Fill)
+                .FillRatio(0.75f)
                 (
-                    FNew(FSplitBox)
-                    .Direction(FSplitDirection::Vertical)
-                    .VAlign(VAlign::Fill)
-                    .FillRatio(0.75f)
-                    (
-                        FAssignNew(EditorMinorDockspace, center)
-                        .DockTabs(
-                            FAssignNew(EditorViewportTab, viewportTab)
-                            
-                        )
-                        .HAlign(HAlign::Fill)
-                        .FillRatio(0.6f),
+                    FAssignNew(EditorMinorDockspace, center)
+                    .DockTabs(
+                        FAssignNew(EditorViewportTab, viewportTab)
 
-                        FAssignNew(EditorMinorDockspace, bottom)
-                        .DockTabs(
-                            FAssignNew(AssetBrowser, assetBrowser),
-
-                            FNew(EditorMinorDockTab)
-                            .Title("Logs")
-                            .Content(
-                                FNew(FVerticalStack)
-                                (
-                                    FNew(FTextButton)
-                                    .Text("Print Fusion Memory FootPrint")
-                                    .OnClicked([]
-                                    {
-                                        u64 footprint = FusionApplication::Get()->ComputeMemoryFootprint();
-                                        CE_LOG(Info, All, "Memory Footprint: {} KB", footprint / 1024);
-                                    })
-                                )
-                            )
-
-                        )
-                        .HAlign(HAlign::Fill)
-                        .FillRatio(0.4f)
-                    ),
-
-                    FNew(FSplitBox)
-                    .Direction(FSplitDirection::Vertical)
-                    .VAlign(VAlign::Fill)
-                    .FillRatio(0.25f)
-                    (
-                        FAssignNew(EditorMinorDockspace, rightTop)
-                        .DockTabs(
-                            FAssignNew(SceneOutlinerTab, sceneOutlinerTab)
-
-                        )
-                        .HAlign(HAlign::Fill)
-                        .FillRatio(0.3f),
-
-                        FAssignNew(EditorMinorDockspace, rightBottom)
-                        .DockTabs(
-                            FAssignNew(DetailsTab, detailsTab),
-
-                            FNew(EditorMinorDockTab)
-                            .Title("History")
-
-                        )
-                        .HAlign(HAlign::Fill)
-                        .FillRatio(0.7f)
                     )
+                    .HAlign(HAlign::Fill)
+                    .FillRatio(0.6f),
+
+                    FAssignNew(EditorMinorDockspace, bottom)
+                    .DockTabs(
+                        FAssignNew(AssetBrowser, assetBrowser),
+
+                        FNew(EditorMinorDockTab)
+                        .Title("Logs")
+                        .Content(
+                            FNew(FVerticalStack)
+                            (
+                                FNew(FTextButton)
+                                .Text("Print Fusion Memory FootPrint")
+                                .OnClicked([]
+                                {
+                                    u64 footprint = FusionApplication::Get()->ComputeMemoryFootprint();
+                                    CE_LOG(Info, All, "Memory Footprint: {} KB", footprint / 1024);
+                                })
+                            )
+                        )
+
+                    )
+                    .HAlign(HAlign::Fill)
+                    .FillRatio(0.4f)
+                ),
+
+                FNew(FSplitBox)
+                .Direction(FSplitDirection::Vertical)
+                .VAlign(VAlign::Fill)
+                .FillRatio(0.25f)
+                (
+                    FAssignNew(EditorMinorDockspace, rightTop)
+                    .DockTabs(
+                        FAssignNew(SceneOutlinerTab, sceneOutlinerTab)
+
+                    )
+                    .HAlign(HAlign::Fill)
+                    .FillRatio(0.3f),
+
+                    FAssignNew(EditorMinorDockspace, rightBottom)
+                    .DockTabs(
+                        FAssignNew(DetailsTab, detailsTab),
+
+                        FNew(EditorMinorDockTab)
+                        .Title("History")
+
+                    )
+                    .HAlign(HAlign::Fill)
+                    .FillRatio(0.7f)
                 )
             )
-    		.Padding(Vec4(0, 5, 0, 0));
+        )
+    	.Padding(Vec4(0, 5, 0, 0));
 
         detailsTab->SetOwnerEditor(this);
         sceneOutlinerTab->SetOwnerEditor(this);
         viewportTab->SetOwnerEditor(this);
+
+        viewportTab->GetViewport()->SetName("SceneEditorViewport");
 
         sceneOutlinerTab->treeView->SelectionModel()->OnSelectionChanged(FUNCTION_BINDING(this, OnSelectionChanged));
     }

@@ -81,6 +81,8 @@ namespace CE
 
 		Array<FGameWindow*> renderViewports;
 
+		HashSet<Uuid> previouslyVisibleViewports;
+
 		// - Frame Graph -
 
 		RHI::FrameScheduler* scheduler = nullptr;

@@ -158,6 +158,13 @@ namespace CE
 		sceneSubsystem->LoadScene(scene);
 	}
 
+	void Engine::AddScene(CE::Scene* scene)
+	{
+		SceneSubsystem* sceneSubsystem = GetSubsystem<SceneSubsystem>();
+
+		sceneSubsystem->AddScene(scene);
+	}
+
 	CE::Scene* Engine::GetActiveScene()
 	{
 		SceneSubsystem* sceneSubsystem = GetSubsystem<SceneSubsystem>();
