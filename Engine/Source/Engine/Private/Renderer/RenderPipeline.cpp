@@ -23,6 +23,8 @@ namespace CE
             renderer->RebuildFrameGraph();
         }
 
+        renderPipeline->isDirty = true;
+
         renderPipeline->name = GetName();
         renderPipeline->uuid = GetUuid();
 

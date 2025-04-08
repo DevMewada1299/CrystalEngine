@@ -81,9 +81,13 @@ namespace CE::RPI
 
 		void SetSkyboxCubeMap(RPI::Texture* skyboxCubeMap, RPI::Texture* skyboxIrradiance);
 
+		void SetName(const Name& name) { this->name = name; }
+
 	private:
 
 		bool needsLookupTableRebuild = true;
+
+		CE::Name name = "Scene";
 
 		HashMap<RHI::DrawListTag, PipelineStateList> pipelineLookupMap{};
 

@@ -124,6 +124,7 @@ namespace CE
             auto materialMap = GetRpiMaterialMap();
 
             RPI::ModelHandleDescriptor descriptor{};
+            descriptor.debugName = staticMesh->GetName();
             descriptor.model = model;
             descriptor.originalModel = staticMesh->GetModelAsset().Get();
 

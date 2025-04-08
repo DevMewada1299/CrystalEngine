@@ -37,6 +37,8 @@ namespace CE::RHI
 
 		void SetDrawArguments(const DrawArguments& drawArguments);
 
+		void SetDebugName(const Name& name);
+
 		void AddScissorState(const ScissorState& scissorState);
 		void AddViewportState(const ViewportState& viewportState);
 
@@ -51,6 +53,8 @@ namespace CE::RHI
 		SIZE_T AllocateOffset(SIZE_T byteCount, SIZE_T byteAlignment);
 
 		IAllocator* allocator = nullptr;
+
+		Name debugName;
 
 		DrawArguments drawArguments;
         DrawListMask drawListMask{};

@@ -35,6 +35,10 @@ namespace CE::RPI
 
         RPI::Material* GetMaterial() const { return material; }
 
+        const Name& GetDebugName() const { return debugName; }
+
+        void SetDebugName(const Name& debugName) { this->debugName = debugName; }
+
     private:
 
         void Move(MeshDrawPacket& move);
@@ -42,6 +46,8 @@ namespace CE::RPI
         void CopyFrom(const MeshDrawPacket& from);
 
         void DoUpdate(RPI::Scene* scene);
+
+        Name debugName = "";
 
         Ptr<RHI::DrawPacket> drawPacket = nullptr;
 

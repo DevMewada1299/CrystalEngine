@@ -26,6 +26,8 @@ namespace CE::RHI
 		inline SIZE_T GetDrawItemCount() { return drawItemCount; }
 
 		inline DrawListTag GetDrawListTag(int index) const { return drawListTags[index]; }
+
+		Name debugName;
         
         DrawListMask drawListMask{};
 

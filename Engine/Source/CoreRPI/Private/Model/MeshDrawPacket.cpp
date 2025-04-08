@@ -122,6 +122,8 @@ namespace CE::RPI
 
 		builder.AddShaderResourceGroup(objectSrg);
 
+		builder.SetDebugName(debugName);
+
 		for (int i = 0; i < perDrawSrgs.GetSize(); ++i)
 		{
 			delete perDrawSrgs[i]; perDrawSrgs[i] = nullptr;

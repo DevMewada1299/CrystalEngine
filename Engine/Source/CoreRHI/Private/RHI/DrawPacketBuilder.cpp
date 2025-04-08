@@ -35,6 +35,11 @@ namespace CE::RHI
 		this->drawArguments = args;
 	}
 
+	void DrawPacketBuilder::SetDebugName(const Name& name)
+	{
+		this->debugName = name;
+	}
+
 	void DrawPacketBuilder::AddScissorState(const ScissorState& scissorState)
 	{
 		if (scissors.GetSize() >= scissors.GetCapacity())
@@ -166,7 +171,8 @@ namespace CE::RHI
         auto drawItems = reinterpret_cast<DrawItem*>(allocationData + drawItemsOffset);
         auto drawListTags = reinterpret_cast<DrawListTag*>(allocationData + drawListTagsOffset);
         auto drawFilterMasks = reinterpret_cast<DrawFilterMask*>(allocationData + drawFilterMasksOffset);
-        
+
+		drawPacket->debugName = debugName;
         drawPacket->drawItems = drawItems;
         drawPacket->drawListTags = drawListTags;
         drawPacket->drawFilterMasks = drawFilterMasks;
@@ -182,6 +188,7 @@ namespace CE::RHI
             drawFilterMasks[i] = drawRequest.drawFilterMask;
             
             DrawItem& drawItem = drawItems[i];
+        	drawItem.debugName = debugName;
             drawItem.enabled = true; // TODO: Add enabled flag
             drawItem.indexBufferView = indexBufferViews;
             drawItem.vertexBufferViewCount = 0;

@@ -70,6 +70,8 @@ namespace CE::RHI
 	{
 	public:
 
+		Name debugName;
+
 		DrawArguments arguments{};
 
 		u8 stencilRef = 0;

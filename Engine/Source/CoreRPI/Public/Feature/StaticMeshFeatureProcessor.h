@@ -12,6 +12,8 @@ namespace CE::RPI
 	{
 	public:
 
+		Name debugName;
+
 		Model* model = nullptr;
 
 		WeakRef<ModelAsset> originalModel = nullptr;
@@ -46,6 +48,7 @@ namespace CE::RPI
 
 	struct ModelHandleDescriptor
 	{
+		Name debugName = "Model";
 		Model* model = nullptr;
 		Ref<ModelAsset> originalModel = nullptr;
 	};

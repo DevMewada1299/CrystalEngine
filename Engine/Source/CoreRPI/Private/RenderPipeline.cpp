@@ -46,6 +46,8 @@ namespace CE::RPI
 	
     void RenderPipeline::ImportScopeProducers(RHI::FrameScheduler* scheduler)
     {
+		Array<RHI::IScopeProducer*> scopeProducers;
+
 		std::function<void(Pass*)> addScopesRecursively = [&](Pass* currentPass)
 			{
 				if (currentPass == nullptr)
@@ -63,11 +65,10 @@ namespace CE::RPI
 				}
 
 				scheduler->AddScopeProducer(currentPass);
+				scopeProducers.Add(currentPass);
 			};
 
 		addScopesRecursively(passTree->rootPass);
-
-		const auto& scopeProducers = scheduler->GetScopeProducers();
 
 		for (int i = 0; i < scopeProducers.GetSize(); i++)
 		{

@@ -60,8 +60,6 @@ namespace CE::RPI
 
 	void ModelDataInstance::Deinit(StaticMeshFeatureProcessor* fp)
 	{
-		// TODO: Set objectBuffer destruction to queue instead of deleting it immediately
-
 		for (auto& objectBuffer : objectBuffers)
 		{
 			RPISystem::Get().QueueDestroy(objectBuffer);
@@ -125,6 +123,7 @@ namespace CE::RPI
 			objectSrgList.Add(objectSrg);
 
 			RPI::MeshDrawPacket& packet = drawPacketList.EmplaceBack(lod, i, objectSrg, material);
+			packet.SetDebugName(debugName);
 			
 			packet.SetStencilRef(0);
 			packet.Update(scene, false);
@@ -157,6 +156,7 @@ namespace CE::RPI
 	ModelHandle StaticMeshFeatureProcessor::AcquireMesh(const ModelHandleDescriptor& modelHandleDescriptor, const CustomMaterialMap& materialMap)
 	{
 		ModelHandle handle = modelInstances.Insert({});
+		handle->debugName = modelHandleDescriptor.debugName;
 		handle->model = modelHandleDescriptor.model;
 		handle->originalModel = modelHandleDescriptor.originalModel;
 		handle->scene = this->scene;

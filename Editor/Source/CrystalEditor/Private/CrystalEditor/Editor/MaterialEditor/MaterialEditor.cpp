@@ -71,16 +71,16 @@ namespace CE::Editor
             aluminumMaterial->ApplyProperties();
         }
 
-        Ref<StaticMesh> sphereMesh = CreateObject<StaticMesh>(viewportScene.Get(), "SphereMesh");
+        Ref<StaticMesh> sphereMesh = CreateObject<StaticMesh>(viewportScene.Get(), "Mat_SphereMesh");
         {
-            RPI::ModelAsset* sphereModel = CreateObject<RPI::ModelAsset>(sphereMesh.Get(), "SphereModel");
+            RPI::ModelAsset* sphereModel = CreateObject<RPI::ModelAsset>(sphereMesh.Get(), "Mat_SphereModel");
             RPI::ModelLodAsset* sphereLodAsset = RPI::ModelLodAsset::CreateSphereAsset(sphereModel);
             sphereModel->AddModelLod(sphereLodAsset);
 
             sphereMesh->SetModelAsset(sphereModel);
         }
 
-        Ref<StaticMeshActor> sphereActor = CreateObject<StaticMeshActor>(viewportScene.Get(), "SphereMesh");
+        Ref<StaticMeshActor> sphereActor = CreateObject<StaticMeshActor>(viewportScene.Get(), "Mat_SphereMesh");
         viewportScene->AddActor(sphereActor.Get());
         {
             StaticMeshComponent* meshComponent = sphereActor->GetMeshComponent();
@@ -90,11 +90,11 @@ namespace CE::Editor
             meshComponent->SetMaterial(aluminumMaterial, 0, 0);
         }
 
-        Ref<CameraActor> camera = CreateObject<CameraActor>(viewportScene.Get(), "Camera");
+        Ref<CameraActor> camera = CreateObject<CameraActor>(viewportScene.Get(), "Mat_Camera");
         camera->GetCameraComponent()->SetLocalPosition(Vec3(0, 0, 0));
         viewportScene->AddActor(camera.Get());
 
-        Ref<StaticMeshActor> skyboxActor = CreateObject<StaticMeshActor>(viewportScene.Get(), "SkyboxActor");
+        Ref<StaticMeshActor> skyboxActor = CreateObject<StaticMeshActor>(viewportScene.Get(), "Mat_SkyboxActor");
         viewportScene->AddActor(skyboxActor.Get());
         {
             StaticMeshComponent* skyboxMeshComponent = skyboxActor->GetMeshComponent();
@@ -104,7 +104,7 @@ namespace CE::Editor
             skyboxMeshComponent->SetLocalScale(Vec3(1, 1, 1) * 1000);
 
             {
-                Ref<CE::Material> skyboxMaterial = CreateObject<CE::Material>(skyboxMeshComponent, "Material");
+                Ref<CE::Material> skyboxMaterial = CreateObject<CE::Material>(skyboxMeshComponent, "Mat_Material");
                 skyboxMaterial->SetShader(skyboxShader.Get());
                 skyboxMeshComponent->SetMaterial(skyboxMaterial.Get(), 0, 0);
 
@@ -113,8 +113,11 @@ namespace CE::Editor
             }
         }
 
-        gEditor->AddRenderViewport(viewportTab->GetViewport());
+        // TODO: For debugging only
+        viewportScene->GetRpiScene()->SetName("MaterialScene");
+
         gEngine->AddScene(viewportScene.Get());
+        gEditor->AddRenderViewport(viewportTab->GetViewport());
     }
 
     Ref<MaterialEditor> MaterialEditor::Open(const CE::Name& materialAssetPath)

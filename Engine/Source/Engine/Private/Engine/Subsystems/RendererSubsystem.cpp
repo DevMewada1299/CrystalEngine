@@ -351,6 +351,8 @@ namespace CE
 
 						if (passDrawTag.IsValid() && viewTag.IsValid() && scopeId.IsValid())
 						{
+							// TODO: Fix this for multi-scene setups. Currently it grabs ALL of the draw items based on a tag.
+							// Which means it'll grab DrawItems from multiple scenes!
 							scheduler->SetScopeDrawList(scopeId, &drawList.GetDrawListForTag(passDrawTag));
 						}
 					});

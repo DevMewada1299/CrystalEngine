@@ -201,6 +201,14 @@ namespace CE::RPI
 
 		shaderResourceGroup->FlushBindings();
 
+		for (RenderPipeline* renderPipeline : renderPipelines)
+		{
+			if (renderPipeline->isDirty)
+			{
+				needsLookupTableRebuild = true;
+			}
+		}
+
 		if (needsLookupTableRebuild)
 		{
 			RebuildPipelineLookupTable();
@@ -331,6 +339,8 @@ namespace CE::RPI
 		{
 			if (!renderPipeline)
 				continue;
+
+			renderPipeline->isDirty = false;
 			
 			renderPipeline->passTree->IterateRecursively([&](Pass* pass)
 				{

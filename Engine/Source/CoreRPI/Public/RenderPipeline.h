@@ -61,6 +61,8 @@ namespace CE::RPI
 		/// @brief The pass tree hierarchy. Pipeline owns & manages the passes.
 		PassTree* passTree = nullptr;
 
+		bool isDirty = true;
+
 		Array<Ptr<PassAttachment>> attachments{};
 
 #if PAL_TRAIT_BUILD_TESTS
