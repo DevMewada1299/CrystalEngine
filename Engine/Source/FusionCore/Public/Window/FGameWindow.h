@@ -16,6 +16,11 @@ namespace CE
 
         bool IsEmbeddedViewport() const;
 
+        RHI::DrawListContext& GetDrawListContext() { return drawList; }
+
+        RHI::DrawListMask& GetDrawListMask() { return drawListMask; }
+        void SetDrawListMask(const RHI::DrawListMask& mask) { this->drawListMask = mask; }
+
     protected:
 
         FGameWindow();
@@ -25,6 +30,9 @@ namespace CE
         void OnBeginDestroy() override;
 
         RPI::Scene* scene = nullptr;
+
+        RHI::DrawListContext drawList{};
+        RHI::DrawListMask drawListMask{};
 
     public: // - Fusion Properties - 
 

@@ -85,7 +85,7 @@ namespace CE::Editor
         {
             StaticMeshComponent* meshComponent = sphereActor->GetMeshComponent();
             meshComponent->SetStaticMesh(sphereMesh);
-            meshComponent->SetLocalPosition(Vec3(3, 0, 5));
+            meshComponent->SetLocalPosition(Vec3(0, 0, 2.5f));
             meshComponent->SetLocalEulerAngles(Vec3(0, 0, 0));
             meshComponent->SetMaterial(aluminumMaterial, 0, 0);
         }

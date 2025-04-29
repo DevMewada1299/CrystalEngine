@@ -203,7 +203,7 @@ namespace CE
     	{
     		RPI::Scene* rpiScene = renderViewport->GetScene();
     		CE::Scene* scene = sceneSubsystem->FindRpiSceneOwner(rpiScene);
-    		if (scene == nullptr || !scene->IsEnabled() || !renderViewport->IsVisibleInHierarchy())
+    		if (scene == nullptr || !scene->IsEnabled())// || !renderViewport->IsEnabledInHierarchy())
     		{
     			// A viewport that was previously visible is no longer visible!
     			if (previouslyVisibleViewports.Exists(renderViewport->GetUuid()))
@@ -250,6 +250,11 @@ namespace CE
 
 		for (FGameWindow* renderViewport : renderViewports)
 		{
+			//if (!renderViewport->IsEnabledInHierarchy())
+			//	continue;
+
+			renderViewport->GetDrawListContext().Shutdown();
+
 			RPI::Scene* rpiScene = renderViewport->GetScene();
 			if (!rpiScene)
 				continue;
@@ -267,6 +272,7 @@ namespace CE
 
 						if (pass->GetDrawListTag().IsValid())
 						{
+							renderViewport->GetDrawListMask().Set(pass->GetDrawListTag());
 							drawListMask.Set(pass->GetDrawListTag());
 						}
 					});
@@ -292,9 +298,14 @@ namespace CE
 
 		for (FGameWindow* renderViewport : renderViewports)
 		{
+			//if (!renderViewport->IsEnabledInHierarchy())
+			//	continue;
+
 			RPI::Scene* rpiScene = renderViewport->GetScene();
 			if (!rpiScene)
 				continue;
+
+			renderViewport->GetDrawListContext().Init(renderViewport->GetDrawListMask());
 
 			for (const auto& [viewTag, views] : rpiScene->GetViews())
 			{
@@ -307,16 +318,19 @@ namespace CE
 						RHI::DrawList& viewDrawList = view->GetDrawList(drawListTag);
 						for (int i = 0; i < viewDrawList.GetDrawItemCount(); ++i)
 						{
-							drawList.AddDrawItem(viewDrawList.GetDrawItem(i), drawListTag);
+							renderViewport->GetDrawListContext().AddDrawItem(viewDrawList.GetDrawItem(i), drawListTag);
+							//drawList.AddDrawItem(viewDrawList.GetDrawItem(i), drawListTag);
 						}
 					}
 
 					if (viewTag == "DirectionalLightShadow")
 					{
-						break;
+						break; // Only 1 view allowed for Directional Light Shadows
 					}
 				}
 			}
+
+			renderViewport->GetDrawListContext().Finalize();
 		}
 
 		drawList.Finalize();
@@ -330,6 +344,9 @@ namespace CE
 
 		for (FGameWindow* renderViewport : renderViewports)
 		{
+			//if (!renderViewport->IsEnabledInHierarchy())
+			//	continue;
+
 			RPI::Scene* rpiScene = renderViewport->GetScene();
 			if (!rpiScene)
 				continue;
@@ -352,8 +369,9 @@ namespace CE
 						if (passDrawTag.IsValid() && viewTag.IsValid() && scopeId.IsValid())
 						{
 							// TODO: Fix this for multi-scene setups. Currently it grabs ALL of the draw items based on a tag.
-							// Which means it'll grab DrawItems from multiple scenes!
-							scheduler->SetScopeDrawList(scopeId, &drawList.GetDrawListForTag(passDrawTag));
+							// Which means it'll grab DrawItems from multiple scenes and potentially override previous ones!
+							DrawList& viewportDrawList = renderViewport->GetDrawListContext().GetDrawListForTag(passDrawTag);
+							scheduler->SetScopeDrawList(scopeId, &viewportDrawList);
 						}
 					});
 			}
@@ -411,8 +429,8 @@ namespace CE
 					CE::Scene* scene = sceneSubsystem->FindRpiSceneOwner(rpiScene);
 					if (scene == nullptr || !scene->IsEnabled())
 						continue;
-					if (!renderViewport->IsVisibleInHierarchy())
-						continue;
+					//if (!renderViewport->IsEnabledInHierarchy())
+					//	continue;
 
 					previouslyVisibleViewports.Add(renderViewport->GetUuid());
 

@@ -59,10 +59,12 @@ namespace CE::Editor
                 content->Child(*dockedEditors[selectedTab]);
 
                 tabItems[i]->isActive = true;
+                dockedEditors[i]->Enabled(true);
             }
             else
             {
                 tabItems[i]->isActive = false;
+                dockedEditors[i]->Enabled(false);
 
                 AttachSubobject(dockedEditors[i].Get());
             }
@@ -81,10 +83,12 @@ namespace CE::Editor
                 content->Child(*tab);
 
                 tabItems[i]->isActive = true;
+                dockedEditors[i]->Enabled(true);
             }
             else
             {
                 tabItems[i]->isActive = false;
+                dockedEditors[i]->Enabled(false);
 
                 AttachSubobject(dockedEditors[i].Get());
             }
