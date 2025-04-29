@@ -67,6 +67,7 @@
 
 // - Material Editor -
 
+#include "CrystalEditor/Editor/MaterialEditor/MaterialDetailsTab.h"
 #include "CrystalEditor/Editor/MaterialEditor/MaterialEditor.h"
 
 // - Crystal Editor Window -

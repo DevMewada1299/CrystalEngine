@@ -13,64 +13,64 @@ namespace CE::Editor
         Super::Construct();
 
         (*this)
-			.Title("Details")
-			.Content(
-                FNew(FOverlayStack)
+		.Title("Details")
+		.Content(
+            FNew(FOverlayStack)
+            .VAlign(VAlign::Fill)
+            .HAlign(HAlign::Fill)
+            (
+                FAssignNew(FLabel, emptyLabel)
+                .Text("Please select an actor in Scene Outliner to see it's properties.")
+                .VAlign(VAlign::Top)
+                .HAlign(HAlign::Center)
+                .Margin(Vec4(0, 50, 0, 0)),
+
+                FAssignNew(FCompoundWidget, detailsContainer)
                 .VAlign(VAlign::Fill)
                 .HAlign(HAlign::Fill)
-                (
-                    FAssignNew(FLabel, emptyLabel)
-                    .Text("Please select an actor in Scene Outliner to see it's properties.")
-                    .VAlign(VAlign::Top)
-                    .HAlign(HAlign::Center)
-                    .Margin(Vec4(0, 50, 0, 0)),
-
-                    FAssignNew(FCompoundWidget, detailsContainer)
+                .As<FCompoundWidget>()
+                .Child(
+                    FNew(FSplitBox)
+                    .Direction(FSplitDirection::Vertical)
+                    .SplitterSize(4.0f)
                     .VAlign(VAlign::Fill)
                     .HAlign(HAlign::Fill)
-                    .As<FCompoundWidget>()
-                    .Child(
-                        FNew(FSplitBox)
-                        .Direction(FSplitDirection::Vertical)
-                        .SplitterSize(4.0f)
-                        .VAlign(VAlign::Fill)
+                    .FillRatio(1.0f)
+                    (
+                        FNew(FVerticalStack)
                         .HAlign(HAlign::Fill)
-                        .FillRatio(1.0f)
+                        .FillRatio(0.3f)
                         (
-                            FNew(FVerticalStack)
-                            .HAlign(HAlign::Fill)
-                            .FillRatio(0.3f)
-                            (
-                                FAssignNew(FLabel, actorName)
-                                .Text("Actor Name")
-                                .FontSize(11)
-                                .HAlign(HAlign::Left)
-                                .Margin(Vec4(5, 10, 5, 10)),
+                            FAssignNew(FLabel, actorName)
+                            .Text("Actor Name")
+                            .FontSize(11)
+                            .HAlign(HAlign::Left)
+                            .Margin(Vec4(5, 10, 5, 10)),
 
-                                FAssignNew(ComponentTreeView, treeView)
-                                .OnSelectionChanged(FUNCTION_BINDING(this, OnComponentSelectionChanged))
-                                .HAlign(HAlign::Fill)
-                                .VAlign(VAlign::Fill)
-                                .FillRatio(1.0f)
-                            ),
-
-                            FNew(FScrollBox)
-                            .VerticalScroll(true)
-                            .HorizontalScroll(false)
+                            FAssignNew(ComponentTreeView, treeView)
+                            .OnSelectionChanged(FUNCTION_BINDING(this, OnComponentSelectionChanged))
                             .HAlign(HAlign::Fill)
-                            .FillRatio(0.7f)
-                            .Margin(Vec4(0, 5, 0, 0))
-                            (
-                                FAssignNew(FStyledWidget, editorContainer)
-                                .HAlign(HAlign::Fill)
-                                .VAlign(VAlign::Top)
-                            )
+                            .VAlign(VAlign::Fill)
+                            .FillRatio(1.0f)
+                        ),
+
+                        FNew(FScrollBox)
+                        .VerticalScroll(true)
+                        .HorizontalScroll(false)
+                        .HAlign(HAlign::Fill)
+                        .FillRatio(0.7f)
+                        .Margin(Vec4(0, 5, 0, 0))
+                        (
+                            FAssignNew(FStyledWidget, editorContainer)
+                            .HAlign(HAlign::Fill)
+                            .VAlign(VAlign::Top)
                         )
-
                     )
+
                 )
             )
-			.Style("EditorMinorDockTab")
+        )
+		.Style("EditorMinorDockTab")
         ;
 
         
@@ -93,7 +93,7 @@ namespace CE::Editor
         {
             editor = ObjectEditorRegistry::Get().Create(item->GetActor(), GetOwnerEditor()->GetHistory());
 
-            editorContainer->Child(*editor);
+            editorContainer->AddChild(editor.Get());
         }
     }
 

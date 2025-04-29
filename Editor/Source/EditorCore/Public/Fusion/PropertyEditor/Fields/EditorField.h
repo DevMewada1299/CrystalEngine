@@ -78,9 +78,7 @@ namespace CE::Editor
         Array<WeakRef<Object>> targets;
         CE::Name relativeFieldPath;
 
-        // TODO: We should NOT be storing raw void pointer to instances.
-        // Make a way to fetch relative instance from field and target Object every time it's needed.
-        //Array<void*> instances;
+        // TODO: Add custom bindings
 
     public: // - Fusion Properties - 
 

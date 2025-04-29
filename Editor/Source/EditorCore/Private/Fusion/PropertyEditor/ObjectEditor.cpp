@@ -215,6 +215,8 @@ namespace CE::Editor
 
         propertyEditors.Clear();
 
+        // Create category sections
+
         for (int i = 0; i < categories.GetSize(); ++i)
         {
             const CE::Name& category = categories[i];
@@ -225,13 +227,14 @@ namespace CE::Editor
             FVerticalStack* expandContent = nullptr;
 
             FAssignNew(FExpandableSection, section)
-                .Title(category.GetString())
-				.ExpandableContent(
-                    FAssignNew(FVerticalStack, expandContent)
-                )
-            ;
+            .Title(category.GetString())
+			.ExpandableContent(
+                FAssignNew(FVerticalStack, expandContent)
+            );
 
             content->AddChild(section);
+
+            // Create property editors inside this category section
 
             for (int j = 0; j < fieldsByCategory[category].GetSize(); ++j)
             {

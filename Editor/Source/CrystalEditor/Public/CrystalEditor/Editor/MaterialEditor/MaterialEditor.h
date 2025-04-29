@@ -27,7 +27,7 @@ namespace CE::Editor
         Ref<EditorMinorDockspace> right;
 
         Ref<EditorViewportTab> viewportTab;
-        Ref<DetailsTab> detailsTab;
+        Ref<MaterialDetailsTab> detailsTab;
 
         Ref<StaticMeshComponent> sphereMeshComponent;
 

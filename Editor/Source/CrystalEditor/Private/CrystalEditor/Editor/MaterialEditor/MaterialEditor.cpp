@@ -32,7 +32,7 @@ namespace CE::Editor
 
                 FAssignNew(EditorMinorDockspace, right)
                 .DockTabs(
-                    FAssignNew(DetailsTab, detailsTab)
+                    FAssignNew(MaterialDetailsTab, detailsTab)
 
                 )
                 .HAlign(HAlign::Fill)
