@@ -2,6 +2,17 @@
 
 namespace CE::Editor
 {
+    struct EditorFieldBinding
+    {
+        ScriptDelegate<void(const Variant& data)> onFieldEdited;
+        ScriptDelegate<void(const Variant& data, Ref<Object> modifyingObject)> onFieldModified;
+
+        bool IsValid() const
+        {
+            return onFieldEdited.IsBound() && onFieldModified.IsBound();
+        }
+    };
+
     CLASS(Abstract)
     class EDITORCORE_API EditorField : public FCompoundWidget
     {
