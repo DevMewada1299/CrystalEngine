@@ -17,7 +17,7 @@ namespace CE
 
         if (lightHandle.IsValid())
         {
-            CE::Scene* scene = GetScene();
+            Ref<CE::Scene> scene = GetScene();
             if (!scene)
                 return;
 
@@ -49,7 +49,7 @@ namespace CE
 
         if (lightHandle.IsValid())
         {
-            CE::Scene* scene = GetScene();
+            Ref<CE::Scene> scene = GetScene();
             if (!scene)
                 return;
 
@@ -70,7 +70,7 @@ namespace CE
     {
 	    Super::Tick(delta);
 
-        CE::Scene* scene = GetScene();
+        Ref<CE::Scene> scene = GetScene();
         if (!scene)
             return;
 

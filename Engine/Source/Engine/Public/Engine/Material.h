@@ -40,6 +40,8 @@ namespace CE
             return shader;
         }
 
+        void ResetAsset() override;
+
     private:
 
         HashMap<Name, MaterialProperty> GetAllProperties() override;

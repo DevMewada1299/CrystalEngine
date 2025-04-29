@@ -38,7 +38,7 @@ namespace CE
 			component->OnBeginPlay();
 		}
 
-		CE::Scene* scene = GetScene();
+		Ref<CE::Scene> scene = GetScene();
 		if (scene != nullptr)
 		{
 			scene->RegisterSceneComponent(component);
@@ -96,7 +96,7 @@ namespace CE
 		if (subobject->IsOfType<SceneComponent>())
 		{
 			auto detachedComponent = static_cast<SceneComponent*>(subobject);
-			if (CE::Scene* scene = GetScene())
+			if (Ref<CE::Scene> scene = GetScene())
 			{
 				scene->DeregisterSceneComponent(detachedComponent);
 			}
@@ -233,7 +233,7 @@ namespace CE
 		if (isDirty)
 			return true;
 
-		Actor* actor = GetActor();
+		Ref<Actor> actor = GetActor();
 
 		if (parentComponent != nullptr && parentComponent->IsDirty())
 			return true;

@@ -13,11 +13,14 @@ namespace CE
     {
 	    if (meshHandle.IsValid())
 	    {
-            CE::Scene* scene = GetScene();
-            RPI::Scene* rpiScene = scene->GetRpiScene();
-            RPI::StaticMeshFeatureProcessor* fp = rpiScene->GetFeatureProcessor<RPI::StaticMeshFeatureProcessor>();
+            Ref<CE::Scene> scene = GetScene();
+            if (scene != nullptr)
+            {
+                RPI::Scene* rpiScene = scene->GetRpiScene();
+                RPI::StaticMeshFeatureProcessor* fp = rpiScene->GetFeatureProcessor<RPI::StaticMeshFeatureProcessor>();
 
-            fp->ReleaseMesh(meshHandle);
+                fp->ReleaseMesh(meshHandle);
+            }
 	    }
     }
 
@@ -86,7 +89,7 @@ namespace CE
     {
 	    Super::Tick(delta);
         
-        CE::Scene* scene = GetScene();
+        Ref<CE::Scene> scene = GetScene();
         if (!scene)
             return;
 

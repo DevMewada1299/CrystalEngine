@@ -400,7 +400,9 @@ namespace CE::Editor
             CE::Name outputPath = currentPath.GetString() + "/" + baseName;
 
             Ref<Bundle> bundle = CreateObject<Bundle>(this, baseName);
+
             Ref<Asset> assetInstance = CreateObject<Asset>(bundle.Get(), assetTypeName, OF_NoFlags, assetType);
+            assetInstance->ResetAsset();
 
             auto result = Bundle::SaveToDisk(bundle, nullptr, outputPath);
 

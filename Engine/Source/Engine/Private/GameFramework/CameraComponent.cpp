@@ -28,7 +28,7 @@ namespace CE
 
     void CameraComponent::SetRenderPipeline(CE::RenderPipeline* renderPipeline)
     {
-        CE::Scene* scene = GetScene();
+        Ref<CE::Scene> scene = GetScene();
         if (scene)
         {
             scene->RemoveRenderPipeline(this->renderPipeline);

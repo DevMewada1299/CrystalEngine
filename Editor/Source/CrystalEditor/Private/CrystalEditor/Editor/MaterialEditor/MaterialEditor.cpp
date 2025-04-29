@@ -83,11 +83,11 @@ namespace CE::Editor
         Ref<StaticMeshActor> sphereActor = CreateObject<StaticMeshActor>(viewportScene.Get(), "Mat_SphereMesh");
         viewportScene->AddActor(sphereActor.Get());
         {
-            StaticMeshComponent* meshComponent = sphereActor->GetMeshComponent();
-            meshComponent->SetStaticMesh(sphereMesh);
-            meshComponent->SetLocalPosition(Vec3(0, 0, 2.5f));
-            meshComponent->SetLocalEulerAngles(Vec3(0, 0, 0));
-            meshComponent->SetMaterial(aluminumMaterial, 0, 0);
+            sphereMeshComponent = sphereActor->GetMeshComponent();
+            sphereMeshComponent->SetStaticMesh(sphereMesh);
+            sphereMeshComponent->SetLocalPosition(Vec3(0, 0, 2.5f));
+            sphereMeshComponent->SetLocalEulerAngles(Vec3(0, 0, 0));
+            sphereMeshComponent->SetMaterial(aluminumMaterial, 0, 0);
         }
 
         Ref<CameraActor> camera = CreateObject<CameraActor>(viewportScene.Get(), "Mat_Camera");
@@ -127,21 +127,42 @@ namespace CE::Editor
         if (!assetData)
             return nullptr;
 
+        Ref<CE::Material> material = gEditor->GetAssetManager()->LoadAssetAtPath<CE::Material>(materialAssetPath);
+
         CrystalEditorWindow* crystalEditorWindow = CrystalEditorWindow::Get();
 
         if (auto existingEditor = materialEditorsBySourceAssetUuid[assetData->assetUuid].Lock())
         {
             crystalEditorWindow->SelectTab(existingEditor.Get());
+            existingEditor->SetMaterial(material);
             return existingEditor;
         }
 
         Ref<MaterialEditor> editor = CreateObject<MaterialEditor>(crystalEditorWindow, "MaterialEditor");
         materialEditorsBySourceAssetUuid[assetData->assetUuid] = editor;
 
+        editor->SetMaterial(material);
+
         crystalEditorWindow->AddDockTab(editor.Get());
         crystalEditorWindow->SelectTab(editor.Get());
 
         return editor;
+    }
+
+    void MaterialEditor::SetMaterial(Ref<CE::Material> material)
+    {
+        if (!material)
+            return;
+
+        String title = material->GetName().GetString();
+        if (Ref<Bundle> bundle = material->GetBundle())
+        {
+            title = bundle->GetName().GetString();
+        }
+
+        Title(title);
+
+        sphereMeshComponent->SetMaterial(material.Get(), 0, 0);
     }
 }
 

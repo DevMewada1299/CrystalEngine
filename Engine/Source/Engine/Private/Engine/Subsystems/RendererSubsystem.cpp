@@ -11,6 +11,7 @@ namespace CE
     void RendererSubsystem::RebuildFrameGraph()
     {
 		rebuildFrameGraph = recompileFrameGraph = true;
+
     }
 
     f32 RendererSubsystem::GetTickPriority() const
@@ -208,6 +209,8 @@ namespace CE
     			// A viewport that was previously visible is no longer visible!
     			if (previouslyVisibleViewports.Exists(renderViewport->GetUuid()))
     			{
+    				previouslyVisibleViewports.Remove(renderViewport->GetUuid());
+
     				RebuildFrameGraph();
     				return;
     			}
@@ -217,6 +220,8 @@ namespace CE
     		// A viewport that was previously disabled is now enabled!
     		if (!previouslyVisibleViewports.Exists(renderViewport->GetUuid()))
     		{
+    			previouslyVisibleViewports.Add(renderViewport->GetUuid());
+
     			RebuildFrameGraph();
     			return;
     		}
@@ -387,11 +392,6 @@ namespace CE
 		rebuildFrameGraph = false;
 		recompileFrameGraph = true;
 
-    	if (renderViewports.GetSize() == 2)
-    	{
-    		String::IsAlphabet('a');
-    	}
-
 		// TODO: Implement multi scene support, and also multi-viewport support
 
 		RPI::RPISystem::Get().SimulationTick(curImageIndex);
@@ -416,12 +416,12 @@ namespace CE
 					FNativeContext* nativeContext = static_cast<FNativeContext*>(renderViewport->GetContext());
 					if (!nativeContext)
 						continue;
+					//if (!renderViewport->IsEnabledInHierarchy())
+					//	continue;
 
 					nativeContext->shaderReadOnlyAttachmentDependencies.Clear();
 					nativeContext->shaderWriteAttachmentDependencies.Clear();
 				}
-
-				//
 
 				for (FGameWindow* renderViewport : renderViewports)
 				{

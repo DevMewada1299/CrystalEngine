@@ -18,9 +18,13 @@ namespace CE
 		
 	}
 
-	CE::Scene* ActorComponent::GetScene() const
+	Ref<CE::Scene> ActorComponent::GetScene() const
 	{
-		return owner != nullptr ? owner->GetScene() : nullptr;
+		if (auto ownerRef = owner.Lock())
+		{
+			return ownerRef->GetScene();
+		}
+		return nullptr;
 	}
 
 	bool ActorComponent::IsEnabledInHierarchy() const

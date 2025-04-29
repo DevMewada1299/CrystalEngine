@@ -18,6 +18,8 @@ namespace CE::Editor
 
     private: // - Internal -
 
+        void SetMaterial(Ref<CE::Material> material);
+
         Ref<CE::Scene> viewportScene;
 
         Ref<FSplitBox> rootSplitBox;
@@ -26,6 +28,8 @@ namespace CE::Editor
 
         Ref<EditorViewportTab> viewportTab;
         Ref<DetailsTab> detailsTab;
+
+        Ref<StaticMeshComponent> sphereMeshComponent;
 
         static HashMap<Uuid, WeakRef<MaterialEditor>> materialEditorsBySourceAssetUuid;
 

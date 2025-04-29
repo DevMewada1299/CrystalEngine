@@ -12,6 +12,8 @@ namespace CE
 
 		inline const String& GetSourceAssetRelativePath() const { return sourceAssetRelativePath; }
 
+		virtual void ResetAsset() {}
+
 	private:
 		
 		String sourceAssetRelativePath{};

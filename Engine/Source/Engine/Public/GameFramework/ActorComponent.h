@@ -22,9 +22,9 @@ namespace CE
 
 		virtual void Tick(f32 delta);
 
-		Actor* GetActor() const { return owner; }
+		Ref<Actor> GetActor() const { return owner.Lock(); }
 
-		CE::Scene* GetScene() const;
+		Ref<CE::Scene> GetScene() const;
 
 		virtual bool IsEnabledInHierarchy() const;
 
@@ -51,7 +51,7 @@ namespace CE
 		bool canTick = true;
 
 		FIELD()
-		Actor* owner = nullptr;
+		WeakRef<Actor> owner = nullptr;
 
 	private:
 

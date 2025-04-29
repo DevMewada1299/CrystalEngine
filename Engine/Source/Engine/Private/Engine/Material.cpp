@@ -144,6 +144,18 @@ namespace CE
         }
     }
 
+    void CE::Material::ResetAsset()
+    {
+        Super::ResetAsset();
+
+        AssetManager* assetManager = AssetManager::Get();
+
+        if (assetManager != nullptr)
+        {
+            shader = assetManager->LoadAssetAtPath<CE::Shader>("/Engine/Assets/Shaders/PBR/Standard");
+        }
+    }
+
     HashMap<Name, MaterialProperty> CE::Material::GetAllProperties()
     {
         return propertyMap;
