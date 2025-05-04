@@ -22,13 +22,27 @@ namespace CE::Editor
             .HAlign(HAlign::Fill)
             .VAlign(VAlign::Fill)
             (
-                FAssignNew(EditorMinorDockspace, center)
-                .DockTabs(
-                    FAssignNew(EditorViewportTab, viewportTab)
+                FNew(FSplitBox)
+                .Direction(FSplitDirection::Vertical)
+                .VAlign(VAlign::Fill)
+                .FillRatio(0.7f)
+                (
+                    FAssignNew(EditorMinorDockspace, center)
+                    .DockTabs(
+                        FAssignNew(EditorViewportTab, viewportTab)
 
-                )
-                .HAlign(HAlign::Fill)
-                .FillRatio(0.6f),
+                    )
+                    .HAlign(HAlign::Fill)
+                    .FillRatio(0.6f),
+
+                    FAssignNew(EditorMinorDockspace, bottom)
+                    .DockTabs(
+                        FAssignNew(AssetBrowser, assetBrowserTab)
+
+                    )
+                    .HAlign(HAlign::Fill)
+                    .FillRatio(0.4f)
+                ),
 
                 FAssignNew(EditorMinorDockspace, right)
                 .DockTabs(
@@ -36,7 +50,7 @@ namespace CE::Editor
 
                 )
                 .HAlign(HAlign::Fill)
-                .FillRatio(0.4f)
+                .FillRatio(0.3f)
             )
         )
     	.Padding(Vec4(0, 5, 0, 0));

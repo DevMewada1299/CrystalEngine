@@ -24,10 +24,12 @@ namespace CE::Editor
 
         Ref<FSplitBox> rootSplitBox;
         Ref<EditorMinorDockspace> center;
+        Ref<EditorMinorDockspace> bottom;
         Ref<EditorMinorDockspace> right;
 
         Ref<EditorViewportTab> viewportTab;
         Ref<MaterialDetailsTab> detailsTab;
+        Ref<AssetBrowser> assetBrowserTab;
 
         Ref<StaticMeshComponent> sphereMeshComponent;
 
