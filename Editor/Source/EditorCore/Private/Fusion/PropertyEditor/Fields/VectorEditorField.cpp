@@ -68,6 +68,17 @@ namespace CE::Editor
         return field->GetDeclarationType()->IsVectorType();
     }
 
+    bool VectorEditorField::CanBind(TypeId boundTypeId, TypeId underlyingTypeId)
+    {
+        static HashSet<TypeId> vectorTypes = {
+            TYPEID(Vec2), TYPEID(Vec2i),
+            TYPEID(Vec3), TYPEID(Vec3i),
+            TYPEID(Vec4), TYPEID(Vec4i),
+        };
+
+        return vectorTypes.Exists(boundTypeId);
+    }
+
     void VectorEditorField::UpdateValue()
     {
         if (!IsBound())

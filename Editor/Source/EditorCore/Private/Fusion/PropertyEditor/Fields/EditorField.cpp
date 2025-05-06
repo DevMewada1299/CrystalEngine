@@ -22,6 +22,17 @@ namespace CE::Editor
         UnbindField();
     }
 
+    bool EditorField::CanBind(FieldType* field)
+    {
+        if (!field)
+            return false;
+
+        TypeId boundTypeId = field->GetDeclarationTypeId();
+        TypeId underlyingTypeId = field->GetUnderlyingTypeId();
+
+        return CanBind(boundTypeId, underlyingTypeId);
+    }
+
     bool EditorField::CanBind(const Ref<Object>& target, const CE::Name& relativeFieldPath)
     {
         if (target.IsNull())
@@ -57,6 +68,23 @@ namespace CE::Editor
         this->relativeFieldPath = relativeFieldPath;
 
         isBound = true;
+        OnBind();
+        UpdateValue();
+
+        return *this;
+    }
+
+    EditorField::Self& EditorField::BindVirtualField(const VirtualBinding& binding)
+    {
+        if (!CanBind(binding.boundTypeId, binding.underlyingTypeId))
+        {
+            return *this;
+        }
+
+        isBound = true;
+
+        this->virtualBinding = binding;
+
         OnBind();
         UpdateValue();
 

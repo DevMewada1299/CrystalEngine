@@ -34,6 +34,8 @@ namespace CE::Editor
 
         bool CanBind(FieldType* field) override;
 
+        bool CanBind(TypeId boundTypeId, TypeId underlyingTypeId) override;
+
         void OnBind() override;
 
         void UpdateValue() override;

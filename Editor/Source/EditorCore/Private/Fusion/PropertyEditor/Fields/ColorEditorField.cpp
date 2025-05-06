@@ -173,6 +173,11 @@ namespace CE::Editor
         return field->GetDeclarationTypeId() == TYPEID(Color);
     }
 
+    bool ColorEditorField::CanBind(TypeId boundTypeId, TypeId underlyingTypeId)
+    {
+        return boundTypeId == TYPEID(Color);
+    }
+
     void ColorEditorField::SetColorValue(const Color& color)
     {
         this->value = color;

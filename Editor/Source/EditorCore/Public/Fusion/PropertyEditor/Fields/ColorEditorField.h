@@ -20,6 +20,8 @@ namespace CE::Editor
 
         bool CanBind(FieldType* field) override;
 
+        bool CanBind(TypeId boundTypeId, TypeId underlyingTypeId) override;
+
         bool SupportsMouseEvents() const override { return true; }
 
         void SetColorValue(const Color& color);

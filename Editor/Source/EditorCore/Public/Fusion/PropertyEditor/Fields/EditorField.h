@@ -2,16 +2,6 @@
 
 namespace CE::Editor
 {
-    struct EditorFieldBinding
-    {
-        ScriptDelegate<void(const Variant& data)> onFieldEdited;
-        ScriptDelegate<void(const Variant& data, Ref<Object> modifyingObject)> onFieldModified;
-
-        bool IsValid() const
-        {
-            return onFieldEdited.IsBound() && onFieldModified.IsBound();
-        }
-    };
 
     CLASS(Abstract)
     class EDITORCORE_API EditorField : public FCompoundWidget
@@ -27,15 +17,35 @@ namespace CE::Editor
 
     public: // - Public API -
 
-        virtual bool CanBind(FieldType* field) = 0;
+        struct VirtualBinding
+        {
+            VirtualBinding() = default;
+
+            TypeId boundTypeId = 0;
+            TypeId underlyingTypeId = 0;
+
+            ScriptDelegate<Variant()> onRead;
+            ScriptDelegate<void(const Variant&)> onWrite;
+            ScriptDelegate<void(Object*)> onModifiedExternally;
+
+            bool IsBound() const
+            {
+                return boundTypeId != 0 && onRead.IsBound() && onWrite.IsBound();
+            }
+        };
+
+        virtual bool CanBind(FieldType* field);
+        virtual bool CanBind(TypeId boundTypeId, TypeId underlyingTypeId) = 0;
 
         bool CanBind(const Ref<Object>& target, const CE::Name& relativeFieldPath);
 
         virtual Self& BindField(const Ref<Object>& target, const CE::Name& relativeFieldPath);
 
+        virtual Self& BindVirtualField(const VirtualBinding& binding);
+
         virtual Self& UnbindField();
 
-        bool IsBound() const { return isBound && relativeFieldPath.IsValid(); }
+        bool IsBound() const { return isBound; }
 
         virtual EditorField& FixedInputWidth(f32 width);
 
@@ -88,8 +98,7 @@ namespace CE::Editor
         bool isBound = false;
         Array<WeakRef<Object>> targets;
         CE::Name relativeFieldPath;
-
-        // TODO: Add custom bindings
+        VirtualBinding virtualBinding;
 
     public: // - Fusion Properties - 
 

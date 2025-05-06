@@ -26,6 +26,11 @@ namespace CE::Editor
         return field->GetDeclarationTypeId() == TYPEID(bool);
     }
 
+    bool BoolEditorField::CanBind(TypeId boundTypeId, TypeId underlyingTypeId)
+    {
+        return boundTypeId == TYPEID(bool);
+    }
+
     void BoolEditorField::UpdateValue()
     {
         if (!IsBound())

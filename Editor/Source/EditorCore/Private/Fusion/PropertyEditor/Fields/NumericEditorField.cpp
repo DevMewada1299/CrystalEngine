@@ -354,11 +354,6 @@ namespace CE::Editor
             return;
 
         const String& text = input->Text();
-        WeakRef<Object> target = targets[0].Lock();
-        Ref<Object> targetObject = target.Lock();
-
-        if (targetObject.IsNull())
-            return;
 
         {
             f64 curValue = 0;
@@ -366,12 +361,18 @@ namespace CE::Editor
             {
                 if (isRanged) { curValue = Math::Clamp<f64>(curValue, min, max); }
 
-	            if (Math::ApproxEquals(curValue, startValue))
-	            {
-		            return; // No change in value
-	            }
+                if (Math::ApproxEquals(curValue, startValue))
+                {
+                    return; // No change in value
+                }
             }
         }
+
+        WeakRef<Object> target = targets[0].Lock();
+        Ref<Object> targetObject = target.Lock();
+
+        if (targetObject.IsNull())
+            return;
 
         FIELD_APPLY_OPERATION_IF(u8)
         else FIELD_APPLY_OPERATION_IF(s8)
@@ -456,6 +457,19 @@ namespace CE::Editor
         return field->IsNumericField();
     }
 
+    bool NumericEditorField::CanBind(TypeId boundTypeId, TypeId underlyingTypeId)
+    {
+        static HashSet<TypeId> numericTypes = {
+            TYPEID(s8),  TYPEID(u8),
+            TYPEID(s16), TYPEID(u16),
+            TYPEID(s32), TYPEID(u32),
+            TYPEID(s64), TYPEID(u64),
+            TYPEID(f32), TYPEID(f64),
+        };
+
+        return numericTypes.Exists(boundTypeId);
+    }
+
     void NumericEditorField::OnBind()
     {
 	    Super::OnBind();
@@ -498,6 +512,68 @@ namespace CE::Editor
         if (!IsBound())
             return;
 
+        TypeId fieldDeclId = 0;
+
+        if (virtualBinding.IsBound())
+        {
+            fieldDeclId = virtualBinding.boundTypeId;
+
+            NumericType(fieldDeclId);
+
+            if (fieldDeclId == TYPEID(u8))
+            {
+                u8 value = virtualBinding.onRead().GetValue<u8>();
+                Text(String::Format("{}", value));
+            }
+            else if (fieldDeclId == TYPEID(s8))
+            {
+                s8 value = virtualBinding.onRead().GetValue<s8>();
+                Text(String::Format("{}", value));
+            }
+            else if (fieldDeclId == TYPEID(u16))
+            {
+                u16 value = virtualBinding.onRead().GetValue<u16>();
+                Text(String::Format("{}", value));
+            }
+            else if (fieldDeclId == TYPEID(s16))
+            {
+                s16 value = virtualBinding.onRead().GetValue<s16>();
+                Text(String::Format("{}", value));
+            }
+            else if (fieldDeclId == TYPEID(u32))
+            {
+                u32 value = virtualBinding.onRead().GetValue<u32>();
+                Text(String::Format("{}", value));
+            }
+            else if (fieldDeclId == TYPEID(s32))
+            {
+                s32 value = virtualBinding.onRead().GetValue<s32>();
+                Text(String::Format("{}", value));
+            }
+            else if (fieldDeclId == TYPEID(u64))
+            {
+                u64 value = virtualBinding.onRead().GetValue<u64>();
+                Text(String::Format("{}", value));
+            }
+            else if (fieldDeclId == TYPEID(s64))
+            {
+                s64 value = virtualBinding.onRead().GetValue<s64>();
+                Text(String::Format("{}", value));
+            }
+            else if (fieldDeclId == TYPEID(f32))
+            {
+                f32 value = virtualBinding.onRead().GetValue<f32>();
+                Text(String::Format("{}", value));
+            }
+            else if (fieldDeclId == TYPEID(f64))
+            {
+                f64 value = virtualBinding.onRead().GetValue<f64>();
+                Text(String::Format("{}", value));
+            }
+
+            return;
+        }
+
         Ref<Object> target = targets[0].Lock();
         if (target.IsNull())
             return;
@@ -512,7 +588,7 @@ namespace CE::Editor
         if (!success)
             return;
 
-        TypeId fieldDeclId = field->GetDeclarationTypeId();
+        fieldDeclId = field->GetDeclarationTypeId();
 
         NumericType(fieldDeclId);
 

@@ -35,10 +35,23 @@ namespace CE::Editor
         return types.Exists(field->GetDeclarationTypeId());
     }
 
+    bool TextEditorField::CanBind(TypeId boundTypeId, TypeId underlyingTypeId)
+    {
+        thread_local HashSet types = { TYPEID(String), TYPEID(CE::Name) };
+
+        return types.Exists(boundTypeId);
+    }
+
     void TextEditorField::UpdateValue()
     {
         if (!IsBound())
             return;
+
+        if (virtualBinding.IsBound())
+        {
+
+            return;
+        }
 
         Ref<Object> target = targets[0].Lock();
         if (target.IsNull())

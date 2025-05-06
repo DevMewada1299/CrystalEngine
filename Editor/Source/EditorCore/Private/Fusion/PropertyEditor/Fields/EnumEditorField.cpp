@@ -26,6 +26,15 @@ namespace CE::Editor
         return field->IsEnumField() && !field->IsEnumFlagsField();
     }
 
+    bool EnumEditorField::CanBind(TypeId boundTypeId, TypeId underlyingTypeId)
+    {
+        TypeInfo* type = GetTypeInfo(boundTypeId);
+        if (type == nullptr)
+            return false;
+
+        return type->IsEnum() && !((EnumType*)type)->IsFlagsEnum();
+    }
+
     void EnumEditorField::UpdateValue()
     {
         if (!IsBound())
