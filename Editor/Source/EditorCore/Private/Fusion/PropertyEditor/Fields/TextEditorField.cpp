@@ -47,12 +47,6 @@ namespace CE::Editor
         if (!IsBound())
             return;
 
-        if (virtualBinding.IsBound())
-        {
-
-            return;
-        }
-
         Ref<Object> target = targets[0].Lock();
         if (target.IsNull())
             return;

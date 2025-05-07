@@ -17,31 +17,12 @@ namespace CE::Editor
 
     public: // - Public API -
 
-        struct VirtualBinding
-        {
-            VirtualBinding() = default;
-
-            TypeId boundTypeId = 0;
-            TypeId underlyingTypeId = 0;
-
-            ScriptDelegate<Variant()> onRead;
-            ScriptDelegate<void(const Variant&)> onWrite;
-            ScriptDelegate<void(Object*)> onModifiedExternally;
-
-            bool IsBound() const
-            {
-                return boundTypeId != 0 && onRead.IsBound() && onWrite.IsBound();
-            }
-        };
-
         virtual bool CanBind(FieldType* field);
         virtual bool CanBind(TypeId boundTypeId, TypeId underlyingTypeId) = 0;
 
         bool CanBind(const Ref<Object>& target, const CE::Name& relativeFieldPath);
 
         virtual Self& BindField(const Ref<Object>& target, const CE::Name& relativeFieldPath);
-
-        virtual Self& BindVirtualField(const VirtualBinding& binding);
 
         virtual Self& UnbindField();
 
@@ -98,7 +79,6 @@ namespace CE::Editor
         bool isBound = false;
         Array<WeakRef<Object>> targets;
         CE::Name relativeFieldPath;
-        VirtualBinding virtualBinding;
 
     public: // - Fusion Properties - 
 

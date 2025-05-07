@@ -74,23 +74,6 @@ namespace CE::Editor
         return *this;
     }
 
-    EditorField::Self& EditorField::BindVirtualField(const VirtualBinding& binding)
-    {
-        if (!CanBind(binding.boundTypeId, binding.underlyingTypeId))
-        {
-            return *this;
-        }
-
-        isBound = true;
-
-        this->virtualBinding = binding;
-
-        OnBind();
-        UpdateValue();
-
-        return *this;
-    }
-
     EditorField::Self& EditorField::UnbindField()
     {
         isBound = false;

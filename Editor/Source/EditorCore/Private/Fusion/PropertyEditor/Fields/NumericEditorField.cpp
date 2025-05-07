@@ -514,66 +514,6 @@ namespace CE::Editor
 
         TypeId fieldDeclId = 0;
 
-        if (virtualBinding.IsBound())
-        {
-            fieldDeclId = virtualBinding.boundTypeId;
-
-            NumericType(fieldDeclId);
-
-            if (fieldDeclId == TYPEID(u8))
-            {
-                u8 value = virtualBinding.onRead().GetValue<u8>();
-                Text(String::Format("{}", value));
-            }
-            else if (fieldDeclId == TYPEID(s8))
-            {
-                s8 value = virtualBinding.onRead().GetValue<s8>();
-                Text(String::Format("{}", value));
-            }
-            else if (fieldDeclId == TYPEID(u16))
-            {
-                u16 value = virtualBinding.onRead().GetValue<u16>();
-                Text(String::Format("{}", value));
-            }
-            else if (fieldDeclId == TYPEID(s16))
-            {
-                s16 value = virtualBinding.onRead().GetValue<s16>();
-                Text(String::Format("{}", value));
-            }
-            else if (fieldDeclId == TYPEID(u32))
-            {
-                u32 value = virtualBinding.onRead().GetValue<u32>();
-                Text(String::Format("{}", value));
-            }
-            else if (fieldDeclId == TYPEID(s32))
-            {
-                s32 value = virtualBinding.onRead().GetValue<s32>();
-                Text(String::Format("{}", value));
-            }
-            else if (fieldDeclId == TYPEID(u64))
-            {
-                u64 value = virtualBinding.onRead().GetValue<u64>();
-                Text(String::Format("{}", value));
-            }
-            else if (fieldDeclId == TYPEID(s64))
-            {
-                s64 value = virtualBinding.onRead().GetValue<s64>();
-                Text(String::Format("{}", value));
-            }
-            else if (fieldDeclId == TYPEID(f32))
-            {
-                f32 value = virtualBinding.onRead().GetValue<f32>();
-                Text(String::Format("{}", value));
-            }
-            else if (fieldDeclId == TYPEID(f64))
-            {
-                f64 value = virtualBinding.onRead().GetValue<f64>();
-                Text(String::Format("{}", value));
-            }
-
-            return;
-        }
-
         Ref<Object> target = targets[0].Lock();
         if (target.IsNull())
             return;

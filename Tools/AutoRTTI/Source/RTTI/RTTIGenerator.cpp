@@ -126,6 +126,7 @@ namespace CE
 		for (const auto& path : filesToRemove)
 		{
 			IO::Path::Remove(path);
+			anyHeaderModified = true;
 		}
 		filesToRemove.Clear();
 
