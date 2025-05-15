@@ -350,14 +350,17 @@ namespace CE::Editor
                     continue;
                 }
 
+                structProperties.Add(propertyEditor);
+
+                propertyEditor->parentObjectEditor = parentObjectEditor;
+                propertyEditor->parentEditor = this;
+
                 propertyEditor->SetIndentationLevel(GetIndentationLevel() + 1);
                 
                 propertyEditor->InitTarget(this->targets,
                     relativeFieldPath + "." + structField->GetName().GetString());
 
                 expansionStack->AddChild(propertyEditor);
-
-                structProperties.Add(propertyEditor);
             }
 
             expansionArrow->Visible(true);
@@ -430,7 +433,7 @@ namespace CE::Editor
         }
         else if (field->IsObjectField())
         {
-            // TODO: Object reference editor
+            // TODO: Object reference editor, check if it is asset or scene-object reference
         }
     }
 

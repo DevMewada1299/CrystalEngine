@@ -247,6 +247,8 @@ namespace CE::Editor
                 PropertyEditor* propertyEditor = PropertyEditorRegistry::Get()->Create(field, this);
                 if (propertyEditor == nullptr)
                     continue;
+
+                propertyEditor->parentObjectEditor = this;
                 
                 expandContent->AddChild(propertyEditor);
 

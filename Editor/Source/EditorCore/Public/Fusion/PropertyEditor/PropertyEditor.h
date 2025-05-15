@@ -105,6 +105,8 @@ namespace CE::Editor
         WeakRef<Object> target = nullptr;
 
         Array<Ref<PropertyEditor>> structProperties;
+        WeakRef<PropertyEditor> parentEditor;
+        WeakRef<ObjectEditor> parentObjectEditor;
 
     public: // - Fusion Properties - 
 

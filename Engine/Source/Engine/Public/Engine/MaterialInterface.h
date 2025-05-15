@@ -56,7 +56,7 @@ namespace CE
         FIELD()
         Name name{};
 
-        FIELD(EditAnywhere)
+        FIELD()
         MaterialPropertyType propertyType = MaterialPropertyType::None;
 
         FIELD(EditAnywhere, DisplayName = "UInt Value", ShowIf = ".propertyType == UInt")
