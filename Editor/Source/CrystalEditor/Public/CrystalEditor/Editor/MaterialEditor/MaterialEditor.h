@@ -14,13 +14,23 @@ namespace CE::Editor
 
     public: // - Public API -
 
+        ClassType* GetTargetObjectType() const override;
+
+        bool CanEdit(Ref<Object> targetObject) const override;
+
+        bool OpenEditor(Ref<Object> targetObject) override;
+
         static Ref<MaterialEditor> Open(const CE::Name& materialAssetPath);
+
+        Ref<Object> GetTargetObject() const override { return targetMaterial;  }
 
     private: // - Internal -
 
         void SetMaterial(Ref<CE::Material> material);
 
         Ref<CE::Scene> viewportScene;
+
+        Ref<CE::Material> targetMaterial;
 
         Ref<FSplitBox> rootSplitBox;
         Ref<EditorMinorDockspace> center;

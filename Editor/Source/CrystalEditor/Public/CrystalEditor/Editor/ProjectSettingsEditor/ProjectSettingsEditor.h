@@ -18,6 +18,10 @@ namespace CE::Editor
 
         static ProjectSettingsEditor* Show();
 
+        ClassType* GetTargetObjectType() const override;
+
+        bool AllowMultipleInstances() const override { return false; }
+
     protected: // - Internal -
 
         FUNCTION()

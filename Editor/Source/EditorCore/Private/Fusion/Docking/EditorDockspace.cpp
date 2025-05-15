@@ -141,6 +141,79 @@ namespace CE::Editor
         ApplyStyle();
     }
 
+    bool EditorDockspace::OpenEditor(Ref<Object> targetObject)
+    {
+        if (!targetObject)
+            return false;
+
+        Ref<AssetEditorRegistry> registry = AssetEditorRegistry::Get();
+        SubClass<EditorBase> editorClass = registry->GetEditorClass(targetObject->GetClass());
+        if (!editorClass.IsValid())
+            return false;
+
+        auto editorClassDefaults = (const EditorBase*)editorClass->GetDefaultInstance();
+        if (!editorClassDefaults)
+            return false;
+        if (!editorClassDefaults->CanEdit(targetObject))
+            return false;
+
+        bool allowMultipleInstances = editorClassDefaults->AllowMultipleInstances();
+        Ref<EditorBase> existingEditor = nullptr;
+
+        for (int i = 0; i < dockedEditors.GetSize(); i++)
+        {
+            if (dockedEditors[i]->IsOfType<EditorBase>())
+            {
+                auto editor = (Ref<EditorBase>)dockedEditors[i];
+                if (editor->IsOfType(editorClass))
+                {
+                    if (!allowMultipleInstances)
+                    {
+                        existingEditor = editor;
+                    }
+
+                    if (editor->GetTargetObject() == targetObject)
+                    {
+                        SelectTab(editor.Get());
+                        return true;
+                    }
+                }
+            }
+        }
+
+        if (existingEditor.IsValid())
+        {
+            SelectTab(existingEditor.Get());
+            existingEditor->OpenEditor(targetObject);
+        }
+        else
+        {
+            Ref<EditorBase> editor = CreateObject<EditorBase>(this, editorClass->GetName().GetLastComponent(),
+                OF_NoFlags, editorClass);
+
+            AddDockTab(editor.Get());
+            SelectTab(editor.Get());
+
+            editor->OpenEditor(targetObject);
+        }
+
+        return true;
+    }
+
+    bool EditorDockspace::OpenEditor(const CE::Name& assetPath)
+    {
+        AssetRegistry* registry = AssetRegistry::Get();
+        if (!registry)
+            return false;
+
+        AssetData* primaryAssetData = registry->GetPrimaryAssetByPath(assetPath);
+        if (!primaryAssetData)
+            return false;
+
+        Ref<Asset> asset = AssetManager::Get()->LoadAssetAtPath(assetPath);
+        return OpenEditor(asset);
+    }
+
     void EditorDockspace::Construct()
     {
         Super::Construct();

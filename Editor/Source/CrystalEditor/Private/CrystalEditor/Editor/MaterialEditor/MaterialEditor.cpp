@@ -55,6 +55,21 @@ namespace CE::Editor
         )
     	.Padding(Vec4(0, 5, 0, 0));
 
+        toolBar->Child(
+            FNew(FHorizontalStack)
+            .VAlign(VAlign::Fill)
+            .HAlign(HAlign::Left)
+            .Padding(Vec4(1, 1, 1, 1) * 5)
+            (
+                FNew(FImageButton)
+                .Image(FBrush("/Editor/Assets/Icons/Save"))
+                .Width(24)
+                .Height(24)
+                .Style("Button.Icon")
+                .Padding(Vec4(1, 1, 1, 1) * 8)
+            )
+        );
+
         detailsTab->SetOwnerEditor(this);
 
         viewportScene = CreateObject<CE::Scene>(this, "MaterialScene");
@@ -129,11 +144,36 @@ namespace CE::Editor
             }
         }
 
-        // TODO: For debugging only
+        // For debugging only
         viewportScene->GetRpiScene()->SetName("MaterialScene");
 
         gEngine->AddScene(viewportScene.Get());
         gEditor->AddRenderViewport(viewportTab->GetViewport());
+    }
+
+    ClassType* MaterialEditor::GetTargetObjectType() const
+    {
+        return CE::Material::StaticClass();
+    }
+
+    bool MaterialEditor::CanEdit(Ref<Object> targetObject) const
+    {
+        return targetObject.IsValid() && targetObject->IsOfType<CE::Material>();
+    }
+
+    bool MaterialEditor::OpenEditor(Ref<Object> targetObject)
+    {
+        if (!targetObject)
+            return false;
+        if (!targetObject->IsOfType<CE::Material>())
+            return false;
+
+        Ref<CE::Material> material = (Ref<CE::Material>)targetObject;
+
+        this->targetMaterial = material;
+        SetMaterial(material);
+
+        return true;
     }
 
     Ref<MaterialEditor> MaterialEditor::Open(const CE::Name& materialAssetPath)

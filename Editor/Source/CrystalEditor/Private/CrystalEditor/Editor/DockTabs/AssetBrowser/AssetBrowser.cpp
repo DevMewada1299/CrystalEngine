@@ -551,12 +551,8 @@ namespace CE::Editor
         // Use EditorBase class as base class for registration
 
         CE::Name fullPath = node->GetFullPath();
-        AssetData* assetData = registry->GetPrimaryAssetByPath(fullPath);
 
-        if (assetData->assetClassPath == TYPENAME(CE::Material))
-        {
-            MaterialEditor::Open(path);
-        }
+        CrystalEditorWindow::Get()->OpenEditor(fullPath);
     }
 
 

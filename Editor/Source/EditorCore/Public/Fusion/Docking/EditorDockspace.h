@@ -4,6 +4,7 @@ namespace CE::Editor
 {
     class EditorDockTab;
     class EditorDockTabItem;
+    class EditorBase;
 
     CLASS()
     class EDITORCORE_API EditorDockspace : public EditorWindow
@@ -26,6 +27,11 @@ namespace CE::Editor
 
         int GetDockedEditorCount() const { return dockedEditors.GetSize(); }
         Ref<EditorDockTab> GetDockedEditor(int index) const { return dockedEditors[index]; }
+
+        //! @brief Opens the editor for targetObject.
+        bool OpenEditor(Ref<Object> targetObject);
+
+        bool OpenEditor(const CE::Name& assetPath);
 
     protected:
 
@@ -61,6 +67,8 @@ namespace CE::Editor
         Array<Ref<EditorDockTab>> dockedEditors;
         Array<EditorDockTabItem*> tabItems;
         int selectedTab = -1;
+
+        Array<WeakRef<EditorBase>> openedEditors;
 
     public: // - Fusion Properties - 
 

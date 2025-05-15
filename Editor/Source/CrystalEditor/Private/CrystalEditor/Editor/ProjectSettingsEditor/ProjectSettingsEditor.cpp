@@ -123,6 +123,11 @@ namespace CE::Editor
         return instance;
     }
 
+    ClassType* ProjectSettingsEditor::GetTargetObjectType() const
+    {
+        return ProjectSettings::StaticClass();
+    }
+
     void ProjectSettingsEditor::ShowAllSettings()
     {
         if (editor)

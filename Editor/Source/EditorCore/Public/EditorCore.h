@@ -76,6 +76,7 @@
 #include "Fusion/Docking/EditorDockTabItem.h"
 #include "Fusion/Docking/EditorDockTab.h"
 #include "Fusion/Widget/Editor/EditorBase.h"
+#include "Editor/AssetEditorRegistry.h"
 
 #include "Fusion/Docking/EditorMinorDockspace.h"
 
@@ -103,6 +104,9 @@ namespace CE::Editor
 
         Ref<EditorStyle> GetEditorStyle();
 
+    private:
+
+        Ref<AssetEditorRegistry> editorRegistry;
     };
     
 } // namespace CE::Editor

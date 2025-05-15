@@ -2,7 +2,7 @@
 
 namespace CE::Editor
 {
-    CLASS()
+    CLASS(Abstract)
     class EDITORCORE_API EditorBase : public EditorDockTab
     {
         CE_CLASS(EditorBase, EditorDockTab)
@@ -19,6 +19,16 @@ namespace CE::Editor
         const Ref<EditorHistory>& GetHistory() const { return history; }
 
         bool SupportsKeyboardEvents() const override { return true; }
+
+        virtual bool OpenEditor(Ref<Object> targetObject) { return false; }
+
+        virtual bool CanEdit(Ref<Object> targetObject) const { return false; }
+
+        virtual ClassType* GetTargetObjectType() const = 0;
+
+        virtual bool AllowMultipleInstances() const { return true; }
+
+        virtual Ref<Object> GetTargetObject() const { return nullptr; }
 
     protected: // - Internal -
 

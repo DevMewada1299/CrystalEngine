@@ -2,6 +2,15 @@
 
 namespace CE::Editor
 {
+    ClassType* SceneEditor::GetTargetObjectType() const
+    {
+        return CE::Scene::StaticClass();
+    }
+
+    bool SceneEditor::CanEdit(Ref<Object> targetObject) const
+    {
+        return targetObject.IsValid() && targetObject->IsOfType<CE::Scene>();
+    }
 
     SceneEditor::SceneEditor()
     {
@@ -11,13 +20,14 @@ namespace CE::Editor
     void SceneEditor::LoadSandboxScene()
     {
         CE::Scene* scene = CreateObject<CE::Scene>(this, "SandboxScene");
+        sandboxScene = scene;
 
         EditorViewport* viewport = viewportTab->GetViewport();
         viewport->SetScene(scene->GetRpiScene());
 
         auto assetManager = gEngine->GetAssetManager();
 
-        Ref<TextureCube> skybox = assetManager->LoadAssetAtPath<TextureCube>("/Engine/Assets/Textures/HDRI/sample_night");
+        Ref<TextureCube> skybox = assetManager->LoadAssetAtPath<TextureCube>("/Engine/Assets/Textures/HDRI/sample_day");
         Ref<CE::Shader> standardShader = assetManager->LoadAssetAtPath<CE::Shader>("/Engine/Assets/Shaders/PBR/Standard");
         Ref<CE::Shader> skyboxShader = assetManager->LoadAssetAtPath<CE::Shader>("/Engine/Assets/Shaders/PBR/SkyboxCubeMap");
 

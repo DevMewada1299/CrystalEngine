@@ -12,6 +12,14 @@ namespace CE::Editor
 
         bool CanBeClosed() const override { return false; }
 
+        ClassType* GetTargetObjectType() const override;
+
+        bool AllowMultipleInstances() const override { return false; }
+
+        Ref<Object> GetTargetObject() const override { return sandboxScene; }
+
+        bool CanEdit(Ref<Object> targetObject) const override;
+
     protected:
 
         SceneEditor();
@@ -48,7 +56,7 @@ namespace CE::Editor
         DetailsTab* detailsTab = nullptr;
 
         // Sandbox
-        CE::Scene* sandboxScene = nullptr;
+        Ref<CE::Scene> sandboxScene = nullptr;
 
     public: // - Fusion Properties - 
 

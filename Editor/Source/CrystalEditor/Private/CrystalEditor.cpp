@@ -9,10 +9,18 @@ namespace CE
         {
 			onClassReg = CoreObjectDelegates::onClassRegistered.AddDelegateInstance(MemberDelegate(&CrystalEditorModule::OnClassRegistered, this));
 			onClassDereg = CoreObjectDelegates::onClassDeregistered.AddDelegateInstance(MemberDelegate(&CrystalEditorModule::OnClassDeregistered, this));
+
+        	AssetEditorRegistry::Get()->RegisterEditor(CE::Scene::StaticClass(), SceneEditor::StaticClass());
+        	AssetEditorRegistry::Get()->RegisterEditor(CE::Material::StaticClass(), MaterialEditor::StaticClass());
+        	AssetEditorRegistry::Get()->RegisterEditor(CE::ProjectSettings::StaticClass(), ProjectSettingsEditor::StaticClass());
         }
 
         virtual void ShutdownModule() override
         {
+        	AssetEditorRegistry::Get()->DeregisterEditor(CE::Scene::StaticClass());
+        	AssetEditorRegistry::Get()->DeregisterEditor(CE::Material::StaticClass());
+        	AssetEditorRegistry::Get()->DeregisterEditor(CE::ProjectSettings::StaticClass());
+
 			CoreObjectDelegates::onClassRegistered.RemoveDelegateInstance(onClassReg);
 			CoreObjectDelegates::onClassDeregistered.RemoveDelegateInstance(onClassDereg);
         }
