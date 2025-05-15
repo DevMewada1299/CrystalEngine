@@ -157,24 +157,97 @@ namespace CE::Editor
         }
     }
 
+    void PropertyEditor::ParseShowIfCondition(Ptr<FieldType> field, Ref<Object> target, const String& parentFieldRelativePath)
+    {
+        if (!target || !field || parentFieldRelativePath.IsEmpty())
+            return;
+
+        showCondition.valid = false;
+        showCondition.isEquality = false;
+        showCondition.comparisonFieldName = "";
+        showCondition.showIfValue = "";
+
+        if (field->HasAttribute("ShowIf") && field->GetAttribute("ShowIf").IsString())
+        {
+            String showIfConditionStr = field->GetAttribute("ShowIf").GetStringValue();
+
+            for (int j = 0; j < showIfConditionStr.GetLength(); ++j)
+            {
+                if (showIfConditionStr[j] == '.')
+                {
+                    j++;
+                    while (j < showIfConditionStr.GetLength())
+                    {
+                        char c = showIfConditionStr[j];
+                        if (showCondition.comparisonFieldName.IsEmpty() && (String::IsAlphabet(c) || c == '_'))
+                        {
+                            showCondition.comparisonFieldName.Append(c);
+                        }
+                        else if (String::IsAlphabet(c) || String::IsNumeric(c) || c == '_')
+                        {
+                            showCondition.comparisonFieldName.Append(c);
+                        }
+                        else
+                        {
+                            break;
+                        }
+                        j++;
+                    }
+                    j--;
+                }
+                else if (showCondition.comparisonFieldName.NotEmpty() &&
+                    showIfConditionStr.GetSubstring(j).StartsWith("=="))
+                {
+                    showCondition.isEquality = true;
+                    j += 2;
+
+                    // Skip whitespaces
+                    while (showIfConditionStr[j] == ' ' && j < showIfConditionStr.GetLength())
+                    {
+                        j++;
+                    }
+
+                    while (j < showIfConditionStr.GetLength())
+                    {
+                        char c = showIfConditionStr[j];
+                        showCondition.showIfValue.Append(c);
+                        j++;
+                    }
+                }
+            }
+
+            Ptr<FieldType> foundField = nullptr;
+            Ref<Object> outObject = nullptr;
+            void* outInstance = nullptr;
+
+            bool found = target->GetClass()->FindFieldInstanceRelative(parentFieldRelativePath + "." + showCondition.comparisonFieldName,
+                target, foundField, outObject, outInstance);
+
+            if (found)
+            {
+                showCondition.valid = true;
+            }
+        }
+    }
+
     void PropertyEditor::InitTarget(const Array<WeakRef<Object>>& targets, const String& relativeFieldPath)
     {
         right->DestroyAllChildren();
 
         auto printError = [&](const String& msg)
-            {
-                right->AddChild(
-                    FNew(FLabel)
-                    .FontSize(10)
-                    .Text("Error: " + msg)
-                    .Foreground(Color::Red())
-                );
-            };
+        {
+            right->AddChild(
+                FNew(FLabel)
+                .FontSize(10)
+                .Text("Error: " + msg)
+                .Foreground(Color::Red())
+            );
+        };
 
         if (targets.GetSize() > 1)
         {
             printError("Multiple objects selected!");
-	        return;
+            return;
         }
         if (targets.GetSize() == 0)
         {
@@ -212,6 +285,24 @@ namespace CE::Editor
             return;
         }
 
+        showCondition.valid = false;
+        showCondition.isEquality = false;
+        showCondition.comparisonFieldName = "";
+        showCondition.showIfValue = "";
+
+        for (int j = relativeFieldPath.GetLength() - 1; j >= 0; --j)
+        {
+            char c = relativeFieldPath[j];
+            if (c != '_' && !String::IsAlphabet(c) && !String::IsNumeric(c))
+            {
+                if (c == '.' && j != relativeFieldPath.GetLength() - 1)
+                {
+                    ParseShowIfCondition(field, target, relativeFieldPath.GetSubstring(0, j));
+                }
+                break;
+            }
+        }
+
         fieldName = field->GetName();
         this->relativeFieldPath = relativeFieldPath;
 
@@ -233,7 +324,7 @@ namespace CE::Editor
 
         TypeId fieldDeclId = fieldDeclType->GetTypeId();
 
-        if (fieldDeclType->IsStruct())
+        if (fieldDeclType->IsStruct()) // - Struct Editor -
         {
             StructType* structType = (StructType*)fieldDeclType;
 
@@ -241,11 +332,16 @@ namespace CE::Editor
                 FNew(FLabel)
                 .FontSize(10)
                 .Text(structType->GetName().GetString())
+                .Name("StructTypeLabel")
             );
 
             for (int i = 0; i < structType->GetFieldCount(); ++i)
             {
                 Ptr<FieldType> structField = structType->GetFieldAt(i);
+                if (!structField->IsEditAnywhere())
+                {
+                    continue;
+                }
 
                 // Create editor
                 PropertyEditor* propertyEditor = PropertyEditorRegistry::Get()->Create(structField, objectEditor);

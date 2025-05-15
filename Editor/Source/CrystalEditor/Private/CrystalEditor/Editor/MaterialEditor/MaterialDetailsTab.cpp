@@ -30,6 +30,24 @@ namespace CE::Editor
 		.Style("EditorMinorDockTab")
         ;
     }
-    
+
+    void MaterialDetailsTab::SetupEditor(Ref<CE::Material> material)
+    {
+        editorContainer->RemoveChildWidget();
+
+        if (editor.IsValid())
+        {
+            editor->BeginDestroy();
+            editor = nullptr;
+        }
+
+        if (material)
+        {
+            auto ownerEditor = GetOwnerEditor();
+            editor = ObjectEditorRegistry::Get().Create(material.Get(), ownerEditor->GetHistory());
+
+            editorContainer->AddChild(editor.Get());
+        }
+    }
 }
 

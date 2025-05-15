@@ -14,6 +14,14 @@ namespace CE
 
         Ref<FWidget> GetChild(u32 index) const { return children[index].Lock(); }
 
+        Ref<FWidget> FindChildByName(const CE::Name& name, SubClass<FWidget> widgetClass = FWidget::StaticClass());
+
+        template<class T> requires TIsBaseClassOf<FWidget, T>::Value
+        Ref<T> FindChildByName(const CE::Name& name)
+        {
+            return (Ref<T>)FindChildByName(name, T::StaticClass());
+        }
+
         void SetContextRecursively(FFusionContext* context) override;
 
         FWidget* HitTest(Vec2 localMousePos) override;

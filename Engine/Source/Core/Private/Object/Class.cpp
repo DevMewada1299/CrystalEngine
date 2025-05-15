@@ -75,7 +75,7 @@ namespace CE
         return cachedAttributes.IsMap() && cachedAttributes.HasKey(key);
     }
 
-    Attribute StructType::GetAttribute(const CE::Name& key)
+    const Attribute& StructType::GetAttribute(const CE::Name& key)
     {
         if (!attributesCached)
         {
@@ -85,7 +85,9 @@ namespace CE
         if (HasAttribute(key))
             return cachedAttributes.GetKeyValue(Name(key));
 
-        return {};
+	    static Attribute attribute{};
+
+        return attribute;
     }
 
     Array<FunctionType*> StructType::GetAllFunctions()

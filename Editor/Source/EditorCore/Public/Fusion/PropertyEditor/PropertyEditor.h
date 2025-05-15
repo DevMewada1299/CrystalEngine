@@ -60,10 +60,22 @@ namespace CE::Editor
 
     protected: // - Internal -
 
+        void ParseShowIfCondition(Ptr<FieldType> field, Ref<Object> target, const String& parentFieldRelativePath);
+
+        void ValidateShowIfCondition();
+
         void UpdateExpansion();
 
         virtual void OnExpand() {}
         virtual void OnCollapse() {}
+
+        struct ShowCondition
+        {
+            bool valid = false;
+            bool isEquality = false;
+            String comparisonFieldName;
+            String showIfValue;
+        };
 
         bool isExpanded = false;
         int indentation = 0;
@@ -81,6 +93,10 @@ namespace CE::Editor
         FLabel* fieldNameLabel = nullptr;
         EditorField* editorField = nullptr;
         ObjectEditor* objectEditor = nullptr;
+
+        String cachedElementNameFormat = "Index {}";
+
+        ShowCondition showCondition{};
 
         //FieldType* field = nullptr;
         CE::Name fieldName;

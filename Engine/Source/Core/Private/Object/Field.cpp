@@ -460,6 +460,14 @@ namespace CE
 				return type->GetTypeName().GetString();
 			}
 		}
+		else if (declType->IsEnum())
+		{
+			EnumType* enumType = (EnumType*)declType;
+			EnumConstant* constant = enumType->FindConstantWithValue(GetFieldEnumValue(instance));
+			if (constant == nullptr)
+				return "";
+			return constant->GetName().GetString();
+		}
 		else if (fieldTypeId == TYPEID(ClassType))
 		{
 			ClassType* type = GetFieldValue<ClassType*>(instance);

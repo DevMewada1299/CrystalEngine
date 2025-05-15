@@ -42,16 +42,20 @@ namespace CE
 
         void ResetAsset() override;
 
+        void OnFieldEdited(const Name& fieldName) override;
+
+        void OnFieldChanged(const Name& fieldName) override;
+
     private:
 
         HashMap<Name, MaterialProperty> GetAllProperties() override;
 
         RPI::Material* material = nullptr;
 
-        FIELD()
+        FIELD(EditAnywhere, Category = "Shader", CategoryOrder = 0)
         Ref<CE::Shader> shader = nullptr;
 
-        FIELD()
+        FIELD(EditAnywhere, Category = "Properties", CategoryOrder = 1, ArrayEditorMode = "Static", ArrayElementName = ".name [{}]")
         Array<MaterialProperty> properties{};
 
         bool valuesModified = true;

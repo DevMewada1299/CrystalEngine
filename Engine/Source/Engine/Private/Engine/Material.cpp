@@ -156,6 +156,24 @@ namespace CE
         }
     }
 
+    void CE::Material::OnFieldEdited(const Name& fieldName)
+    {
+        Super::OnFieldChanged(fieldName);
+
+        valuesModified = true;
+
+        ApplyProperties();
+    }
+
+    void CE::Material::OnFieldChanged(const Name& fieldName)
+    {
+        Super::OnFieldChanged(fieldName);
+
+        valuesModified = true;
+
+        ApplyProperties();
+    }
+
     HashMap<Name, MaterialProperty> CE::Material::GetAllProperties()
     {
         return propertyMap;

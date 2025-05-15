@@ -199,7 +199,7 @@ namespace CE::Editor
                     else
                     {
                         field->SetFieldValue(instance, value);
-                        target->OnFieldChanged(field->GetName());
+                        target->OnFieldEdited(field->GetName());
                     }
                 }
             }
@@ -223,7 +223,7 @@ namespace CE::Editor
                     else
                     {
                         field->SetFieldValue(instance, value);
-                        target->OnFieldChanged(field->GetName());
+                        target->OnFieldEdited(field->GetName());
                     }
                 }
             }
@@ -249,7 +249,7 @@ namespace CE::Editor
                     else
                     {
                         field->SetFieldValue(instance, value);
-                        target->OnFieldChanged(field->GetName());
+                        target->OnFieldEdited(field->GetName());
                     }
                 }
             }
@@ -275,7 +275,7 @@ namespace CE::Editor
                     else
                     {
                         field->SetFieldValue(instance, value);
-                        target->OnFieldChanged(field->GetName());
+                        target->OnFieldEdited(field->GetName());
                     }
                 }
             }
@@ -303,7 +303,7 @@ namespace CE::Editor
                     else
                     {
                         field->SetFieldValue(instance, value);
-                        target->OnFieldChanged(field->GetName());
+                        target->OnFieldEdited(field->GetName());
                     }
                 }
             }
@@ -331,7 +331,7 @@ namespace CE::Editor
                     else
                     {
                         field->SetFieldValue(instance, value);
-                        target->OnFieldChanged(field->GetName());
+                        target->OnFieldEdited(field->GetName());
                     }
                 }
             }

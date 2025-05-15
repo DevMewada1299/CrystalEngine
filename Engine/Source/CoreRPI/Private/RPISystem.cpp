@@ -461,7 +461,7 @@ namespace CE::RPI
 
         defaultNormalTex = new RPI::Texture(normalTex, samplerDesc);
 
-        builtinTextures["bump"] = defaultAlbedoTex;
+        builtinTextures["bump"] = defaultNormalTex;
 
         textureDesc.name = "Default Roughness";
         textureDesc.format = RHI::Format::R8_UNORM;

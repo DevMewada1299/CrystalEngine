@@ -239,9 +239,11 @@ namespace CE
         return attributes;
     }
 
-    Attribute TypeInfo::GetAttribute(const Name& key)
+    const Attribute& TypeInfo::GetAttribute(const Name& key)
     {
-        return attributes.HasKey(key) ? attributes.GetKeyValue(key) : Attribute();
+        static Attribute empty{};
+        
+        return attributes.HasKey(key) ? attributes.GetKeyValue(key) : empty;
     }
 
     bool TypeInfo::HasAttribute(const Name& key)

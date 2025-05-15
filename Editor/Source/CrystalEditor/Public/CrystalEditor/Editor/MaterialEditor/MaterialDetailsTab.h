@@ -14,10 +14,13 @@ namespace CE::Editor
 
     public: // - Public API -
 
+        void SetupEditor(Ref<CE::Material> material);
 
     protected: // - Internal -
 
         Ref<FStyledWidget> editorContainer;
+
+        Ref<ObjectEditor> editor = nullptr;
 
     public: // - Fusion Properties - 
 

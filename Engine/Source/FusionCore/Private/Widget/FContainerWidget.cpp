@@ -9,6 +9,20 @@ namespace CE
         m_DebugColor = Color::Clear();
     }
 
+    Ref<FWidget> FContainerWidget::FindChildByName(const CE::Name& name, SubClass<FWidget> widgetClass)
+    {
+        for (int i = 0; i < GetChildCount(); ++i)
+        {
+            Ref<FWidget> child = GetChild(i);
+            if (child->GetName() == name && child->IsOfType(widgetClass))
+            {
+                return child;
+            }
+        }
+
+        return nullptr;
+    }
+
     void FContainerWidget::SetContextRecursively(FFusionContext* context)
     {
 	    Super::SetContextRecursively(context);

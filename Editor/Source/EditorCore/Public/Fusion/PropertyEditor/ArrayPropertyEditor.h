@@ -2,6 +2,14 @@
 
 namespace CE::Editor
 {
+    ENUM()
+    enum class ArrayEditMode
+    {
+        Default,
+        Static
+    };
+    ENUM_CLASS(ArrayEditMode);
+
     CLASS()
     class EDITORCORE_API ArrayPropertyEditor : public PropertyEditor
     {
@@ -46,6 +54,9 @@ namespace CE::Editor
 
         FLabel* countLabel = nullptr;
         f32 fixedInputWidth = -1;
+        ArrayEditMode arrayEditMode = ArrayEditMode::Default;
+        String elementTypeNameOverride = {};
+        String elementNameOverride = {};
 
         Array<Ptr<FieldType>> arrayElements;
         Array<PropertyEditor*> elementEditors;

@@ -36,6 +36,8 @@ namespace CE::Editor
         Ref<CE::Texture> woodMetallicTex = assetManager->LoadAssetAtPath<CE::Texture>("/Engine/Assets/Textures/WoodFloor/metallic");
         Ref<CE::Texture> woodRoughnessTex = assetManager->LoadAssetAtPath<CE::Texture>("/Engine/Assets/Textures/WoodFloor/roughness");
 
+        Ref<CE::Material> customMaterial = assetManager->LoadAssetAtPath<CE::Material>("/Game/Assets/Materials/NewMaterial");
+
         scene->SetSkyboxCubeMap(skybox.Get());
 
         {
@@ -137,8 +139,21 @@ namespace CE::Editor
             	meshComponent->SetStaticMesh(sphereMesh);
             	meshComponent->SetLocalPosition(Vec3(3, 0, 5));
             	meshComponent->SetLocalEulerAngles(Vec3(0, 0, 0));
-            	meshComponent->SetMaterial(aluminumMaterial, 0, 0);
+                meshComponent->SetMaterial(aluminumMaterial, 0, 0);
 	        }
+
+            if (customMaterial)
+            {
+                StaticMeshActor* sphereActor2 = CreateObject<StaticMeshActor>(scene, "SphereMesh_2");
+                scene->AddActor(sphereActor2);
+                {
+                    StaticMeshComponent* meshComponent = sphereActor2->GetMeshComponent();
+                    meshComponent->SetStaticMesh(sphereMesh);
+                    meshComponent->SetLocalPosition(Vec3(3, 1, 5));
+                    meshComponent->SetLocalEulerAngles(Vec3(0, 0, 0));
+                    meshComponent->SetMaterial(customMaterial.Get(), 0, 0);
+                }
+            }
 
             StaticMeshActor* groundActor = CreateObject<StaticMeshActor>(scene, "Ground");
             scene->AddActor(groundActor);

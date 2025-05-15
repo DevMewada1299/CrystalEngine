@@ -22,13 +22,30 @@ enum AttributeSpecifiers
 	//! @brief Set the order of the category.
 	CategoryOrder,
 
+	//! @brief Set array editor mode: Default, Static.
+	//! Default: Can edit the array in any way possible.
+	//! Static: Cannot add or delete elements, but can edit existing elements.
+	ArrayEditorMode,
+
+	//! @brief A macro to customize Name display for each array element.
+	//! Instead of the generic "Index 0", you can specify ArrayElementName = "Item {}"
+	//! to make it show "Item 0" for the element at 0th index.
+	ArrayElementName,
+
+	//! @brief A macro to customize TypeName display for each array element.
+	ArrayElementTypeName,
+
+	//! @brief A macro to disable visibility of an editor property based on a sibling field's value.
+	//! Example: FIELD(EditAnywhere, ShowIf = ".propertyType == UInt")
+	ShowIf,
+
 	//! @brief Indicates that the field is editable anywhere.
 	EditAnywhere,
 
 	//! @brief This makes the field visible, but not editable.
 	VisibleAnywhere,
 
-	//! @brief Indicates that the field is read only.
+	//! @brief Indicates that the field is read-only.
 	ReadOnly,
 
 	//! @brief This will exclude the field from serialization.

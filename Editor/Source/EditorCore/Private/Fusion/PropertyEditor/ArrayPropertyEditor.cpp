@@ -115,6 +115,36 @@ namespace CE::Editor
             return;
         }
 
+        this->arrayEditMode = ArrayEditMode::Default;
+
+        if (field->HasAttribute("ArrayEditorMode") && field->GetAttribute("ArrayEditorMode").IsString())
+        {
+            String mode = field->GetAttribute("ArrayEditorMode").GetStringValue();
+            EnumConstant* constant = GetStaticEnum<ArrayEditMode>()->FindConstantWithName(mode);
+            if (constant)
+            {
+                this->arrayEditMode = (ArrayEditMode)constant->GetValue();
+            }
+        }
+
+        if (field->HasAttribute("ArrayElementTypeName") && field->GetAttribute("ArrayElementTypeName").IsString())
+        {
+            elementTypeNameOverride = field->GetAttribute("ArrayElementTypeName").GetStringValue();
+        }
+        else
+        {
+            elementTypeNameOverride = {};
+        }
+
+        if (field->HasAttribute("ArrayElementName") && field->GetAttribute("ArrayElementName").IsString())
+        {
+            elementNameOverride = field->GetAttribute("ArrayElementName").GetStringValue();
+        }
+        else
+        {
+            elementNameOverride = {};
+        }
+
         fieldName = field->GetName();
         this->relativeFieldPath = relativeFieldPath;
         this->target = target;
@@ -125,6 +155,8 @@ namespace CE::Editor
         static FBrush deleteIcon = FBrush("/Engine/Resources/Icons/Delete");
         static FBrush addIcon = FBrush("/Engine/Resources/Icons/Add");
         constexpr f32 iconSize = 16;
+
+        Ref<FImageButton> addBtn, deleteBtn;
 
         (*right)
         .Gap(10)
@@ -138,7 +170,8 @@ namespace CE::Editor
             .Height(iconSize)
             .VAlign(VAlign::Center)
             .Padding(Vec4(1, 1, 1, 1) * 3)
-            .Style("Button.Icon"),
+            .Style("Button.Icon")
+            .Enabled(this->arrayEditMode == ArrayEditMode::Default),
 
             FNew(FImageButton)
             .Image(deleteIcon)
@@ -148,6 +181,7 @@ namespace CE::Editor
             .VAlign(VAlign::Center)
             .Padding(Vec4(1, 1, 1, 1) * 3)
             .Style("Button.Icon")
+            .Enabled(this->arrayEditMode == ArrayEditMode::Default)
         );
 
         UpdateValue();
@@ -225,6 +259,7 @@ namespace CE::Editor
             const Array<u8>& arrayValue = field->GetFieldValue<Array<u8>>(instance);
             auto arrayInstance = (void*)arrayValue.GetData();
             String arrayElementFieldPath = String::Format("{}[{}]", field->GetName(), i);
+	        String fieldNameFormat = "Index {}";
 
             if (i >= elementEditors.GetSize())
             {
@@ -237,6 +272,68 @@ namespace CE::Editor
 
                 FHorizontalStack& left = *propertyEditor->GetLeft();
             	FHorizontalStack& right = *propertyEditor->GetRight();
+
+                if (arrayElements[i]->IsStructField() && elementTypeNameOverride.NotEmpty())
+                {
+                    Ref<FLabel> typeLabel = right.FindChildByName<FLabel>("StructTypeLabel");
+                    if (typeLabel)
+                    {
+                        typeLabel->Text(elementTypeNameOverride);
+                    }
+                }
+
+                propertyEditor->cachedElementNameFormat = "Index {}";
+
+                if (elementNameOverride.NotEmpty())
+                {
+                    String leftName = "";
+
+                    for (int j = 0; j < elementNameOverride.GetLength(); ++j)
+                    {
+                        if (elementNameOverride[j] == '.' && arrayElements[i]->IsStructField())
+                        {
+                            String subField = "";
+                            j++;
+                            while (j < elementNameOverride.GetLength())
+                            {
+                                char c = elementNameOverride[j];
+                                if (subField.IsEmpty() && (String::IsAlphabet(c) || c == '_'))
+                                {
+                                    subField.Append(c);
+                                }
+                                else if (String::IsAlphabet(c) || String::IsNumeric(c) || c == '_')
+                                {
+                                    subField.Append(c);
+                                }
+                                else
+                                {
+                                    break;
+                                }
+                                j++;
+                            }
+                            j--;
+
+                            StructType* structType = (StructType*)arrayElements[i]->GetDeclarationType();
+                            void* structInstance = arrayElements[i]->GetFieldInstance(arrayInstance);
+                            Ptr<FieldType> structField = structType->FindField(subField);
+                            if (structField && (structField->GetDeclarationTypeId() == TYPEID(String) || structField->GetDeclarationTypeId() == TYPEID(CE::Name)))
+                            {
+                                leftName += structField->GetFieldValueAsString(structInstance);
+                            }
+                            else
+                            {
+                                leftName += "." + subField;
+                            }
+                        }
+                        else
+                        {
+                            leftName.Append(elementNameOverride[j]);
+                        }
+                    }
+
+                    fieldNameFormat = leftName;
+                    propertyEditor->cachedElementNameFormat = fieldNameFormat;
+                }
 
                 u32 curIndex = (u32)i;
 
@@ -259,6 +356,7 @@ namespace CE::Editor
                     .Padding(Vec4(1, 1, 1, 1) * 3)
                     .Margin(Vec4(5, 0, 5, 0))
                     .Style("Button.Icon")
+                    .Enabled(this->arrayEditMode == ArrayEditMode::Default)
                 );
 
                 elementEditors.Add(propertyEditor);
@@ -271,7 +369,7 @@ namespace CE::Editor
             // Use editor
 	    	elementEditors[i]->UpdateTarget({ target }, arrayElementFieldPath);
 
-	    	elementEditors[i]->FieldNameText(String::Format("Index {}", i));
+	        elementEditors[i]->FieldNameText(String::Format(elementEditors[i]->cachedElementNameFormat, i));
 
             elementEditors[i]->UpdateValue();
 	    }

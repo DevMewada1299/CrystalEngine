@@ -156,7 +156,7 @@ namespace CE::Editor
                 {
                     Field* field = clazz->GetFieldAt(i);
 
-                    if (!field->IsEditAnywhere())
+                    if (!field->IsEditAnywhere() || field->IsHidden())
                         continue;
 
                     CE::Name category = "General";

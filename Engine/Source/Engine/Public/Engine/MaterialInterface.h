@@ -37,13 +37,13 @@ namespace CE
         FIELD()
         Name textureName = "";
 
-        FIELD()
+        FIELD(EditAnywhere)
         WeakRef<CE::Texture> texture = nullptr;
 
-        FIELD()
+        FIELD(EditAnywhere)
         Vec2 offset = Vec2(0, 0);
 
-        FIELD()
+        FIELD(EditAnywhere)
         Vec2 scaling = Vec2(1, 1);
     };
 
@@ -56,28 +56,28 @@ namespace CE
         FIELD()
         Name name{};
 
-        FIELD()
+        FIELD(EditAnywhere)
         MaterialPropertyType propertyType = MaterialPropertyType::None;
 
-        FIELD()
+        FIELD(EditAnywhere, DisplayName = "UInt Value", ShowIf = ".propertyType == UInt")
         u32 u32Value = 0;
 
-        FIELD()
+        FIELD(EditAnywhere, DisplayName = "Int Value", ShowIf = ".propertyType == Int")
         s32 s32Value = 0;
 
-        FIELD()
+        FIELD(EditAnywhere, ShowIf = ".propertyType == Float")
         f32 floatValue = 0;
 
-        FIELD()
+        FIELD(EditAnywhere, ShowIf = ".propertyType == Vector")
         Vec4 vectorValue = {};
 
-        FIELD()
+        FIELD(EditAnywhere, ShowIf = ".propertyType == Color")
         Color colorValue = {};
 
         FIELD()
         Matrix4x4 matrixValue = {};
 
-        FIELD()
+        FIELD(EditAnywhere, ShowIf = ".propertyType == Texture")
         MaterialTextureValue textureValue = {};
     };
 

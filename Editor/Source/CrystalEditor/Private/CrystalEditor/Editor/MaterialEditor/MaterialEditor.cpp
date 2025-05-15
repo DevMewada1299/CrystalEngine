@@ -55,6 +55,8 @@ namespace CE::Editor
         )
     	.Padding(Vec4(0, 5, 0, 0));
 
+        detailsTab->SetOwnerEditor(this);
+
         viewportScene = CreateObject<CE::Scene>(this, "MaterialScene");
         viewportTab->GetViewport()->SetScene(viewportScene->GetRpiScene());
 
@@ -99,7 +101,7 @@ namespace CE::Editor
         {
             sphereMeshComponent = sphereActor->GetMeshComponent();
             sphereMeshComponent->SetStaticMesh(sphereMesh);
-            sphereMeshComponent->SetLocalPosition(Vec3(0, 0, 2.5f));
+            sphereMeshComponent->SetLocalPosition(Vec3(0, 0, 1.5f));
             sphereMeshComponent->SetLocalEulerAngles(Vec3(0, 0, 0));
             sphereMeshComponent->SetMaterial(aluminumMaterial, 0, 0);
         }
@@ -177,6 +179,8 @@ namespace CE::Editor
         Title(title);
 
         sphereMeshComponent->SetMaterial(material.Get(), 0, 0);
+
+        detailsTab->SetupEditor(material);
     }
 }
 
