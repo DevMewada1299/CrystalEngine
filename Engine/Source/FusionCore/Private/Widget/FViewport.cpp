@@ -114,7 +114,6 @@ namespace CE
 
         f32 scaling = GetContext()->GetScaling();
 
-        textureDescriptor.texture.name = GetName().GetString() + " FrameBuffer";
         textureDescriptor.texture.bindFlags = TextureBindFlags::Color | TextureBindFlags::ShaderRead | TextureBindFlags::ShaderWrite;
         textureDescriptor.texture.arrayLayers = 1;
         textureDescriptor.texture.mipLevels = 1;
@@ -144,6 +143,7 @@ namespace CE
 
         for (int i = 0; i < frames.GetSize(); ++i)
         {
+            textureDescriptor.texture.name = GetName().GetString() + " FrameBuffer " + i;
             frames[i] = new RPI::Texture(textureDescriptor);
 
             textureViewDescriptor.texture = frames[i]->GetRhiTexture();

@@ -62,7 +62,7 @@ namespace CE::Editor
 
         void ParseShowIfCondition(Ptr<FieldType> field, Ref<Object> target, const String& parentFieldRelativePath);
 
-        void ValidateShowIfCondition();
+        void ValidateShowIfCondition(Ref<Object> target, const String& parentFieldRelativePath);
 
         void UpdateExpansion();
 

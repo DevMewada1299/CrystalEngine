@@ -228,6 +228,33 @@ namespace CE::Editor
                 showCondition.valid = true;
             }
         }
+
+        ValidateShowIfCondition(target, parentFieldRelativePath);
+    }
+
+    void PropertyEditor::ValidateShowIfCondition(Ref<Object> target, const String& parentFieldRelativePath)
+    {
+        if (!showCondition.valid)
+            return;
+
+        Ptr<FieldType> foundField = nullptr;
+        Ref<Object> outObject = nullptr;
+        void* outInstance = nullptr;
+
+        bool found = target->GetClass()->FindFieldInstanceRelative(parentFieldRelativePath + "." + showCondition.comparisonFieldName,
+            target, foundField, outObject, outInstance);
+
+        if (!found)
+            return;
+
+        if (showCondition.isEquality)
+        {
+            Enabled(foundField->GetFieldValueAsString(outInstance) == showCondition.showIfValue);
+        }
+        else if (foundField->GetDeclarationTypeId() == TYPEID(bool))
+        {
+            Enabled(foundField->GetFieldValue<bool>(outInstance));
+        }
     }
 
     void PropertyEditor::InitTarget(const Array<WeakRef<Object>>& targets, const String& relativeFieldPath)
