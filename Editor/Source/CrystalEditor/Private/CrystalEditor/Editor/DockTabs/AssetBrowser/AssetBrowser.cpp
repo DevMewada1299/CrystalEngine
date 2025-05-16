@@ -127,7 +127,7 @@ namespace CE::Editor
                     {
                         if (event->IsMouseEvent() && event->sender == gridViewScrollBox.Get())
                         {
-                            FMouseEvent* mouseEvent = static_cast<FMouseEvent*>(event);
+                            auto* mouseEvent = static_cast<FMouseEvent*>(event);
 
                             if (mouseEvent->type == FEventType::MousePress && mouseEvent->IsLeftButton())
                             {
@@ -380,38 +380,35 @@ namespace CE::Editor
             return false;
 
         if (assetType == CE::Scene::StaticClass())
-        {
             return false;
-        }
-        else // Most other asset types
+
+        // Most other asset types
+        String assetTypeName = assetType->GetName().GetLastComponent();
+        String baseName = "New" + assetTypeName;
+        IO::Path absolutePath = gProjectPath / currentPath.GetString().GetSubstring(1) / (baseName + ".casset");
+        int i = 0;
+
+        while (absolutePath.Exists())
         {
-            String assetTypeName = assetType->GetName().GetLastComponent();
-            String baseName = "New" + assetTypeName;
-            IO::Path absolutePath = gProjectPath / currentPath.GetString().GetSubstring(1) / (baseName + ".casset");
-            int i = 0;
-
-            while (absolutePath.Exists())
-            {
-                baseName = "New" + assetTypeName + "_" + i;
-                absolutePath = gProjectPath / currentPath.GetString().GetSubstring(1) / (baseName + ".casset");
-                i++;
-            }
-
-            CE::Name outputPath = currentPath.GetString() + "/" + baseName;
-
-            Ref<Bundle> bundle = CreateObject<Bundle>(this, baseName);
-
-            Ref<Asset> assetInstance = CreateObject<Asset>(bundle.Get(), assetTypeName, OF_NoFlags, assetType);
-            assetInstance->ResetAsset();
-
-            auto result = Bundle::SaveToDisk(bundle, nullptr, outputPath);
-
-            bundle->BeginDestroy();
-            bundle = nullptr;
-            assetInstance = nullptr;
-
-            return result == BundleSaveResult::Success;
+            baseName = "New" + assetTypeName + "_" + i;
+            absolutePath = gProjectPath / currentPath.GetString().GetSubstring(1) / (baseName + ".casset");
+            i++;
         }
+
+        CE::Name outputPath = currentPath.GetString() + "/" + baseName;
+
+        Ref<Bundle> bundle = CreateObject<Bundle>(this, baseName);
+
+        Ref<Asset> assetInstance = CreateObject<Asset>(bundle.Get(), assetTypeName, OF_NoFlags, assetType);
+        assetInstance->ResetAsset();
+
+        auto result = Bundle::SaveToDisk(bundle, nullptr, outputPath);
+
+        bundle->BeginDestroy();
+        bundle = nullptr;
+        assetInstance = nullptr;
+
+        return result == BundleSaveResult::Success;
     }
 
     bool AssetBrowser::CanRenameDirectory(const CE::Name& originalPath, const CE::Name& newName)
@@ -545,10 +542,6 @@ namespace CE::Editor
         PathTreeNode* node = registry->GetCachedPathTree().GetNode(path);
         if (!node || node->nodeType != PathTreeNodeType::Asset)
             return;
-
-        // TODO: Design a more flexible way to register Editor's for asset types:
-        // MaterialEditor -> CE::MaterialInterface
-        // Use EditorBase class as base class for registration
 
         CE::Name fullPath = node->GetFullPath();
 

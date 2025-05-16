@@ -76,6 +76,7 @@ namespace CE
         static void PushBundleResolver(IBundleResolver* resolver);
         static void PopBundleResolver(IBundleResolver* resolver);
 
+        static IO::Path GetAbsolutePath(const Name& localPath);
         static IO::Path GetAbsoluteBundlePath(const Name& bundlePath);
 
         static Ref<Bundle> LoadBundle(const Ref<Object>& outer, const Uuid& bundleUuid, const LoadBundleArgs& loadArgs = LoadBundleArgs());
@@ -198,6 +199,8 @@ namespace CE
 
         friend class ObjectSerializer;
         friend class Object;
+
+        friend class AssetRegistry;
     };
 
 }

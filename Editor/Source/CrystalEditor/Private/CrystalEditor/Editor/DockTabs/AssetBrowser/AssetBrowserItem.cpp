@@ -154,9 +154,9 @@ namespace CE::Editor
         if (!isDirectory && assetData != nullptr)
         {
             Array<String> split;
-            assetData->assetClassPath.GetString().Split({ "::", "." }, split);
+            assetData->assetClassTypeName.GetString().Split({ "::", "." }, split);
 
-            ClassType* assetClass = ClassType::FindClass(assetData->assetClassPath);
+            ClassType* assetClass = ClassType::FindClass(assetData->assetClassTypeName);
             if (assetClass != nullptr)
             {
                 AssetDefinition* assetDef = GetAssetDefinitionRegistry()->FindAssetDefinition(assetClass);

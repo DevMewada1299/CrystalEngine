@@ -6,7 +6,7 @@ namespace CE
 
 	static bool SortAssetData(AssetData* lhs, AssetData* rhs)
 	{
-		return String::NaturalCompare(lhs->bundleName.GetLastComponent(), rhs->bundleName.GetLastComponent());
+		return String::NaturalCompare(lhs->bundlePath.GetLastComponent(), rhs->bundlePath.GetLastComponent());
 	}
 
 	AssetRegistry::AssetRegistry()
@@ -94,7 +94,7 @@ namespace CE
 		AssetData* assetData = cachedPrimaryAssetByBundleUuid[bundleUuid];
 		if (assetData == nullptr)
 			return Name();
-		return assetData->bundleName;
+		return assetData->bundlePath;
 	}
 
 	void AssetRegistry::AddRegistryListener(IAssetRegistryListener* listener)
@@ -152,7 +152,7 @@ namespace CE
 		AssetData* assetData = nullptr;
 		bool newEntry = false;
 		int originalIndex = cachedPrimaryAssetsByParentPath[parentRelativePathStr]
-			.IndexOf([&](AssetData* data) -> bool { return data->bundleName == load->GetName(); });
+			.IndexOf([&](AssetData* data) -> bool { return data->bundlePath == load->GetName(); });
 
 		if (originalIndex >= 0)
 		{
@@ -170,9 +170,9 @@ namespace CE
 
 		Name primaryName = primaryObjectData.name;
 		Name primaryTypeName = primaryObjectData.typeName;
-		assetData->bundleName = load->GetName();
+		assetData->bundlePath = load->GetName();
 		assetData->assetName = primaryName;
-		assetData->assetClassPath = primaryTypeName;
+		assetData->assetClassTypeName = primaryTypeName;
 		assetData->bundleUuid = load->GetUuid();
 		assetData->assetUuid = primaryObjectData.uuid;
 		
@@ -188,7 +188,7 @@ namespace CE
 			AddAssetEntry(relativePathStr, assetData);
 		}
 
-		Name bundleName = assetData->bundleName;
+		Name bundleName = assetData->bundlePath;
 
 		load->BeginDestroy();
 		load = nullptr;
@@ -226,23 +226,7 @@ namespace CE
 			return;
 		}
 
-		Name parentRelativePathName = parentRelativePathStr;
-		Name relativePathName = relativePathStr;
-
-		cachedPrimaryAssetsByParentPath.Remove(parentRelativePathName);
-
-		cachedPathTree.RemovePath(relativePathName);
-		cachedAssetsByPath.Remove(relativePathName);
-
-		for (IAssetRegistryListener* listener : listeners)
-		{
-			if (listener != nullptr)
-			{
-				listener->OnAssetImported(bundleName);
-				listener->OnAssetPathTreeUpdated(cachedPathTree);
-			}
-		}
-
+		DeleteAssetEntry(bundleName);
 	}
 
 	void AssetRegistry::OnDirectoryCreated(const IO::Path& absolutePath)
@@ -288,12 +272,53 @@ namespace CE
 		PathTreeNode* pathNode = cachedPathTree.GetNode(originalPath);
 		if (pathNode != nullptr)
 		{
+			Name oldFullPath = pathNode->GetFullPath();
 			pathNode->name = newName;
+			Name newFullPath = pathNode->GetFullPath();
 
 			if (pathNode->parent != nullptr)
 			{
 				pathNode->parent->SortChildren();
 			}
+
+			std::function<void(PathTreeNode*,Name,Name)> visitor = [&](PathTreeNode* node, Name curNewPath, Name curOldPath)
+			{
+				if (node->nodeType == PathTreeNodeType::Directory && cachedPrimaryAssetsByParentPath.KeyExists(curOldPath))
+				{
+					cachedPrimaryAssetsByParentPath[curNewPath] = cachedPrimaryAssetsByParentPath[curOldPath];
+					cachedPrimaryAssetsByParentPath.Remove(curOldPath);
+				}
+				else if (node->nodeType == PathTreeNodeType::Asset)
+				{
+					if (cachedPrimaryAssetByPath.KeyExists(curOldPath))
+					{
+						cachedPrimaryAssetByPath[curNewPath] = cachedPrimaryAssetByPath[curOldPath];
+						cachedPrimaryAssetByPath.Remove(curOldPath);
+					}
+					if (cachedAssetsByPath.KeyExists(curOldPath))
+					{
+						cachedAssetsByPath[curNewPath] = cachedAssetsByPath[curOldPath];
+						cachedAssetsByPath.Remove(curOldPath);
+					}
+
+					AssetManager* assetManager = AssetManager::Get();
+					if (assetManager && assetManager->loadedAssetsByPath.KeyExists(curOldPath))
+					{
+						assetManager->loadedAssetsByPath[curNewPath] = assetManager->loadedAssetsByPath[curOldPath];
+						assetManager->loadedAssetsByPath.Remove(curOldPath);
+
+						assetManager->loadedAssetsByPath[curNewPath]->fullBundlePath = Bundle::GetAbsoluteBundlePath(curNewPath);
+					}
+				}
+
+				for (PathTreeNode* child : node->children)
+				{
+					visitor(child, curNewPath.GetString() + "/" + child->name.GetString(),
+						curOldPath.GetString() + "/" + child->name.GetString());
+				}
+			};
+
+			visitor(pathNode, newFullPath, oldFullPath);
 		}
 
 		PathTreeNode* directoryNode = cachedDirectoryTree.GetNode(originalPath);
@@ -445,9 +470,9 @@ namespace CE
 							//	load->LoadFully();
 							Name primaryName = primaryObjectData.name;
 							Name primaryTypeName = primaryObjectData.typeName;
-							assetData->bundleName = load->GetName();
+							assetData->bundlePath = load->GetName();
 							assetData->assetName = primaryName;
-							assetData->assetClassPath = primaryTypeName;
+							assetData->assetClassTypeName = primaryTypeName;
 							assetData->bundleUuid = load->GetUuid();
 							assetData->assetUuid = primaryObjectData.uuid;
 #if PAL_TRAIT_BUILD_EDITOR
@@ -518,9 +543,9 @@ namespace CE
 
 							Name primaryName = primaryObjectData.name;
 							Name primaryTypeName = primaryObjectData.typeName;
-							assetData->bundleName = load->GetName();
+							assetData->bundlePath = load->GetName();
 							assetData->assetName = primaryName;
-							assetData->assetClassPath = primaryTypeName;
+							assetData->assetClassTypeName = primaryTypeName;
 							assetData->bundleUuid = load->GetUuid();
 							assetData->assetUuid = primaryObjectData.uuid;
 #if PAL_TRAIT_BUILD_EDITOR
@@ -580,9 +605,9 @@ namespace CE
 
 							Name primaryName = primaryObjectData.name;
 							Name primaryTypeName = primaryObjectData.typeName;
-							assetData->bundleName = load->GetName();
+							assetData->bundlePath = load->GetName();
 							assetData->assetName = primaryName;
-							assetData->assetClassPath = primaryTypeName;
+							assetData->assetClassTypeName = primaryTypeName;
 							assetData->bundleUuid = load->GetUuid();
 							assetData->assetUuid = primaryObjectData.uuid;
 #if PAL_TRAIT_BUILD_EDITOR
@@ -635,6 +660,16 @@ namespace CE
 		cachedPrimaryAssetsByParentPath[parentPath].Add(assetData);
 		cachedPrimaryAssetsByParentPath[parentPath].Sort(SortAssetData);
 
+		ClassType* assetClass = ClassType::FindClass(assetData->assetClassTypeName);
+		while (assetClass != nullptr)
+		{
+			cachedAssetsByType[assetClass->GetTypeId()].InsertSorted(assetData, SortAssetData);
+
+			if (assetClass->GetSuperClassCount() == 0)
+				break;
+			assetClass = assetClass->GetSuperClass(0);
+		}
+
 		if (assetData->sourceAssetPath.IsValid())
 		{
 			cachedAssetBySourcePath[assetData->sourceAssetPath] = assetData;
@@ -646,27 +681,50 @@ namespace CE
 		if (!cachedAssetsByPath.KeyExists(bundleName))
 			return;
 
-		auto assetDatas = cachedAssetsByPath[bundleName];
+		const Array<AssetData*>& assetDatas = cachedAssetsByPath[bundleName];
 
-		cachedPathTree.RemovePath(bundleName);
-		cachedAssetsByPath.Remove(bundleName);
-		cachedPrimaryAssetByPath.Remove(bundleName);
-		
-		String parentPathStr = IO::Path(bundleName.GetString()).GetParentPath().GetString().Replace({ '\\' }, '/');
-		Name parentPath = parentPathStr;
-
-		cachedPrimaryAssetsByParentPath.Remove(parentPath);
-
-		for (auto assetData : assetDatas)
+		for (AssetData* assetData : assetDatas)
 		{
 			if (assetData != nullptr)
 			{
+				ClassType* assetClass = ClassType::FindClass(assetData->assetClassTypeName);
+				while (assetClass != nullptr)
+				{
+					cachedAssetsByType.Remove(assetClass->GetTypeId());
+
+					if (assetClass->GetSuperClassCount() == 0)
+						break;
+					assetClass = assetClass->GetSuperClass(0);
+				}
+
+				cachedPrimaryAssetByBundleUuid.Remove(assetData->bundleUuid);
+
+				allAssetDatas.Remove(assetData);
+
 				Name sourcePath = assetData->sourceAssetPath;
 				if (cachedAssetBySourcePath.KeyExists(sourcePath))
 				{
 					cachedAssetBySourcePath.Remove(sourcePath);
 				}
 				delete assetData;
+			}
+		}
+
+		cachedPathTree.RemovePath(bundleName);
+		cachedAssetsByPath.Remove(bundleName);
+		cachedPrimaryAssetByPath.Remove(bundleName);
+
+		String parentPathStr = IO::Path(bundleName.GetString()).GetParentPath().GetString().Replace({ '\\' }, '/');
+		Name parentPath = parentPathStr;
+
+		cachedPrimaryAssetsByParentPath.Remove(parentPath);
+
+		for (IAssetRegistryListener* listener : listeners)
+		{
+			if (listener != nullptr)
+			{
+				listener->OnAssetImported(bundleName);
+				listener->OnAssetPathTreeUpdated(cachedPathTree);
 			}
 		}
 	}

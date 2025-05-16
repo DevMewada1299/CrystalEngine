@@ -79,6 +79,41 @@ namespace CE
         bundleResolvers.Remove(resolver);
     }
 
+    IO::Path Bundle::GetAbsolutePath(const Name& bundlePath)
+    {
+        if (!bundlePath.IsValid())
+            return {};
+        String bundleNameStr = bundlePath.GetString();
+
+        if (bundleNameStr.StartsWith("/Engine/") || bundleNameStr == "/Engine") // Example: /Engine/Assets/Textures/Noise/Perlin/Perlin04
+        {
+            if (!gProjectPath.Exists() || !(gProjectPath / "Engine/Assets").Exists())
+            {
+                return EngineDirectories::GetEngineInstallDirectory() / (bundleNameStr.GetSubstring(1));
+            }
+            return gProjectPath / bundleNameStr.GetSubstring(1);
+        }
+        else if (bundleNameStr.StartsWith("/Game/") || bundleNameStr == "/Game") // Example: /Game/Assets/Textures/SomeTexture
+        {
+            return gProjectPath / bundleNameStr.GetSubstring(1);
+        }
+        else if (bundleNameStr.StartsWith("/Editor/") || bundleNameStr == "/Editor")
+        {
+            return EngineDirectories::GetEngineInstallDirectory() / bundleNameStr.GetSubstring(1);
+        }
+        else if (bundleNameStr.StartsWith("/Temp/") || bundleNameStr == "/Temp")
+        {
+            return gProjectPath / (bundleNameStr.GetSubstring(1) + ".temp");
+        }
+
+        if (bundleNameStr[0] != '/')
+        {
+            bundleNameStr.InsertAt('/', 0);
+        }
+
+        return PlatformDirectories::GetLaunchDir() / bundleNameStr.GetSubstring(1);
+    }
+
     IO::Path Bundle::GetAbsoluteBundlePath(const Name& bundlePath)
     {
         if (!bundlePath.IsValid())

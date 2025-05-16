@@ -70,6 +70,7 @@ namespace CE
 		HashMap<Uuid, WeakRef<Bundle>> loadedAssetsByUuid{};
 
 		friend class Engine;
+		friend class AssetRegistry;
 	};
     
 } // namespace CE

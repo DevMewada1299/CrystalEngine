@@ -137,12 +137,16 @@ namespace CE
 
 		Array<AssetData*> allAssetDatas{};
 
+		// - Caches -
+
 		HashMap<Uuid, AssetData*> cachedPrimaryAssetByBundleUuid{};
 		HashMap<Name, AssetData*> cachedPrimaryAssetByPath{};
 		HashMap<Name, Array<AssetData*>> cachedAssetsByPath{};
 		HashMap<Name, AssetData*> cachedAssetBySourcePath{};
 
-		/// List of primary assets in the sub-path of a path
+		HashMap<TypeId, Array<AssetData*>> cachedAssetsByType{};
+
+		// List of primary assets in the sub-path of a path
 		HashMap<Name, Array<AssetData*>> cachedPrimaryAssetsByParentPath{};
 		
 	};

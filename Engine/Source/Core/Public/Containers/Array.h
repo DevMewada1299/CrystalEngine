@@ -132,6 +132,24 @@ namespace CE
 			Impl.insert(Impl.begin() + index, item);
 		}
 
+        template<typename Pred>
+        void InsertSorted(const ElementType& item, Pred pred)
+        {
+            InsertSortedUpperBound(item, pred);
+        }
+
+        template<typename Pred>
+        void InsertSortedUpperBound(const ElementType& item, Pred pred)
+        {
+            Impl.insert(std::upper_bound(Impl.begin(), Impl.end(), item, pred), item);
+        }
+
+        template<typename Pred>
+        void InsertSortedLowerBound(const ElementType& item, Pred pred)
+        {
+            Impl.insert(std::lower_bound(Impl.begin(), Impl.end(), item, pred), item);
+        }
+
 		CE_INLINE void InsertRange(int index, std::initializer_list<ElementType> elements)
 		{
 			Impl.insert(Impl.begin() + index, elements);
@@ -579,6 +597,12 @@ namespace CE
 		{
 			Super::InsertAt(index, item);
 		}
+
+        template<typename Pred>
+        void InsertSorted(const ElementType& item, Pred pred)
+        {
+            Super::InsertSorted(item, pred);
+        }
 
         void Push(const ElementType& item)
         {
