@@ -115,7 +115,7 @@ namespace CE::Editor
                 EditorDockTabItem& child = *tabItems[i];
 
                 child
-                    .Text(dockedEditors[i]->Title())
+                    .Text(dockedEditors[i]->Title() + (dockedEditors[i]->ShowAsterisk() ? "*" : ""))
                     ;
 
                 child.dockTab = dockedEditors[i];
@@ -126,7 +126,7 @@ namespace CE::Editor
 
                 FAssignNew(EditorDockTabItem, child)
 				.ContentPadding(Vec4(1, 0, 1, 0) * 10)
-                .Text(dockedEditors[i]->Title())
+                .Text(dockedEditors[i]->Title() + (dockedEditors[i]->ShowAsterisk() ? "*" : ""))
                 .VAlign(VAlign::Fill)
             	;
 

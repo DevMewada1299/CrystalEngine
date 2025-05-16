@@ -76,6 +76,14 @@ namespace CE::Editor
         this->editorGroup = group;
     }
 
+    void ObjectEditor::ExpandAll(bool expanded, bool recursively)
+    {
+        for (PropertyEditor* propertyEditor : propertyEditors)
+        {
+            propertyEditor->ExpandAll(expanded, recursively);
+        }
+    }
+
     ObjectEditor::Self& ObjectEditor::FixedInputWidth(f32 width)
     {
         for (PropertyEditor* propertyEditor : propertyEditors)

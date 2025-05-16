@@ -200,6 +200,12 @@ namespace CE
         }
 
         IO::Path absolutePath = GetAbsoluteBundlePath(bundle->GetName());
+
+        if (!bundle->fullBundlePath.IsEmpty() && bundle->fullBundlePath.GetParentPath().Exists())
+        {
+            absolutePath = bundle->fullBundlePath;
+        }
+
         return SaveToDisk(bundle, asset, absolutePath);
     }
 

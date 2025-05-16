@@ -22,9 +22,12 @@ namespace CE::Editor
 
         static Ref<MaterialEditor> Open(const CE::Name& materialAssetPath);
 
-        Ref<Object> GetTargetObject() const override { return targetMaterial;  }
+        Ref<Object> GetTargetObject() const override { return targetMaterial; }
 
     private: // - Internal -
+
+        FUNCTION()
+        void SaveMaterialToDisk();
 
         void SetMaterial(Ref<CE::Material> material);
 

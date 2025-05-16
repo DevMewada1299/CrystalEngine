@@ -118,7 +118,7 @@ namespace CE::Editor
                 child.CloseButtonEnabled(dockedEditors[i]->CanBeClosed());
 
                 child
-					.Text(dockedEditors[i]->Title())
+					.Text(dockedEditors[i]->Title() + (dockedEditors[i]->ShowAsterisk() ? "*" : ""))
                 ;
 	        }
             else
@@ -127,7 +127,7 @@ namespace CE::Editor
 
                 FAssignNew(EditorDockTabItem, child)
                 .CloseButtonEnabled(dockedEditors[i]->CanBeClosed())
-                .Text(dockedEditors[i]->Title())
+                .Text(dockedEditors[i]->Title() + (dockedEditors[i]->ShowAsterisk() ? "*" : ""))
                 .VAlign(VAlign::Fill)
             	;
 

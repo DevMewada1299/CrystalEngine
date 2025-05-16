@@ -60,6 +60,19 @@ namespace CE::Editor
         return fieldTypeId == TYPEID(Array<>);
     }
 
+    void ArrayPropertyEditor::ExpandAll(bool expanded, bool recursively)
+    {
+        Super::ExpandAll(expanded, recursively);
+
+        if (recursively)
+        {
+            for (PropertyEditor* elementEditor : elementEditors)
+            {
+                elementEditor->ExpandAll(expanded, recursively);
+            }
+        }
+    }
+
     void ArrayPropertyEditor::InitTarget(const Array<WeakRef<Object>>& targets, const String& relativeFieldPath)
     {
         right->DestroyAllChildren();

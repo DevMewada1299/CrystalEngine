@@ -16,6 +16,7 @@ namespace CE::Editor
 
         void AddDockTab(EditorDockTab* tab);
         void RemoveDockTab(EditorDockTab* tab);
+        void UpdateTabWell();
 
         void SelectTab(EditorDockTabItem* tabItem);
         void SelectTab(EditorDockTab* tab);
@@ -36,8 +37,6 @@ namespace CE::Editor
     protected:
 
         EditorDockspace();
-
-        void UpdateTabWell();
 
         void Construct() override;
 

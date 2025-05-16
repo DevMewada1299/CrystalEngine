@@ -25,7 +25,7 @@ namespace CE::Editor
                 FNew(FSplitBox)
                 .Direction(FSplitDirection::Vertical)
                 .VAlign(VAlign::Fill)
-                .FillRatio(0.7f)
+                .FillRatio(0.6f)
                 (
                     FAssignNew(EditorMinorDockspace, center)
                     .DockTabs(
@@ -50,24 +50,14 @@ namespace CE::Editor
 
                 )
                 .HAlign(HAlign::Fill)
-                .FillRatio(0.3f)
+                .FillRatio(0.4f)
             )
         )
     	.Padding(Vec4(0, 5, 0, 0));
 
-        toolBar->Child(
-            FNew(FHorizontalStack)
-            .VAlign(VAlign::Fill)
-            .HAlign(HAlign::Left)
-            .Padding(Vec4(1, 1, 1, 1) * 5)
-            (
-                FNew(FImageButton)
-                .Image(FBrush("/Editor/Assets/Icons/Save"))
-                .Width(24)
-                .Height(24)
-                .Style("Button.Icon")
-                .Padding(Vec4(1, 1, 1, 1) * 8)
-            )
+        toolBar->Content(
+            EditorToolBar::NewImageButton("/Editor/Assets/Icons/Save")
+            .OnClicked(FUNCTION_BINDING(this, SaveMaterialToDisk))
         );
 
         detailsTab->SetOwnerEditor(this);
@@ -169,6 +159,8 @@ namespace CE::Editor
             return false;
 
         Ref<CE::Material> material = (Ref<CE::Material>)targetObject;
+        if (this->targetMaterial == material)
+            return true;
 
         this->targetMaterial = material;
         SetMaterial(material);
@@ -205,6 +197,30 @@ namespace CE::Editor
         return editor;
     }
 
+    void MaterialEditor::SaveMaterialToDisk()
+    {
+        if (!targetMaterial)
+            return;
+
+        Ref<Bundle> bundle = targetMaterial->GetBundle();
+        if (!bundle)
+            return;
+
+        if (bundle->IsTransient())
+            return;
+
+        BundleSaveResult result = Bundle::SaveToDisk(bundle);
+
+        if (result != BundleSaveResult::Success)
+        {
+            CE_LOG(Error, All, "Failed to save material to disk! Error in Bundle::SaveToDisk(); ErrorCode: {}", (int)result);
+        }
+        else
+        {
+            SetAssetDirty(false);
+        }
+    }
+
     void MaterialEditor::SetMaterial(Ref<CE::Material> material)
     {
         if (!material)
@@ -221,6 +237,8 @@ namespace CE::Editor
         sphereMeshComponent->SetMaterial(material.Get(), 0, 0);
 
         detailsTab->SetupEditor(material);
+
+        UpdateDockspaceTabWell();
     }
 }
 

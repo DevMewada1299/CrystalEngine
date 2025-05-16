@@ -14,6 +14,10 @@ namespace CE::Editor
 
         history = CreateObject<EditorHistory>(this, "EditorHistory");
 
+        history->onTargetModified.Bind([this]
+        {
+            SetAssetDirty(true);
+        });
     }
 
     void EditorBase::HandleEvent(FEvent* event)
@@ -56,5 +60,12 @@ namespace CE::Editor
 	    Super::HandleEvent(event);
     }
 
+    void EditorBase::SetAssetDirty(bool dirty)
+    {
+        isAssetDirty = dirty;
+        ShowAsterisk(isAssetDirty);
+
+        UpdateDockspaceTabWell();
+    }
 }
 

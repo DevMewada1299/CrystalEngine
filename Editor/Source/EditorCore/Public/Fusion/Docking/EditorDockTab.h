@@ -29,6 +29,8 @@ namespace CE::Editor
 
         void Construct() override;
 
+        void UpdateDockspaceTabWell();
+
         void OnBeginDestroy() override;
 
         EditorMenuBar* menuBar = nullptr;
@@ -40,6 +42,7 @@ namespace CE::Editor
     public: // - Fusion Properties - 
 
         FUSION_PROPERTY(String, Title);
+        FUSION_PROPERTY(bool, ShowAsterisk);
 
         FUSION_PROPERTY(EditorDockTabRole, TabRole);
 

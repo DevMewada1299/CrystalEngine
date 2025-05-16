@@ -62,6 +62,8 @@ namespace CE::Editor
         historyStack.Add(operation);
 
         topIndex = historyStack.GetSize() - 1;
+
+        onTargetModified(this);
     }
 
     void EditorHistory::Undo()
@@ -75,6 +77,11 @@ namespace CE::Editor
 
             break; // FIXME: skip invalid operations
         }
+
+        if (success)
+        {
+            onTargetModified(this);
+        }
     }
 
     void EditorHistory::Redo()
@@ -87,6 +94,11 @@ namespace CE::Editor
             success = historyStack[topIndex]->execute.Invoke(historyStack[topIndex]);
 
             break; // FIXME: skip invalid operations
+        }
+
+        if (success)
+        {
+            onTargetModified(this);
         }
     }
 

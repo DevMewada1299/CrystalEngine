@@ -55,6 +55,9 @@ namespace CE::Editor
         //! supports multi object editing.
         virtual bool SupportsMultiObjectEditing() const { return false; }
 
+
+        virtual void ExpandAll(bool expanded, bool recursively = false);
+
         FUNCTION()
         void ToggleExpansion();
 

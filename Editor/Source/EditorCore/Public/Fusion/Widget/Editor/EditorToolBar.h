@@ -10,14 +10,27 @@ namespace CE::Editor
 
         // - Public API -
 
+        static FImageButton& NewImageButton(const CE::Name& imagePath);
+
     protected:
 
         EditorToolBar();
 
         void Construct() override;
 
+        Ref<FStackBox> contentBox;
+
     public: // - Fusion Properties - 
 
+        template<typename... TArgs> requires TValidate_Children<TArgs...>::Value and (sizeof...(TArgs) > 0)
+        Self& Content(const TArgs&... childWidget)
+        {
+            if (contentBox)
+            {
+                contentBox->operator()(childWidget...);
+            }
+            return *this;
+        }
 
         FUSION_WIDGET;
     };

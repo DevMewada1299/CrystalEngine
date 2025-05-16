@@ -32,6 +32,18 @@ namespace CE::Editor
         );
     }
 
+    void EditorDockTab::UpdateDockspaceTabWell()
+    {
+	    if (dockspace && dockspace->IsOfType<EditorDockspace>())
+	    {
+	        ((EditorDockspace*)dockspace)->UpdateTabWell();
+	    }
+	    else if (dockspace && dockspace->IsOfType<EditorMinorDockspace>())
+	    {
+	        ((EditorMinorDockspace*)dockspace)->UpdateTabWell();
+	    }
+    }
+
     void EditorDockTab::OnBeginDestroy()
     {
 	    Super::OnBeginDestroy();

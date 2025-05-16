@@ -48,6 +48,8 @@ namespace CE::Editor
                         {
 	                        target->OnFieldChanged(relativeFieldPath);
                         }
+
+                        return true;
                     }
 
                     return false;
@@ -66,6 +68,8 @@ namespace CE::Editor
                         }
                         field->SetFieldValue<T>(instance, initialValue);
                         target->OnFieldChanged(relativeFieldPath);
+
+                        return true;
                     }
 
                     return false;
@@ -74,6 +78,8 @@ namespace CE::Editor
 
         void Undo();
         void Redo();
+
+        ScriptEvent<void(EditorHistory*)> onTargetModified;
 
     protected: // - Internal -
 

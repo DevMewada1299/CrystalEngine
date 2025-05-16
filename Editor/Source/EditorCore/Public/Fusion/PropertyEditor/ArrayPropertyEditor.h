@@ -34,6 +34,8 @@ namespace CE::Editor
 
         bool IsFieldSupported(TypeId fieldTypeId) const override;
 
+        void ExpandAll(bool expanded, bool recursively = false) override;
+
         bool IsExpandable() override;
 
         void UpdateValue() override;

@@ -46,6 +46,8 @@ namespace CE::Editor
             auto ownerEditor = GetOwnerEditor();
             editor = ObjectEditorRegistry::Get().Create(material.Get(), ownerEditor->GetHistory());
 
+            editor->ExpandAll(true, true);
+
             editorContainer->AddChild(editor.Get());
         }
     }

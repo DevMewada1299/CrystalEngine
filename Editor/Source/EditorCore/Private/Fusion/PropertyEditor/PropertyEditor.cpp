@@ -553,6 +553,33 @@ namespace CE::Editor
         return *this;
     }
 
+    void PropertyEditor::ExpandAll(bool expanded, bool recursively)
+    {
+        if (!IsExpandable() || (!recursively && isExpanded == expanded))
+            return;
+
+        isExpanded = expanded;
+
+        UpdateExpansion();
+
+        if (isExpanded)
+        {
+            OnExpand();
+        }
+        else
+        {
+            OnCollapse();
+        }
+
+        if (recursively)
+        {
+            for (Ref<PropertyEditor> structProperty : structProperties)
+            {
+                structProperty->ExpandAll(expanded, recursively);
+            }
+        }
+    }
+
     void PropertyEditor::ToggleExpansion()
     {
         if (!IsExpandable())

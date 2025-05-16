@@ -29,6 +29,8 @@ namespace CE::Editor
 
         virtual bool SupportsMultiObjectEditing() const { return false; }
 
+        void ExpandAll(bool expanded, bool recursively = false);
+
         Self& FixedInputWidth(f32 width);
 
         f32 GetSplitRatio();

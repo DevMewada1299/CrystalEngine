@@ -30,9 +30,13 @@ namespace CE::Editor
 
         virtual Ref<Object> GetTargetObject() const { return nullptr; }
 
+        void SetAssetDirty(bool dirty);
+
     protected: // - Internal -
 
         Ref<EditorHistory> history = nullptr;
+
+        bool isAssetDirty = false;
 
     public: // - Fusion Properties - 
 
