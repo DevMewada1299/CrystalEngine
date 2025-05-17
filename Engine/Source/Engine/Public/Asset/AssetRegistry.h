@@ -20,7 +20,7 @@ namespace CE
 
 		virtual void OnAssetDeleted(const Name& bundleName) {}
 
-		virtual void OnAssetRenamed(const Name& oldName, const Name& newName) {}
+		virtual void OnAssetRenamed(Uuid bundleUuid, const Name& oldName, const Name& newName) {}
 
 		virtual void OnAssetPathTreeUpdated(PathTree& pathTree) {}
 

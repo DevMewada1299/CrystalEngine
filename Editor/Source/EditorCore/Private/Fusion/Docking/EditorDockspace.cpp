@@ -181,23 +181,32 @@ namespace CE::Editor
             }
         }
 
+        bool success = false;
+
         if (existingEditor.IsValid())
         {
             SelectTab(existingEditor.Get());
-            existingEditor->OpenEditor(targetObject);
+
+            success = existingEditor->OpenEditor(targetObject);
         }
         else
         {
             Ref<EditorBase> editor = CreateObject<EditorBase>(this, editorClass->GetName().GetLastComponent(),
                 OF_NoFlags, editorClass);
+            existingEditor = editor;
 
             AddDockTab(editor.Get());
             SelectTab(editor.Get());
 
-            editor->OpenEditor(targetObject);
+            success = editor->OpenEditor(targetObject);
         }
 
-        return true;
+        if (success)
+        {
+            existingEditor->OnEditorOpened(targetObject);
+        }
+
+        return success;
     }
 
     bool EditorDockspace::OpenEditor(const CE::Name& assetPath)

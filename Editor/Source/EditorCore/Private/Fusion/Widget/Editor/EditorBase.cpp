@@ -60,6 +60,40 @@ namespace CE::Editor
 	    Super::HandleEvent(event);
     }
 
+    void EditorBase::OnBeginDestroy()
+    {
+        Super::OnBeginDestroy();
+
+        AssetRegistry::Get()->RemoveRegistryListener(this);
+    }
+
+    void EditorBase::OnAssetRenamed(Uuid bundleUuid, const CE::Name& oldName, const CE::Name& newName)
+    {
+        if (this->bundleUuid == bundleUuid)
+        {
+            Title(newName.GetString());
+            UpdateDockspaceTabWell();
+        }
+    }
+
+    void EditorBase::OnEditorOpened(Ref<Object> targetObject)
+    {
+        if (!targetObject)
+            return;
+
+        String title = targetObject->GetName().GetString();
+        if (Ref<Bundle> bundle = targetObject->GetBundle())
+        {
+            title = bundle->GetName().GetString();
+            bundleUuid = bundle->GetUuid();
+
+            AssetRegistry::Get()->AddRegistryListener(this);
+            registeredListener = true;
+        }
+
+        Title(title);
+    }
+
     void EditorBase::SetAssetDirty(bool dirty)
     {
         isAssetDirty = dirty;

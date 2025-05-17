@@ -396,6 +396,7 @@ namespace CE
 		bundle->SetName(newName);
 
 		Bundle::SaveToDisk(bundle, nullptr, newAbsolutePath);
+		Uuid bundleUuid = bundle->GetUuid();
 
 		// Do NOT BeginDestroy() the bundle, because it might be used somewhere else!
 		bundle = nullptr;
@@ -404,7 +405,7 @@ namespace CE
 		{
 			if (listener != nullptr)
 			{
-				listener->OnAssetRenamed(oldName, newName);
+				listener->OnAssetRenamed(bundleUuid, oldName, newName);
 				listener->OnAssetPathTreeUpdated(cachedPathTree);
 			}
 		}
