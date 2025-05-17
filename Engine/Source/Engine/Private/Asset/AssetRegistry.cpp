@@ -6,7 +6,7 @@ namespace CE
 
 	static bool SortAssetData(AssetData* lhs, AssetData* rhs)
 	{
-		return String::NaturalCompare(lhs->bundlePath.GetLastComponent(), rhs->bundlePath.GetLastComponent());
+		return String::NaturalCompare(lhs->bundleName.GetLastComponent(), rhs->bundleName.GetLastComponent());
 	}
 
 	AssetRegistry::AssetRegistry()
@@ -94,7 +94,7 @@ namespace CE
 		AssetData* assetData = cachedPrimaryAssetByBundleUuid[bundleUuid];
 		if (assetData == nullptr)
 			return Name();
-		return assetData->bundlePath;
+		return assetData->bundleName;
 	}
 
 	void AssetRegistry::AddRegistryListener(IAssetRegistryListener* listener)
@@ -152,7 +152,7 @@ namespace CE
 		AssetData* assetData = nullptr;
 		bool newEntry = false;
 		int originalIndex = cachedPrimaryAssetsByParentPath[parentRelativePathStr]
-			.IndexOf([&](AssetData* data) -> bool { return data->bundlePath == load->GetName(); });
+			.IndexOf([&](AssetData* data) -> bool { return data->bundleName == load->GetName(); });
 
 		if (originalIndex >= 0)
 		{
@@ -170,7 +170,7 @@ namespace CE
 
 		Name primaryName = primaryObjectData.name;
 		Name primaryTypeName = primaryObjectData.typeName;
-		assetData->bundlePath = load->GetName();
+		assetData->bundleName = load->GetName();
 		assetData->assetName = primaryName;
 		assetData->assetClassTypeName = primaryTypeName;
 		assetData->bundleUuid = load->GetUuid();
@@ -188,7 +188,7 @@ namespace CE
 			AddAssetEntry(relativePathStr, assetData);
 		}
 
-		Name bundleName = assetData->bundlePath;
+		Name bundleName = assetData->bundleName;
 
 		load->BeginDestroy();
 		load = nullptr;
@@ -341,35 +341,64 @@ namespace CE
 		}
 	}
 
-	bool AssetRegistry::OnAssetRenamed(const Name& originalPath, const IO::Path& newAbsolutePath, const Name& newName)
+	void AssetRegistry::OnAssetRenamed(const Name& originalPath, const IO::Path& newAbsolutePath, const Name& newName)
 	{
 		PathTreeNode* pathNode = cachedPathTree.GetNode(originalPath);
-		if (pathNode == nullptr)
-			return false;
+		if (pathNode == nullptr || pathNode->nodeType != PathTreeNodeType::Asset)
+			return;
 
 		Name oldName = pathNode->name;
 		pathNode->name = newName;
 
-		Ref<Bundle> bundle = Bundle::LoadBundleAbsolute(this, newAbsolutePath, LoadBundleArgs{
-			.loadFully = true,
-			.forceReload = false,
-			.destroyOutdatedObjects = false
-		});
+		Name newPath = pathNode->GetFullPath();
+
+		Ref<Bundle> bundle = nullptr;
+		AssetManager* assetManager = AssetManager::Get();
+		if (assetManager && assetManager->loadedAssetsByPath.KeyExists(originalPath))
+		{
+			assetManager->loadedAssetsByPath[newPath] = assetManager->loadedAssetsByPath[originalPath];
+			assetManager->loadedAssetsByPath.Remove(originalPath);
+
+			bundle = assetManager->loadedAssetsByPath[newPath];
+		}
+		else
+		{
+			bundle = Bundle::LoadBundleAbsolute(this, newAbsolutePath, LoadBundleArgs{
+				.loadFully = true,
+				.forceReload = false,
+				.destroyOutdatedObjects = false
+			});
+		}
+
+		if (cachedAssetsByPath.KeyExists(originalPath))
+		{
+			cachedAssetsByPath[newPath] = cachedAssetsByPath[originalPath];
+			cachedAssetsByPath.Remove(originalPath);
+
+			for (AssetData* assetData : cachedAssetsByPath[newPath])
+			{
+				assetData->bundleName = newName;
+			}
+		}
+		if (cachedPrimaryAssetByPath.KeyExists(originalPath))
+		{
+			cachedPrimaryAssetByPath[newPath] = cachedPrimaryAssetByPath[originalPath];
+			cachedPrimaryAssetByPath.Remove(originalPath);
+
+			cachedPrimaryAssetByPath[newPath]->bundleName = newName;
+		}
 
 		if (bundle == nullptr)
-			return false;
+			return;
 
 		DetachSubobject(bundle.Get());
 
 		bundle->SetName(newName);
 
-		auto result = Bundle::SaveToDisk(bundle, nullptr, newAbsolutePath);
+		Bundle::SaveToDisk(bundle, nullptr, newAbsolutePath);
 
-		// Do NOT BeginDestroy() bundle, because it might be referenced somewhere else!
+		// Do NOT BeginDestroy() the bundle, because it might be used somewhere else!
 		bundle = nullptr;
-
-		if (result != BundleSaveResult::Success)
-			return false;
 
 		for (IAssetRegistryListener* listener : listeners)
 		{
@@ -379,8 +408,6 @@ namespace CE
 				listener->OnAssetPathTreeUpdated(cachedPathTree);
 			}
 		}
-
-		return true;
 	}
 
 	void AssetRegistry::OnDirectoryAndAssetsDeleted(const Array<Name>& paths)
@@ -470,7 +497,7 @@ namespace CE
 							//	load->LoadFully();
 							Name primaryName = primaryObjectData.name;
 							Name primaryTypeName = primaryObjectData.typeName;
-							assetData->bundlePath = load->GetName();
+							assetData->bundleName = load->GetName();
 							assetData->assetName = primaryName;
 							assetData->assetClassTypeName = primaryTypeName;
 							assetData->bundleUuid = load->GetUuid();
@@ -543,7 +570,7 @@ namespace CE
 
 							Name primaryName = primaryObjectData.name;
 							Name primaryTypeName = primaryObjectData.typeName;
-							assetData->bundlePath = load->GetName();
+							assetData->bundleName = load->GetName();
 							assetData->assetName = primaryName;
 							assetData->assetClassTypeName = primaryTypeName;
 							assetData->bundleUuid = load->GetUuid();
@@ -605,7 +632,7 @@ namespace CE
 
 							Name primaryName = primaryObjectData.name;
 							Name primaryTypeName = primaryObjectData.typeName;
-							assetData->bundlePath = load->GetName();
+							assetData->bundleName = load->GetName();
 							assetData->assetName = primaryName;
 							assetData->assetClassTypeName = primaryTypeName;
 							assetData->bundleUuid = load->GetUuid();

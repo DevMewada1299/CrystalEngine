@@ -25,7 +25,7 @@ namespace CE
             osInfo.dwOSVersionInfoSize = sizeof(osInfo);
             RtlGetVersion(&osInfo);
             
-            bool isWindows11 = osInfo.dwMajorVersion == 10 && osInfo.dwMinorVersion >= 21996;
+            bool isWindows11 = osInfo.dwMajorVersion == 10 && (osInfo.dwMinorVersion >= 21996 || osInfo.dwBuildNumber >= 21996);
             String majorVersion = "11";
             if (!isWindows11)
                 majorVersion = String::Format("{}", osInfo.dwBuildNumber);
