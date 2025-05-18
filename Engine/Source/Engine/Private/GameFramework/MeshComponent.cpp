@@ -22,6 +22,10 @@ namespace CE
 	        for (int meshIndex = 0; meshIndex < materialsPerLod[lodIndex].materials.GetSize(); ++meshIndex)
 	        {
                 Ref<MaterialInterface> materialInterface = materialsPerLod[lodIndex].materials[meshIndex];
+	            if (materialInterface.IsNull())
+	            {
+	                materialInterface = gEngine->GetErrorMaterial();
+	            }
                 if (materialInterface.IsNull())
                     continue;
                 RPI::Material* material = materialInterface->GetRpiMaterial();

@@ -115,6 +115,7 @@ namespace CE
             SetMaterialDirty(false);
 
             meshHandle->materialMap = GetRpiMaterialMap();
+            meshHandle->materialMap[DefaultCustomMaterialId] = gEngine->GetErrorMaterial()->GetRpiMaterial();
         }
 
         if (meshChanged)
@@ -125,6 +126,7 @@ namespace CE
             }
 
             auto materialMap = GetRpiMaterialMap();
+            materialMap[DefaultCustomMaterialId] = gEngine->GetErrorMaterial()->GetRpiMaterial();
 
             RPI::ModelHandleDescriptor descriptor{};
             descriptor.debugName = staticMesh->GetName();

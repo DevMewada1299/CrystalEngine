@@ -54,6 +54,11 @@ namespace CE
 		{
 			subsystem->PostInitialize();
 		}
+
+		errorShader = assetManager->LoadAssetAtPath<CE::Shader>("/Engine/Assets/Shaders/Error");
+
+		errorMaterial = CreateObject<CE::Material>(this, "ErrorMaterial");
+		errorMaterial->SetShader(errorShader);
 	}
 
 	void Engine::PreShutdown()
@@ -62,6 +67,9 @@ namespace CE
 
 		for (auto subsystem : engineSubsystems) // PreShutdown
 			subsystem->PreShutdown();
+
+		errorMaterial->BeginDestroy(); errorMaterial = nullptr;
+		errorShader->BeginDestroy(); errorShader = nullptr;
 
 		if (assetManager)
 			assetManager->Shutdown();

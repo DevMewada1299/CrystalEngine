@@ -152,7 +152,7 @@ namespace CE::Editor
                 meshComponent->SetMaterial(aluminumMaterial, 0, 0);
 	        }
 
-            if (customMaterial)
+            //if (customMaterial)
             {
                 StaticMeshActor* sphereActor2 = CreateObject<StaticMeshActor>(scene, "SphereMesh_2");
                 scene->AddActor(sphereActor2);

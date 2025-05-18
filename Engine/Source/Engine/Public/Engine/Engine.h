@@ -46,6 +46,10 @@ namespace CE
 
 		// - Public API -
 
+		Ref<CE::Shader> GetErrorShader() const { return errorShader; }
+
+		Ref<CE::Material> GetErrorMaterial() const { return errorMaterial; }
+
 		void LoadScene(CE::Scene* scene);
 
 		void AddScene(CE::Scene* scene);
@@ -76,6 +80,12 @@ namespace CE
 
 		FIELD()
 		Array<EngineSubsystem*> engineSubsystems{};
+
+		FIELD()
+		Ref<CE::Shader> errorShader = nullptr;
+
+		FIELD()
+		Ref<CE::Material> errorMaterial = nullptr;
 
 		CE::Queue<Delegate<void()>> mainThreadQueue{};
 		SharedMutex mainThreadQueueMutex{};
