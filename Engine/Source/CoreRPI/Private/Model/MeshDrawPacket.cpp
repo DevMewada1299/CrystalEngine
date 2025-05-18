@@ -104,7 +104,7 @@ namespace CE::RPI
 
 		if (!material)
 		{
-			CE_LOG(Error, All, "MeshDrawPacket does not have material set!");
+			//CE_LOG(Error, All, "MeshDrawPacket does not have material set!");
 			return;
 		}
 

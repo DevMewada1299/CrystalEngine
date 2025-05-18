@@ -171,6 +171,7 @@ namespace CE
 
         {
             LockGuard loadedObjectsLock{ bundle->loadedObjectsMutex };
+
             //bundle->loadedObjectsByUuid.Clear();
 	        bundle->loadedObjectsByUuid[bundleUuid] = bundle;
         }
@@ -200,7 +201,7 @@ namespace CE
                 u32 entryByteSize = 0;
                 *stream >> entryByteSize;
 
-                u8 struct1_class0 = 0;
+                u8 struct1_class0 = 0; // 0 if class ; 1 if struct
                 *stream >> struct1_class0;
 
                 entry.isStruct = struct1_class0 == 1;
@@ -314,6 +315,24 @@ namespace CE
 	        // TODO: Implement this logic later
             // Destroy objects that are no longer present in the bundle
 
+            Array<Ref<Object>> objectsToDelete;
+            for (auto [uuid, objectWeak] : bundle->loadedObjectsByUuid)
+            {
+                if (Ref<Object> object = objectWeak.Get())
+                {
+                    if (!bundle->serializedObjectsByUuid.KeyExists(object->GetUuid()))
+                    {
+                        // This object no longer exists in the new bundle, so we delete it.
+                        objectsToDelete.Add(object);
+                    }
+                }
+            }
+
+            for (Ref<Object> object : objectsToDelete)
+            {
+                object->BeginDestroy();
+            }
+            objectsToDelete.Clear();
         }
 
         if (loadArgs.loadFully && !bundle->isFullyLoaded)

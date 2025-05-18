@@ -194,7 +194,7 @@ namespace CE
     void Object::ConstructInternal()
     {
         auto initParams = GetObjectCreationContext()->GetStorage().Top();
-		CE_ASSERT(initParams != nullptr, "An object was contructed without any initializers set! This usually happens when you construct an object using 'new' operator.");
+		CE_ASSERT(initParams != nullptr, "An object was constructed without any initializers set! This usually happens when you construct an object using 'new' operator.");
 		GetObjectCreationContext()->GetStorage().Pop();
         ConstructInternal(initParams);
     }
