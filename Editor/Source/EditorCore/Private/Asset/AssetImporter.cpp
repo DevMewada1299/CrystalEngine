@@ -214,7 +214,7 @@ namespace CE::Editor
 			productPath = sourcePath.ReplaceExtension(".casset");
 		editorProductPath = sourcePath.ReplaceExtension(".casset");
 
-		bundleName = "";
+		bundlePath = "";
 		sourceAssetRelativePath = "";
 		generateDistributionAsset = false;
 
@@ -240,20 +240,20 @@ namespace CE::Editor
 		if (IO::Path::IsSubDirectory(productPath, gProjectPath / "Game/Assets"))
 		{
 			isGameAsset = true;
-			bundleName = IO::Path::GetRelative(productPath, gProjectPath).RemoveExtension().GetString().Replace({ '\\' }, '/');
-			if (!bundleName.StartsWith("/"))
-				bundleName = "/" + bundleName;
+			bundlePath = IO::Path::GetRelative(productPath, gProjectPath).RemoveExtension().GetString().Replace({ '\\' }, '/');
+			if (!bundlePath.StartsWith("/"))
+				bundlePath = "/" + bundlePath;
 		}
-		else if (IO::Path::IsSubDirectory(productPath, engineRootDir / "Engine/Assets"))
+		else if (IO::Path::IsSubDirectory(productPath, engineRootDir / "Engine/Assets") || IO::Path::IsSubDirectory(productPath, engineRootDir / "Editor/Assets"))
 		{
 			isGameAsset = false;
-			bundleName = IO::Path::GetRelative(productPath, engineRootDir).RemoveExtension().GetString().Replace({ '\\' }, '/');
-			if (!bundleName.StartsWith("/"))
-				bundleName = "/" + bundleName;
+			bundlePath = IO::Path::GetRelative(productPath, engineRootDir).RemoveExtension().GetString().Replace({ '\\' }, '/');
+			if (!bundlePath.StartsWith("/"))
+				bundlePath = "/" + bundlePath;
 		}
 		else
 		{
-			bundleName = assetName;
+			bundlePath = "/" + assetName;
 		}
 		
 		if (editorProductPath != productPath)
@@ -295,7 +295,7 @@ namespace CE::Editor
 
     	if (bundle == nullptr)
     	{
-    		bundle = CreateObject<Bundle>(transient.Get(), bundleName);
+    		bundle = CreateObject<Bundle>(transient.Get(), assetName);
     	}
     	if (bundle == nullptr)
     	{
@@ -303,6 +303,8 @@ namespace CE::Editor
     		success = false;
     		return;
     	}
+
+    	bundle->bundlePath = bundlePath;
 
 		success = ProcessAsset(bundle);
 
@@ -361,7 +363,7 @@ namespace CE::Editor
 
 		if (saveResult != BundleSaveResult::Success)
 		{
-			errorMessage = "Failed to save bundle " + bundleName + " at path: " + productPath.GetString() + ". Error " + (int)saveResult;
+			errorMessage = "Failed to save bundle " + assetName + " at path: " + productPath.GetString() + ". Error " + (int)saveResult;
 			success = false;
 			return;
 		}

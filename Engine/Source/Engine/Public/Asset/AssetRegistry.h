@@ -98,6 +98,8 @@ namespace CE
 
 		void OnDirectoryRenamed(const Name& originalPath, const Name& newName);
 
+		void OnDirectoryDeleted(const Name& directoryPath);
+
 		void OnAssetRenamed(const Name& originalPath, const IO::Path& newAbsolutePath, const Name& newName);
 
 		void OnDirectoryAndAssetsDeleted(const Array<Name>& paths);

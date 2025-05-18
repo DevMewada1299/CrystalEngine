@@ -12,7 +12,7 @@ namespace CE::RPI
 	{
 		for (auto buffer : trackedBuffers)
 		{
-			delete buffer;
+			RPISystem::Get().QueueDestroy(buffer);
 		}
 		trackedBuffers.Clear();
 	}

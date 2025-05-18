@@ -408,6 +408,12 @@ namespace CE::Editor
         bundle = nullptr;
         assetInstance = nullptr;
 
+        EditorAssetManager* assetManager = EditorAssetManager::Get();
+        if (assetManager)
+        {
+            assetManager->OnAssetCreated(Bundle::GetAbsoluteBundlePath(outputPath));
+        }
+
         return result == BundleSaveResult::Success;
     }
 
@@ -493,10 +499,16 @@ namespace CE::Editor
         for (const auto& itemPath : itemPaths)
         {
             IO::Path absolutePath = gProjectPath / itemPath.GetString().GetSubstring(1);
-            if (!absolutePath.Exists())
-                return;
+            IO::Path absoluteBundlePath = gProjectPath / (itemPath.GetString().GetSubstring(1) + ".casset");
 
-            absolutePaths.Add(absolutePath);
+            if (absolutePath.Exists())
+            {
+                absolutePaths.Add(absolutePath);
+            }
+            else if (absoluteBundlePath.Exists())
+            {
+                absolutePaths.Add(absoluteBundlePath);
+            }
         }
 
         for (const auto& path : absolutePaths)

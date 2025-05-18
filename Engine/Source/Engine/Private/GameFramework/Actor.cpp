@@ -35,6 +35,8 @@ namespace CE
 
 		if (rootComponent)
 		{
+			rootComponent->scene = nullptr;
+
 			// If current rootComponent's lifecycle is managed by `this` actor, destroy it.
 			// Otherwise, just detach the subobject without destroying it.
 			if (rootComponent->ParentExistsInChain(this))
@@ -53,6 +55,7 @@ namespace CE
 
 		if (rootComponent) // component can be set to nullptr
 		{
+			rootComponent->scene = scene;
 			rootComponent->owner = this;
 			AttachSubobject(component);
 

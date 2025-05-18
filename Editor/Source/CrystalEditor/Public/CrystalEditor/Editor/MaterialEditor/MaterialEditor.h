@@ -12,6 +12,8 @@ namespace CE::Editor
 
         void Construct() override;
 
+        void OnBeginDestroy() override;
+
     public: // - Public API -
 
         ClassType* GetTargetObjectType() const override;

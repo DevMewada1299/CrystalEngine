@@ -41,6 +41,11 @@ namespace CE::Editor
 		
     }
 
+    void EditorAssetManager::OnAssetCreated(const IO::Path& bundleAbsolutePath)
+    {
+		assetRegistry->OnAssetImported(bundleAbsolutePath);
+    }
+
     void EditorAssetManager::OnDirectoryCreated(const IO::Path& absolutePath)
     {
 		assetRegistry->OnDirectoryCreated(absolutePath);

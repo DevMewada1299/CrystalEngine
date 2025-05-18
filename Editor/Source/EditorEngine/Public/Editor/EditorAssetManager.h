@@ -22,6 +22,8 @@ namespace CE::Editor
 
 		// - Internal API -
 
+    	void OnAssetCreated(const IO::Path& bundleAbsolutePath);
+
 		void OnDirectoryCreated(const IO::Path& absolutePath);
 
     	void OnDirectoryRenamed(const Name& originalPath, const Name& newName);

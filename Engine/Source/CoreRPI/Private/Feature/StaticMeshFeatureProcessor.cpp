@@ -39,7 +39,7 @@ namespace CE::RPI
 		for (int i = 0; i < objectBuffers.GetSize(); ++i)
 		{
 			RHI::BufferDescriptor bufferDescriptor{};
-			bufferDescriptor.name = "ObjectBuffer";
+			bufferDescriptor.name = "ObjectBuffer " + debugName.GetString();
 			bufferDescriptor.bindFlags = RHI::BufferBindFlags::ConstantBuffer;
 			bufferDescriptor.bufferSize = sizeof(Matrix4x4);
 			bufferDescriptor.defaultHeapType = RHI::MemoryHeapType::Upload;

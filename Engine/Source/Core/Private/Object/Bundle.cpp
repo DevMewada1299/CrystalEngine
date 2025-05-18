@@ -79,7 +79,7 @@ namespace CE
         bundleResolvers.Remove(resolver);
     }
 
-    IO::Path Bundle::GetAbsolutePath(const Name& bundlePath)
+    IO::Path Bundle::GetAbsoluteDirectoryPath(const Name& bundlePath)
     {
         if (!bundlePath.IsValid())
             return {};
@@ -149,6 +149,42 @@ namespace CE
         return PlatformDirectories::GetLaunchDir() / (bundleNameStr.GetSubstring(1) + ".casset");
     }
 
+    Name Bundle::GetBundlePath(const IO::Path& absoluteBundlePath)
+    {
+        if (absoluteBundlePath.IsEmpty())
+            return {};
+
+        if (IO::Path::IsSubDirectory(absoluteBundlePath, gProjectPath))
+        {
+            String relativePath = IO::Path::GetRelative(absoluteBundlePath, gProjectPath)
+                .RemoveExtension().GetString().Replace({ '\\' }, '/');
+            if (relativePath[0] != '/')
+                relativePath.InsertAt('/', 0);
+
+            return relativePath;
+        }
+        else if (IO::Path::IsSubDirectory(absoluteBundlePath, EngineDirectories::GetEngineInstallDirectory()))
+        {
+            String relativePath = IO::Path::GetRelative(absoluteBundlePath, EngineDirectories::GetEngineInstallDirectory())
+                .RemoveExtension().GetString().Replace({ '\\' }, '/');
+            if (relativePath[0] != '/')
+                relativePath.InsertAt('/', 0);
+
+            return relativePath;
+        }
+        else if (IO::Path::IsSubDirectory(absoluteBundlePath, EngineDirectories::GetGameInstallDirectory()))
+        {
+            String relativePath = IO::Path::GetRelative(absoluteBundlePath, EngineDirectories::GetGameInstallDirectory())
+                .RemoveExtension().GetString().Replace({ '\\' }, '/');
+            if (relativePath[0] != '/')
+                relativePath.InsertAt('/', 0);
+
+            return relativePath;
+        }
+
+        return nullptr;
+    }
+
     Ref<Bundle> Bundle::LoadBundle(const Ref<Object>& outer, const Uuid& bundleUuid, const LoadBundleArgs& loadArgs)
     {
         {
@@ -215,7 +251,8 @@ namespace CE
         Ref<Bundle> bundle = LoadBundle(outer, &stream, outResult, loadArgs);
         if (bundle.IsValid())
         {
-            bundle->fullBundlePath = absolutePath;
+            bundle->absoluteBundlePath = absolutePath;
+            bundle->bundlePath = Bundle::GetBundlePath(absolutePath);
         }
         return bundle;
     }
@@ -236,9 +273,9 @@ namespace CE
 
         IO::Path absolutePath = GetAbsoluteBundlePath(bundle->GetName());
 
-        if (!bundle->fullBundlePath.IsEmpty() && bundle->fullBundlePath.GetParentPath().Exists())
+        if (!bundle->absoluteBundlePath.IsEmpty() && bundle->absoluteBundlePath.GetParentPath().Exists())
         {
-            absolutePath = bundle->fullBundlePath;
+            absolutePath = bundle->absoluteBundlePath;
         }
 
         return SaveToDisk(bundle, asset, absolutePath);
@@ -298,7 +335,8 @@ namespace CE
             return BundleSaveResult::AssetNotInBundle;
         }
 
-        bundle->fullBundlePath = path;
+        bundle->absoluteBundlePath = path;
+        bundle->bundlePath = Bundle::GetBundlePath(path);
 
         FileStream stream = FileStream(path, Stream::Permissions::WriteOnly, true, true);
         stream.SetBinaryMode(true);
@@ -346,9 +384,9 @@ namespace CE
             return retVal;
         }
 
-        if (fullBundlePath.Exists())
+        if (absoluteBundlePath.Exists())
         {
-            FileStream stream = FileStream(fullBundlePath, Stream::Permissions::ReadOnly);
+            FileStream stream = FileStream(absoluteBundlePath, Stream::Permissions::ReadOnly);
             stream.SetBinaryMode(true);
 
             readerStream = &stream;

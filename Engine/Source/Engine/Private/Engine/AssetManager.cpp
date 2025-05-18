@@ -133,13 +133,28 @@ namespace CE
 
 		if (asset == nullptr)
 			return;
-		Bundle* bundle = asset->GetBundle();
+
+		Ref<Bundle> bundle = asset->GetBundle();
 		if (bundle == nullptr)
 			return;
 
 		LockGuard lock{ loadedAssetsMutex };
 
-		loadedAssetsByPath.Remove(bundle->GetName());
+		loadedAssetsByPath.Remove(bundle->GetBundlePath());
+		loadedAssetsByUuid.Remove(bundle->GetUuid());
+		bundle->BeginDestroy();
+	}
+
+	void AssetManager::UnloadAsset(Ref<Bundle> bundle)
+	{
+		ZoneScoped;
+
+		if (bundle == nullptr)
+			return;
+
+		LockGuard lock{ loadedAssetsMutex };
+
+		loadedAssetsByPath.Remove(bundle->GetBundlePath());
 		loadedAssetsByUuid.Remove(bundle->GetUuid());
 		bundle->BeginDestroy();
 	}

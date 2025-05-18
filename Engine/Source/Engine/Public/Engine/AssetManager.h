@@ -59,6 +59,7 @@ namespace CE
 		}
 
 		void UnloadAsset(Asset* asset);
+		void UnloadAsset(Ref<Bundle> bundle);
 
 	protected:
 

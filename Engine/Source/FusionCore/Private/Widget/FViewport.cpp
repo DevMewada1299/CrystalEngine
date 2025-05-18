@@ -33,7 +33,9 @@ namespace CE
         for (int i = 0; i < frames.GetSize(); ++i)
         {
             delete frames[i]; frames[i] = nullptr;
-            delete frameViews[i]; frameViews[i] = nullptr;
+
+            RPISystem::Get().QueueDestroy(frameViews[i]);
+            frameViews[i] = nullptr;
         }
 
         RPISystem::Get().QueueDestroy(textureSrg);

@@ -141,6 +141,16 @@ namespace CE::Editor
         gEditor->AddRenderViewport(viewportTab->GetViewport());
     }
 
+    void MaterialEditor::OnBeginDestroy()
+    {
+        Super::OnBeginDestroy();
+
+        if (viewportScene)
+        {
+            //viewportScene->BeginDestroy();
+        }
+    }
+
     ClassType* MaterialEditor::GetTargetObjectType() const
     {
         return CE::Material::StaticClass();

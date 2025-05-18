@@ -140,7 +140,7 @@ namespace CE::Editor
 		PlatformName targetPlatform;
 
 		String sourceAssetRelativePath = "";
-		String bundleName = "";
+		String bundlePath = "";
 
 		b8 generateDistributionAsset = false;
 		b8 isGameAsset = false;

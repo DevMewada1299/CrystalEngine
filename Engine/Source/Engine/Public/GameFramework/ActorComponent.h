@@ -53,6 +53,9 @@ namespace CE
 		FIELD()
 		WeakRef<Actor> owner = nullptr;
 
+		FIELD()
+		WeakRef<CE::Scene> scene = nullptr;
+
 	private:
 
 		FIELD(EditAnywhere, Category = "Component", DisplayName = "Enabled")
@@ -63,6 +66,7 @@ namespace CE
 		b8 onDisabledCalled = false;
 
 		friend class Actor;
+		friend class CE::Scene;
 		friend class RendererSubsystem;
 	};
 

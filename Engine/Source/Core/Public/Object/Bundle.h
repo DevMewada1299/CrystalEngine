@@ -2,6 +2,9 @@
 
 namespace CE
 {
+#if CE_EDITOR_BUILD
+    namespace Editor { class AssetImportJob; }
+#endif
 
     enum class BundleLoadResult
     {
@@ -76,8 +79,9 @@ namespace CE
         static void PushBundleResolver(IBundleResolver* resolver);
         static void PopBundleResolver(IBundleResolver* resolver);
 
-        static IO::Path GetAbsolutePath(const Name& localPath);
+        static IO::Path GetAbsoluteDirectoryPath(const Name& localPath);
         static IO::Path GetAbsoluteBundlePath(const Name& bundlePath);
+        static Name GetBundlePath(const IO::Path& absoluteBundlePath);
 
         static Ref<Bundle> LoadBundle(const Ref<Object>& outer, const Uuid& bundleUuid, const LoadBundleArgs& loadArgs = LoadBundleArgs());
 
@@ -92,6 +96,8 @@ namespace CE
         static BundleSaveResult SaveToDisk(const Ref<Bundle>& bundle, Ref<Object> asset, const IO::Path& fullPath);
 
         // - Public API -
+
+        const Name& GetBundlePath() const { return bundlePath; }
 
         Ref<Object> LoadObject(Uuid objectUuid);
 
@@ -170,7 +176,8 @@ namespace CE
             b8 isDeserialized = false;
         };
 
-        IO::Path fullBundlePath{};
+        IO::Path absoluteBundlePath{};
+        Name bundlePath{};
         Stream* readerStream = nullptr;
 
         u32 majorVersion = 0;
@@ -201,6 +208,9 @@ namespace CE
         friend class Object;
 
         friend class AssetRegistry;
+#if CE_EDITOR_BUILD
+        friend class CE::Editor::AssetImportJob;
+#endif
     };
 
 }

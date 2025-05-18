@@ -302,12 +302,14 @@ namespace CE
 					}
 
 					AssetManager* assetManager = AssetManager::Get();
-					if (assetManager && assetManager->loadedAssetsByPath.KeyExists(curOldPath))
+					LockGuard lock{ assetManager->loadedAssetsMutex };
+
+					if (assetManager->loadedAssetsByPath.KeyExists(curOldPath))
 					{
 						assetManager->loadedAssetsByPath[curNewPath] = assetManager->loadedAssetsByPath[curOldPath];
 						assetManager->loadedAssetsByPath.Remove(curOldPath);
 
-						assetManager->loadedAssetsByPath[curNewPath]->fullBundlePath = Bundle::GetAbsoluteBundlePath(curNewPath);
+						assetManager->loadedAssetsByPath[curNewPath]->absoluteBundlePath = Bundle::GetAbsoluteBundlePath(curNewPath);
 					}
 				}
 
@@ -341,6 +343,66 @@ namespace CE
 		}
 	}
 
+	void AssetRegistry::OnDirectoryDeleted(const Name& directoryPath)
+	{
+		PathTreeNode* pathNode = cachedPathTree.GetNode(directoryPath);
+		if (pathNode == nullptr || pathNode->nodeType != PathTreeNodeType::Directory)
+			return;
+
+		std::function<void(PathTreeNode*)> visitor = [&](PathTreeNode* node)
+		{
+			Name curPath = node->GetFullPath();
+
+			if (node->nodeType == PathTreeNodeType::Directory)
+			{
+				for (int i = cachedPrimaryAssetsByParentPath[curPath].GetSize() - 1; i >= 0; --i)
+				{
+					AssetData* assetData = cachedPrimaryAssetsByParentPath[curPath][i];
+					allAssetDatas.Remove(assetData);
+
+					delete assetData;
+				}
+
+				cachedPrimaryAssetsByParentPath.Remove(curPath);
+			}
+			else if (node->nodeType == PathTreeNodeType::Asset)
+			{
+				cachedPrimaryAssetByPath.Remove(curPath);
+				cachedAssetsByPath.Remove(curPath);
+
+				AssetManager* assetManager = AssetManager::Get();
+				Ref<Bundle> bundle = nullptr;
+
+				{
+					LockGuard lock{ assetManager->loadedAssetsMutex };
+
+					if (assetManager->loadedAssetsByPath.KeyExists(curPath))
+					{
+						bundle = assetManager->loadedAssetsByPath[curPath];
+					}
+				}
+
+				assetManager->UnloadAsset(bundle);
+			}
+
+			for (PathTreeNode* child : node->children)
+			{
+				visitor(child);
+			}
+		};
+
+		cachedPathTree.RemovePath(directoryPath);
+		cachedDirectoryTree.RemovePath(directoryPath);
+
+		for (IAssetRegistryListener* listener : listeners)
+		{
+			if (listener != nullptr)
+			{
+				listener->OnAssetPathTreeUpdated(cachedPathTree);
+			}
+		}
+	}
+
 	void AssetRegistry::OnAssetRenamed(const Name& originalPath, const IO::Path& newAbsolutePath, const Name& newName)
 	{
 		PathTreeNode* pathNode = cachedPathTree.GetNode(originalPath);
@@ -354,20 +416,25 @@ namespace CE
 
 		Ref<Bundle> bundle = nullptr;
 		AssetManager* assetManager = AssetManager::Get();
-		if (assetManager && assetManager->loadedAssetsByPath.KeyExists(originalPath))
-		{
-			assetManager->loadedAssetsByPath[newPath] = assetManager->loadedAssetsByPath[originalPath];
-			assetManager->loadedAssetsByPath.Remove(originalPath);
 
-			bundle = assetManager->loadedAssetsByPath[newPath];
-		}
-		else
 		{
-			bundle = Bundle::LoadBundleAbsolute(this, newAbsolutePath, LoadBundleArgs{
-				.loadFully = true,
-				.forceReload = false,
-				.destroyOutdatedObjects = false
-			});
+			LockGuard lock{ assetManager->loadedAssetsMutex };
+
+			if (assetManager->loadedAssetsByPath.KeyExists(originalPath))
+			{
+				assetManager->loadedAssetsByPath[newPath] = assetManager->loadedAssetsByPath[originalPath];
+				assetManager->loadedAssetsByPath.Remove(originalPath);
+
+				bundle = assetManager->loadedAssetsByPath[newPath];
+			}
+			else
+			{
+				bundle = Bundle::LoadBundleAbsolute(this, newAbsolutePath, LoadBundleArgs{
+					.loadFully = true,
+					.forceReload = false,
+					.destroyOutdatedObjects = false
+				});
+			}
 		}
 
 		if (cachedAssetsByPath.KeyExists(originalPath))
@@ -423,22 +490,17 @@ namespace CE
 			PathTreeNode* directoryNode = cachedDirectoryTree.GetNode(path);
 			if (directoryNode != nullptr)
 			{
-				cachedDirectoryTree.RemovePath(path);
+				OnDirectoryDeleted(path);
 			}
 
 			PathTreeNode* pathNode = cachedPathTree.GetNode(path);
-			if (pathNode != nullptr)
+			if (pathNode != nullptr && pathNode->nodeType == PathTreeNodeType::Asset)
 			{
-				cachedPathTree.RemovePath(path);
+				DeleteAssetEntry(path);
 			}
-		}
 
-		for (IAssetRegistryListener* listener : listeners)
-		{
-			if (listener != nullptr)
-			{
-				listener->OnAssetPathTreeUpdated(cachedPathTree);
-			}
+			cachedDirectoryTree.RemovePath(path);
+			cachedPathTree.RemovePath(path);
 		}
 	}
 

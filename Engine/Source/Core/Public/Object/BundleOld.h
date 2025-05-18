@@ -184,7 +184,7 @@ namespace CE
 		HashMap<Uuid, ObjectEntryMetaData> objectUuidToEntryMap{};
 		HashMap<Uuid, Object*> loadedObjects{};
         
-		IO::Path fullBundlePath{};
+		IO::Path absoluteBundlePath{};
 
 		static SharedMutex bundleRegistryMutex;
 		static HashMap<Name, Bundle*> loadedBundles;

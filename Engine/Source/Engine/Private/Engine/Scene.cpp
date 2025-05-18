@@ -227,8 +227,10 @@ namespace CE
             
 			actorsByUuid[add->GetUuid()] = add;
 
-			for (auto component : add->attachedComponents)
+			for (ActorComponent* component : add->attachedComponents)
 			{
+				component->scene = this;
+
 				auto componentClass = component->GetClass();
 
 				while (componentClass->GetTypeId() != TYPEID(Object))
@@ -269,6 +271,11 @@ namespace CE
             if (!sceneComponent)
                 return;
 
+			if (sceneComponent->scene == this)
+			{
+				sceneComponent->scene = nullptr;
+			}
+
 			OnSceneComponentDetached(sceneComponent);
 
             if (sceneComponent->IsOfType<CameraComponent>())
@@ -304,8 +311,13 @@ namespace CE
             
 			actorsByUuid.Remove(remove->GetUuid());
 
-			for (auto component : remove->attachedComponents)
+			for (ActorComponent* component : remove->attachedComponents)
 			{
+				if (component->scene == this)
+				{
+					component->scene = nullptr;
+				}
+
 				auto componentClass = component->GetClass();
 				auto componentUuid = component->GetUuid();
 
@@ -369,6 +381,8 @@ namespace CE
 
 	void CE::Scene::OnSceneComponentAttached(SceneComponent* sceneComponent)
 	{
+		sceneComponent->scene = this;
+
 		if (sceneComponent->IsOfType<DirectionalLightComponent>())
 		{
 			auto directionalLight = static_cast<DirectionalLightComponent*>(sceneComponent);

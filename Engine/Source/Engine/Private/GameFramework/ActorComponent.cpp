@@ -20,11 +20,7 @@ namespace CE
 
 	Ref<CE::Scene> ActorComponent::GetScene() const
 	{
-		if (auto ownerRef = owner.Lock())
-		{
-			return ownerRef->GetScene();
-		}
-		return nullptr;
+		return scene.Lock();
 	}
 
 	bool ActorComponent::IsEnabledInHierarchy() const
