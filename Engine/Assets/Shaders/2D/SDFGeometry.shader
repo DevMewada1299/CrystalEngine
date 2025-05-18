@@ -388,8 +388,16 @@ Shader "2D/SDF Geometry"
 
             #define idx input.instanceId
 
+            // Add error handling for buffer access
+            #ifdef UNITY_EDITOR
+            #define CHECK_BUFFER_ACCESS(index, buffer) if (index >= buffer.Length) return float4(0, 0, 0, 0);
+            #else
+            #define CHECK_BUFFER_ACCESS(index, buffer)
+            #endif
+
             float4 FragMain(PSInput input) : SV_TARGET
             {
+                CHECK_BUFFER_ACCESS(input.instanceId, _DrawList);
                 GeometryInfo info;
                 info.fillColor = _DrawList[idx].fillColor;
                 info.outlineColor = _DrawList[idx].outlineColor;
