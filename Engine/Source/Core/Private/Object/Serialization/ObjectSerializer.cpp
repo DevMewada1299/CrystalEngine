@@ -109,6 +109,11 @@ namespace CE
         String bundleName = "";
         *stream >> bundleName;
 
+        if (bundleName == "albedo")
+        {
+            String::IsAlphabet('a');
+        }
+
         u32 numBundleDependencies = 0;
         *stream >> numBundleDependencies;
         Array<Uuid> externalBundleUuids;
@@ -166,7 +171,7 @@ namespace CE
 
         {
             LockGuard loadedObjectsLock{ bundle->loadedObjectsMutex };
-            bundle->loadedObjectsByUuid.Clear();
+            //bundle->loadedObjectsByUuid.Clear();
 	        bundle->loadedObjectsByUuid[bundleUuid] = bundle;
         }
 

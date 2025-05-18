@@ -337,7 +337,7 @@ namespace CE::Editor
 					String pathInBundle = object->GetPathInBundle().GetString();
 					if (pathInBundle.NotEmpty())
 						pathInBundle = "." + pathInBundle;
-					String fullObjectPath = bundle->GetName().GetString() + pathInBundle;
+					String fullObjectPath = bundle->GetBundlePath().GetString() + pathInBundle;
 					if (objectPathNameCounter[fullObjectPath] > 0)
 					{
 						fullObjectPath = String::Format(fullObjectPath + "_{}", objectPathNameCounter[fullObjectPath]);
